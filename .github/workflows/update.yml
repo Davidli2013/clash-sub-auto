@@ -1,8 +1,8 @@
-name: Auto Update Trojan Only (HK Only)
+name: Auto Update Trojan (HK/JP/SG)
 on:
   schedule:
-    - cron: '0 */6 * * *'  # 每6小时自动更新一次
-  workflow_dispatch:        # 允许手动触发
+    - cron: '0 */6 * * *'  # 每6小时自动更新
+  workflow_dispatch:        # 手动触发
 
 jobs:
   update:
@@ -12,7 +12,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.PAT }}  # 使用你配置的 PAT
+          token: ${{ secrets.PAT }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -22,85 +22,86 @@ jobs:
       - name: Install dependencies
         run: pip install pyyaml requests urllib3
 
-      - name: Generate HK Trojan Subscription
+      - name: Generate Trojan Subscriptions
         run: |
           cat > gen.py << 'EOF'
           import yaml
           import requests
           import base64
-          from urllib.parse import urlparse
           import urllib3
           urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-          # 读取 config.yaml
+          # 读取配置
           with open('config.yaml', 'r', encoding='utf-8') as f:
               cfg = yaml.safe_load(f)
-
           subs = cfg['subs']
-          global_filter = cfg.get('global_filter', {})
-          allowed_protocols = global_filter.get('allowed_protocols', ['trojan'])
-          max_delay = global_filter.get('max_delay', 150) / 1000  # 转换为秒
+          max_delay = cfg.get('global_filter', {}).get('max_delay', 150) / 1000
 
-          all_proxies = []
-
-          # 拉取并过滤所有订阅源
+          # 拉取所有 Trojan 节点
+          all_trojan = []
           for url in subs:
               try:
                   r = requests.get(url, timeout=20, verify=False)
-                  # 尝试解码 Base64
                   try:
                       txt = base64.b64decode(r.text).decode('utf-8', errors='ignore')
                   except:
                       txt = r.text
-                  # 解析 YAML
                   data = yaml.safe_load(txt)
                   if 'proxies' in data:
                       for p in data['proxies']:
-                          # 1. 只保留 trojan 协议
-                          if p.get('type') in allowed_protocols:
-                              # 2. 只保留名称含“香港”或“HK”的节点
-                              name = p.get('name', '').lower()
-                              if '香港' in name or 'hk' in name:
-                                  all_proxies.append(p)
+                          if p.get('type') == 'trojan':  # 只保留 Trojan 协议
+                              all_trojan.append(p)
               except Exception as e:
-                  print(f"处理 {url} 失败: {e}")
                   continue
 
-          # 去重（按节点名称）
-          unique_proxies = []
+          # 去重
           seen_names = set()
-          for p in all_proxies:
+          unique_trojan = []
+          for p in all_trojan:
               name = p.get('name')
               if name and name not in seen_names:
                   seen_names.add(name)
-                  unique_proxies.append(p)
+                  unique_trojan.append(p)
 
-          # 构建最终的订阅文件
-          output = {
-              'proxies': unique_proxies[:50],  # 最多保留50个，避免文件过大
-              'proxy-groups': [
-                  {
-                      'name': 'Auto-HK-Trojan',
-                      'type': 'url-test',
-                      'proxies': [p['name'] for p in unique_proxies[:50]],
-                      'url': 'http://www.gstatic.com/generate_204',
-                      'interval': 300
-                  }
-              ]
+          # 定义地区筛选规则
+          regions = {
+              'hk': {'keywords': ['香港', 'HK', 'hk'], 'file': 'sub_trojan_hk.yaml'},
+              'jp': {'keywords': ['日本', 'JP', 'jp'], 'file': 'sub_trojan_jp.yaml'},
+              'sg': {'keywords': ['新加坡', 'SG', 'sg'], 'file': 'sub_trojan_sg.yaml'}
           }
 
-          # 保存到 sub_trojan_hk.yaml
-          with open('sub_trojan_hk.yaml', 'w', encoding='utf-8') as f:
-              yaml.dump(output, f, allow_unicode=True, sort_keys=False)
+          # 生成各地区订阅文件
+          for region, info in regions.items():
+              # 筛选对应地区节点
+              filtered = []
+              for p in unique_trojan:
+                  name = p.get('name', '').lower()
+                  if any(kw in name or kw.lower() in name for kw in info['keywords']):
+                      filtered.append(p)
+              
+              # 构建订阅格式
+              output = {
+                  'proxies': filtered[:50],  # 最多保留50个节点
+                  'proxy-groups': [{
+                      'name': f'Auto-{region.upper()}-Trojan',
+                      'type': 'url-test',
+                      'proxies': [p['name'] for p in filtered[:50]],
+                      'url': 'http://www.gstatic.com/generate_204',
+                      'interval': 300
+                  }]
+              }
 
-          print(f"✅ 生成香港 trojan 订阅文件，共 {len(unique_proxies)} 个节点")
+              # 保存文件
+              with open(info['file'], 'w', encoding='utf-8') as f:
+                  yaml.dump(output, f, allow_unicode=True, sort_keys=False)
+              print(f"✅ {info['file']} - 生成 {len(filtered)} 个节点")
           EOF
 
           # 执行脚本
           python gen.py
 
-      - name: Commit and push
+      - name: Commit all files
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Update HK Trojan only subscription"
-          file_pattern: sub_trojan_hk.yaml
+          commit_message: "Update Trojan (HK/JP/SG) subscriptions"
+          file_pattern: "sub_trojan_*.yaml"
