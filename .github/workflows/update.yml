@@ -16,7 +16,7 @@ jobs:
       - name: Run Sub-Store in Docker
         run: |
           docker run --rm -v $(pwd):/workdir -w /workdir node:20 \
-            sh -c "npm install -g https://github.com/sub-store-org/sub-store-cli.git && sub-store-cli run -c config.yaml"
+            sh -c "npm install -g https://github.com/sub-store-org/sub-store-cli/releases/download/v0.0.1/sub-store-cli.tgz && sub-store-cli run -c config.yaml"
 
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v5
