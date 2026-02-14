@@ -8,8 +8,6 @@ proxies:
   skip-cert-verify: true
   udp: true
   network: tcp
-  client-fingerprint: chrome
-  delay: 469
 - name: 中国 - 香港 - Hong Kong Telecommunications (HKT) Limited Mass Internet - 1
   server: 95.40.55.141
   port: 2826
@@ -18,7 +16,6 @@ proxies:
   sni: t.me%2Fripaojiedian
   skip-cert-verify: true
   udp: true
-  delay: 1141
 - name: 中国 - 香港 - Hong Kong Telecommunications (HKT) Limited Mass Internet - 2
   server: 203.198.123.162
   port: 443
@@ -27,7 +24,6 @@ proxies:
   sni: 203.198.123.162
   skip-cert-verify: true
   udp: true
-  delay: 1247
 - name: 中国 - 香港 - Ipxo LLC - 5
   server: green2.cdntencentmusic.com
   port: 31102
@@ -37,8 +33,6 @@ proxies:
   skip-cert-verify: true
   udp: true
   network: tcp
-  client-fingerprint: chrome
-  delay: 2291
 - name: 中国 - 香港 - Ipxo LLC - 6
   server: green2.cdntencentmusic.com
   port: 31101
@@ -47,8 +41,6 @@ proxies:
   sni: green2.cdntencentmusic.com
   udp: true
   network: tcp
-  client-fingerprint: chrome
-  delay: 975
 - name: 香港节点
   password: BxceQaOe
   port: 443
@@ -408,63 +400,3 @@ proxies:
   password: 507ca9a0-2d8e-4b65-8763-82dfbdbd599f
   skip-cert-verify: true
   udp: true
-proxy-groups:
-- name: Auto-HK-Trojan
-  type: url-test
-  proxies:
-  - 中国 - 香港 - Akile LTD - 4
-  - 中国 - 香港 - Hong Kong Telecommunications (HKT) Limited Mass Internet - 1
-  - 中国 - 香港 - Hong Kong Telecommunications (HKT) Limited Mass Internet - 2
-  - 中国 - 香港 - Ipxo LLC - 5
-  - 中国 - 香港 - Ipxo LLC - 6
-  - 香港节点
-  - 香港节点_1
-  - 🇭🇰 香港3|@stairnode
-  - 🇭🇰 香港4|@stairnode
-  - 🇭🇰 香港5|@stairnode
-  - 🇭🇰HK-103.135.103.229-1518
-  - 🇭🇰HK-43.154.172.79-1582
-  - 🇭🇰HK-103.103.245.125-1642
-  - 🇭🇰HK-58.152.25.236-1743
-  - 🇭🇰HK-58.152.46.60-1744
-  - 🇭🇰HK-58.152.25.86-1745
-  - 🇭🇰HK-194.156.99.39-2344
-  - 🇭🇰HK-45.11.104.94-2454
-  - 🇭🇰HK-210.0.158.220-2606
-  - 🇭🇰HK-45.149.92.71-3562
-  - 🇭🇰HK-20.187.85.198-4208
-  - 🇭🇰HK-104.208.100.101-4209
-  - 🇭🇰HK-45.149.92.71-4724
-  - 🇭🇰HK-45.149.92.71-4725
-  - 🇭🇰HK-58.152.18.130-4780
-  - 🇭🇰HK-45.149.92.71-5741
-  - 🇭🇰HK-43.198.12.229-6929
-  - 🇭🇰HK-119.247.119.212-6935
-  - 🇭🇰HK-219.76.13.181-6936
-  - 🇭🇰HK-219.76.13.180-6937
-  - 🇭🇰HK-47.52.101.237-6939
-  - 🇭🇰HK-219.76.13.175-6942
-  - 🇭🇰HK-20.24.192.3-6997
-  - 🇭🇰HK-103.234.53.23-9049
-  - HK11｜原生/疑似家宽｜非常安全
-  - HK13｜原生/疑似家宽｜非常安全
-  - HK16｜原生/疑似家宽｜非常安全
-  - HK17｜原生/疑似家宽｜非常安全
-  - HK18｜原生/疑似家宽｜非常安全
-  - HK25｜原生/疑似家宽｜非常安全
-  - HK20｜原生/疑似家宽｜非常安全
-  - HK34｜原生/疑似家宽｜非常安全
-  - HK35｜原生/疑似家宽｜非常安全
-  - HK36｜原生/疑似家宽｜非常安全
-  - HK37｜原生/疑似家宽｜非常安全
-  - HK38｜原生/疑似家宽｜非常安全
-  - HK40｜原生/疑似家宽｜非常安全
-  - HK41｜原生/疑似家宽｜非常安全
-  - HK42｜原生/疑似家宽｜非常安全
-  - HK43｜原生/疑似家宽｜非常安全
-  - HK44｜原生/疑似家宽｜非常安全
-  - 🇭🇰 HK 10 → tg@nicevpn123
-  - 🇭🇰 HK 2 → tg@nicevpn123
-  - 🇭🇰 HK 9 → tg@nicevpn123
-  url: http://www.gstatic.com/generate_204
-  interval: 300
