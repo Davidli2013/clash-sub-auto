@@ -82,291 +82,185 @@ proxies:
   password: BxceQaOe
   sni: t.me%2Fripaojiedian
   skip-cert-verify: true
-- name: 🇭🇰HK-103.135.103.229-1518
+- name: 🇭🇰HK-103.135.103.229-1497
   server: 103.135.103.229
   port: 443
   type: trojan
   password: 265f092f-418b-30c9-a479-4800fd44dd19mielink
   skip-cert-verify: false
-- name: 🇭🇰HK-43.154.172.79-1582
+- name: 🇭🇰HK-43.154.172.79-1561
   server: 43.154.172.79
   port: 10102
   type: trojan
   password: 0f098bb2-9fad-3cc3-8acf-2a3268c1eb27
   skip-cert-verify: false
-- name: 🇭🇰HK-103.103.245.125-1642
+- name: 🇭🇰HK-103.103.245.125-1621
   server: 103.103.245.125
   port: 50418
   type: trojan
   password: a70b39d1-62ea-4d9e-b681-9c5408352234
   skip-cert-verify: false
-- name: 🇭🇰HK-58.152.25.236-1743
+- name: 🇭🇰HK-58.152.25.236-1695
   server: 58.152.25.236
   port: 443
   type: trojan
   password: BxceQaOe
   sni: t.me%2Fripaojiedian
   skip-cert-verify: false
-- name: 🇭🇰HK-58.152.46.60-1744
+- name: 🇭🇰HK-58.152.46.60-1696
   server: 58.152.46.60
   port: 443
   type: trojan
   password: BxceQaOe
   sni: '%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%2B%5BBy%2BDukeMehdi%5D%2Btrojan-HK%2B'
   skip-cert-verify: false
-- name: 🇭🇰HK-58.152.25.86-1745
+- name: 🇭🇰HK-58.152.25.86-1697
   server: 58.152.25.86
   port: 443
   type: trojan
   password: BxceQaOe
   sni: '%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%20%5BBy%20DukeMehdi%5D%20trojan-HK%20'
   skip-cert-verify: false
-- name: 🇭🇰HK-194.156.99.39-2344
+- name: 🇭🇰HK-194.156.99.39-2296
   server: 194.156.99.39
   port: 443
   type: trojan
   password: xxoo
   skip-cert-verify: false
-- name: 🇭🇰HK-45.11.104.94-2454
+- name: 🇭🇰HK-45.11.104.94-2406
   server: 45.11.104.94
   port: 3389
   type: trojan
   password: d4e41ff772c7fd45
   sni: sbank.ir
   skip-cert-verify: false
-- name: 🇭🇰HK-210.0.158.220-2606
+- name: 🇭🇰HK-210.0.158.220-2558
   server: 210.0.158.220
   port: 28443
   type: trojan
   password: 750a29bf-0a40-437f-b120-38de74ae7eaf
   skip-cert-verify: false
-- name: 🇭🇰HK-45.149.92.71-3562
+- name: 🇭🇰HK-45.149.92.71-3514
   server: jp.mjt001.com
   port: 443
   type: trojan
   password: 459d23f4-dcfd-4fef-9ba3-ef0ad10fc336
   sni: jp.mjt001.com
   skip-cert-verify: false
-- name: 🇭🇰HK-20.187.85.198-4208
+- name: 🇭🇰HK-20.187.85.198-4160
   server: 20.187.85.198
   port: 443
   type: trojan
   password: b26e31e5-eac1-45b0-9069-83830bd69521
   sni: hkt.iamnotagoodman.com
   skip-cert-verify: false
-- name: 🇭🇰HK-104.208.100.101-4209
+- name: 🇭🇰HK-104.208.100.101-4161
   server: 104.208.100.101
   port: 443
   type: trojan
   password: ceaea123-1b4b-469b-8358-bcd5f5529305
   sni: uk.liangyuandian.top
   skip-cert-verify: false
-- name: 🇭🇰HK-45.149.92.71-4724
+- name: 🇭🇰HK-45.149.92.71-4676
   server: usla.mjt000.com
   port: 443
   type: trojan
   password: e4af2638-bb12-4e4a-84f1-a032e23ca63f
   skip-cert-verify: false
-- name: 🇭🇰HK-45.149.92.71-4725
+- name: 🇭🇰HK-45.149.92.71-4677
   server: hinet.mjt000.com
   port: 443
   type: trojan
   password: 92435aa8-f3b6-466a-ad58-c55cbb6d2acf
   skip-cert-verify: false
-- name: 🇭🇰HK-58.152.18.130-4780
+- name: 🇭🇰HK-58.152.18.130-4732
   server: 58.152.18.130
   port: 443
   type: trojan
   password: BxceQaOe
   sni: t.me/ripaojiedian
   skip-cert-verify: false
-- name: 🇭🇰HK-45.149.92.71-5741
+- name: 🇭🇰HK-45.149.92.71-5693
   server: jp.iamnotagoodman.com
   port: 443
   type: trojan
   password: 8aab51da-6b67-4bd2-b6e6-5ab3008cf53e
   skip-cert-verify: false
-- name: 🇭🇰HK-43.198.12.229-6929
+- name: 🇭🇰HK-43.198.12.229-6881
   server: 43.198.12.229
   port: 28443
   type: trojan
   password: ae7cc604-d970-4200-9a9b-eb45087b4fc1
   sni: mzy.hruqoaw.cn
   skip-cert-verify: false
-- name: 🇭🇰HK-119.247.119.212-6935
+- name: 🇭🇰HK-119.247.119.212-6887
   server: 119.247.119.212
   port: 443
   type: trojan
   password: bb5b1337-fa9e-4e00-b8c6-1110e626171d
   sni: sg-01.tiktokcdn.top
   skip-cert-verify: false
-- name: 🇭🇰HK-219.76.13.181-6936
+- name: 🇭🇰HK-219.76.13.181-6888
   server: 219.76.13.181
   port: 443
   type: trojan
   password: SyOxpKxC8u5jgNa3DCZ34y3D9CRenFcaABpYATEeqI2RSaXD76zS8YF0Owl3lZ
   sni: arbettp.freetrade.link
   skip-cert-verify: false
-- name: 🇭🇰HK-219.76.13.180-6937
+- name: 🇭🇰HK-219.76.13.180-6889
   server: 219.76.13.180
   port: 443
   type: trojan
   password: F3CSSRxD8uljgF73IAn34C3aE9wSqAzZDp5ZOCpxDBRacNYelOYayKTe826Xy0
   sni: stutter.freetrade.link
   skip-cert-verify: false
-- name: 🇭🇰HK-47.52.101.237-6939
+- name: 🇭🇰HK-47.52.101.237-6891
   server: 47.52.101.237
   port: 443
   type: trojan
   password: ZRYSly2IRuFlgpZCaep3Ey3DDXqTDczO04aeC8F36OjaYSCABnA573wN8xxK9S
   sni: httah.freetrade.link
   skip-cert-verify: false
-- name: 🇭🇰HK-219.76.13.175-6942
+- name: 🇭🇰HK-219.76.13.175-6894
   server: 219.76.13.175
   port: 443
   type: trojan
   password: ZFYOpKqD8uEClpZ2ya83cyCDalwSOYz3F3eCxnBD4eSXNSR5R0aAATj7I3x69g
   sni: golang.protocolbuffer.com
   skip-cert-verify: false
-- name: 🇭🇰HK-20.24.192.3-6997
+- name: 🇭🇰HK-20.24.192.3-6949
   server: 20.24.192.3
   port: 20712
   type: trojan
   password: ca2345ba-46e7-3991-b1b7-45d18954caf1
   sni: ssl.ssl12.xyz
   skip-cert-verify: false
-- name: 🇭🇰HK-103.234.53.23-9049
+- name: 🇭🇰HK-103.234.53.23-9001
   server: 103.234.53.23
   port: 50014
   type: trojan
   password: 73658d71-be45-4495-bc3e-e69d36ce73b5
   sni: telewebion.com
   skip-cert-verify: false
-- name: HK11｜原生/疑似家宽｜非常安全
-  network: tcp
-  password: e16613ac-8514-4ede-bba3-31f16d593cbd
-  port: 31102
-  server: green2.cdntencentmusic.com
-  skip-cert-verify: true
-  sni: green2.cdntencentmusic.com
+- name: 🇭🇰 HK 10 → tg@nicevpn123
+  server: chjs.lydurlclub.top
+  port: 443
   type: trojan
-- name: HK13｜原生/疑似家宽｜非常安全
-  network: tcp
-  password: 64f12f30-4b9e-4993-9016-900b8781c98b
-  port: 31101
-  server: green2.cdntencentmusic.com
+  password: 507ca9a0-2d8e-4b65-8763-82dfbdbd599f
   skip-cert-verify: true
-  sni: green2.cdntencentmusic.com
+  udp: true
+- name: 🇭🇰 HK 2 → tg@nicevpn123
+  server: 210.17.253.122
+  port: 42030
   type: trojan
-- name: HK16｜原生/疑似家宽｜非常安全
-  network: tcp
-  password: 6a97aa88-eb91-4ea5-a305-d1a4838c1875
-  port: 31103
-  server: green2.cdntencentmusic.com
+  password: 2b38ff78-05bb-4261-895c-440950cf0dbd
+  sni: hkg01.service.nahidacloud.top
   skip-cert-verify: true
-  sni: green2.cdntencentmusic.com
+  udp: true
+- name: 🇭🇰 HK 9 → tg@nicevpn123
+  server: hkjs.lydurlclub.top
+  port: 443
   type: trojan
-- name: HK17｜原生/疑似家宽｜非常安全
-  network: tcp
-  password: dc3f0636-b06d-4dd9-b30d-dc0aaa3443a7
-  port: 31102
-  server: green2.cdntencentmusic.com
+  password: 507ca9a0-2d8e-4b65-8763-82dfbdbd599f
   skip-cert-verify: true
-  sni: green2.cdntencentmusic.com
-  type: trojan
-- name: HK18｜原生/疑似家宽｜非常安全
-  network: tcp
-  password: 91be2fb5-5543-49af-90d0-52923cceb0be
-  port: 31102
-  server: green2.cdntencentmusic.com
-  skip-cert-verify: true
-  sni: green2.cdntencentmusic.com
-  type: trojan
-- name: HK25｜原生/疑似家宽｜非常安全
-  network: tcp
-  password: 33b3a51e-31c2-4b67-bf27-3cd6dd6c6edb
-  port: 31101
-  server: green2.cdntencentmusic.com
-  skip-cert-verify: true
-  sni: green2.cdntencentmusic.com
-  type: trojan
-- name: HK20｜原生/疑似家宽｜非常安全
-  network: tcp
-  password: 64f12f30-4b9e-4993-9016-900b8781c98b
-  port: 31102
-  server: green2.cdntencentmusic.com
-  skip-cert-verify: true
-  sni: green2.cdntencentmusic.com
-  type: trojan
-- name: HK34｜原生/疑似家宽｜非常安全
-  network: tcp
-  password: 586fb4bd-5369-4c73-a3ee-e1ef5b8093c8
-  port: 31102
-  server: green2.cdntencentmusic.com
-  skip-cert-verify: true
-  sni: green2.cdntencentmusic.com
-  type: trojan
-- name: HK35｜原生/疑似家宽｜非常安全
-  network: tcp
-  password: e16613ac-8514-4ede-bba3-31f16d593cbd
-  port: 31101
-  server: green2.cdntencentmusic.com
-  skip-cert-verify: true
-  sni: green2.cdntencentmusic.com
-  type: trojan
-- name: HK36｜原生/疑似家宽｜非常安全
-  network: tcp
-  password: 0bed90a0-bfc9-4e64-b7dc-165806dd4de0
-  port: 31102
-  server: green2.cdntencentmusic.com
-  skip-cert-verify: true
-  sni: green2.cdntencentmusic.com
-  type: trojan
-- name: HK37｜原生/疑似家宽｜非常安全
-  network: tcp
-  password: f2ea66ab-4b6f-4b0b-8d0a-a00a521a9d68
-  port: 31102
-  server: green2.cdntencentmusic.com
-  skip-cert-verify: true
-  sni: green2.cdntencentmusic.com
-  type: trojan
-- name: HK38｜原生/疑似家宽｜非常安全
-  network: tcp
-  password: b7103676-a866-4f33-a025-431c5a61ab05
-  port: 31101
-  server: green2.cdntencentmusic.com
-  skip-cert-verify: true
-  sni: green2.cdntencentmusic.com
-  type: trojan
-- name: HK40｜原生/疑似家宽｜非常安全
-  network: tcp
-  password: bd42df14-0524-4d86-ac9f-592a93951684
-  port: 31101
-  server: green2.cdntencentmusic.com
-  skip-cert-verify: true
-  sni: green2.cdntencentmusic.com
-  type: trojan
-- name: HK41｜原生/疑似家宽｜非常安全
-  network: tcp
-  password: 3f83b84d-b69a-4386-887a-ee51b1d18fe8
-  port: 31101
-  server: green2.cdntencentmusic.com
-  skip-cert-verify: true
-  sni: green2.cdntencentmusic.com
-  type: trojan
-- name: HK42｜原生/疑似家宽｜非常安全
-  network: tcp
-  password: f2ea66ab-4b6f-4b0b-8d0a-a00a521a9d68
-  port: 31101
-  server: green2.cdntencentmusic.com
-  skip-cert-verify: true
-  sni: green2.cdntencentmusic.com
-  type: trojan
-- name: HK43｜原生/疑似家宽｜非常安全
-  network: tcp
-  password: bd42df14-0524-4d86-ac9f-592a93951684
-  port: 31102
-  server: green2.cdntencentmusic.com
-  skip-cert-verify: true
-  sni: green2.cdntencentmusic.com
-  type: trojan
+  udp: true
