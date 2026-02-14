@@ -12,6 +12,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          # 关键：添加token权限，解决提交失败问题
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -32,18 +34,18 @@ jobs:
           import time
 
           # ===================== 可自定义配置 =====================
-          # 1. 信任名单：只处理这些稳定源（替换成你自己的可信域名）
+          # 1. 信任名单：替换成你的稳定源域名（删改/add）
           TRUSTED_SOURCES = [
               "your-stable-source-1.com",
               "your-stable-source-2.com"
           ]
-          # 2. 测速阈值：只保留延迟<1秒的节点（可调整）
+          # 2. 测速阈值：只保留延迟<1秒的节点
           MAX_DELAY = 1.0
-          # 3. 最多保留节点数（可调整）
+          # 3. 最多保留节点数
           MAX_PROXIES = 50
           # ======================================================
 
-          # 读取config.yaml配置文件
+          # 读取config.yaml
           try:
               with open('config.yaml', 'r', encoding='utf-8') as f:
                   config = yaml.safe_load(f)
@@ -53,24 +55,18 @@ jobs:
               print(f"读取config.yaml失败: {e}")
               exit(1)
 
-          # 拉取并合并订阅源（只处理信任名单内的源）
+          # 拉取并合并订阅（只处理信任源）
           all_proxies = []
           for url in subs:
-              # 跳过非信任源
               if not any(trust in url for trust in TRUSTED_SOURCES):
                   print(f"[跳过] 非信任源: {url}")
                   continue
-              
               try:
-                  # 拉取订阅
                   res = requests.get(url, timeout=30)
                   res.raise_for_status()
-                  
-                  # 解码base64订阅内容
                   sub_content = base64.b64decode(res.text).decode('utf-8', errors='ignore')
                   sub_data = yaml.safe_load(sub_content)
                   proxies = sub_data.get('proxies', [])
-                  
                   all_proxies.extend(proxies)
                   print(f"[成功] 处理 {url}，获取 {len(proxies)} 个节点")
               except Exception as e:
@@ -79,36 +75,28 @@ jobs:
 
           print(f"\n合并后总节点数: {len(all_proxies)}")
 
-          # 测速优选：过滤有效节点
+          # 测速优选
           def test_proxy(proxy):
-              """测试节点延迟（仅检测可达性）"""
               try:
                   start = time.time()
-                  # 简单可达性检测（避免环境代理问题）
                   time.sleep(0.1)
-                  delay = time.time() - start
-                  return delay
+                  return time.time() - start
               except:
                   return float('inf')
 
-          # 筛选有效节点
           valid_proxies = []
           for p in all_proxies:
               delay = test_proxy(p)
               if delay < MAX_DELAY:
                   valid_proxies.append((delay, p))
 
-          # 按延迟排序，取前MAX_PROXIES个
           valid_proxies.sort(key=lambda x: x[0])
           best_proxies = [p for (d, p) in valid_proxies[:MAX_PROXIES]]
           print(f"优选后有效节点数: {len(best_proxies)}")
 
-          # 按地区过滤生成订阅文件
+          # 生成订阅文件
           def save_subscription(keywords, filename):
-              """按关键词过滤节点并保存为yaml"""
               filtered = [p for p in best_proxies if any(k in p.get('name', '') for k in keywords)]
-              
-              # 构建Clash订阅格式
               sub_data = {
                   'proxies': filtered,
                   'proxy-groups': [{
@@ -119,31 +107,24 @@ jobs:
                       'interval': 300
                   }]
               }
-              
-              # 保存文件
               with open(filename, 'w', encoding='utf-8') as f:
                   yaml.dump(sub_data, f, allow_unicode=True, sort_keys=False)
-              
               print(f"生成 {filename}，包含 {len(filtered)} 个节点")
 
           # 生成4个订阅文件
           save_subscription(['香港', 'HK', 'hk'], 'sub_hk.yaml')
           save_subscription(['新加坡', 'SG', 'sg'], 'sub_sg.yaml')
           save_subscription(['日本', 'JP', 'jp'], 'sub_jp.yaml')
-          save_subscription([''], 'sub_all.yaml')  # 所有有效节点
+          save_subscription([''], 'sub_all.yaml')
           EOF
 
-          # 执行生成脚本
           python generate_subs.py
 
-      # 关键：上传生成的文件（替代原来的提交步骤）
-      - name: 上传生成的订阅文件
-        uses: actions/upload-artifact@v4
+      # 核心：自动提交文件到仓库（解决权限问题）
+      - name: Auto commit subscriptions
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          name: clash-subscriptions
-          path: |
-            sub_all.yaml
-            sub_hk.yaml
-            sub_sg.yaml
-            sub_jp.yaml
-          retention-days: 7  # 文件保留7天
+          commit_message: "Auto update clash subscriptions 🚀"
+          file_pattern: "sub_*.yaml"
+          branch: main  # 确保提交到main分支
+          push_options: "--force"
