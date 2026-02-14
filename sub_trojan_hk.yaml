@@ -370,33 +370,3 @@ proxies:
   skip-cert-verify: true
   sni: green2.cdntencentmusic.com
   type: trojan
-- name: HK44｜原生/疑似家宽｜非常安全
-  network: tcp
-  password: b7103676-a866-4f33-a025-431c5a61ab05
-  port: 31102
-  server: green2.cdntencentmusic.com
-  skip-cert-verify: true
-  sni: green2.cdntencentmusic.com
-  type: trojan
-- name: 🇭🇰 HK 10 → tg@nicevpn123
-  server: chjs.lydurlclub.top
-  port: 443
-  type: trojan
-  password: 507ca9a0-2d8e-4b65-8763-82dfbdbd599f
-  skip-cert-verify: true
-  udp: true
-- name: 🇭🇰 HK 2 → tg@nicevpn123
-  server: 210.17.253.122
-  port: 42030
-  type: trojan
-  password: 2b38ff78-05bb-4261-895c-440950cf0dbd
-  sni: hkg01.service.nahidacloud.top
-  skip-cert-verify: true
-  udp: true
-- name: 🇭🇰 HK 9 → tg@nicevpn123
-  server: hkjs.lydurlclub.top
-  port: 443
-  type: trojan
-  password: 507ca9a0-2d8e-4b65-8763-82dfbdbd599f
-  skip-cert-verify: true
-  udp: true
