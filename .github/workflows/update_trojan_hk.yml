@@ -67,7 +67,8 @@ jobs:
                               if node_id not in seen_nodes:
                                   seen_nodes.add(node_id)
                                   all_trojan.append(p)
-              except:
+              except Exception as e:
+                  print(f"处理订阅源 {url} 失败: {e}")
                   continue
 
           # 2. 筛选香港节点
@@ -83,6 +84,9 @@ jobs:
               try:
                   server = proxy.get('server')
                   port = proxy.get('port')
+                  if not server or not port:
+                      return (proxy, float('inf'))
+                  
                   start = time.time()
                   result = subprocess.run(
                       f"nc -zv -w {TIMEOUT} {server} {port}",
@@ -92,7 +96,7 @@ jobs:
                       delay = round((time.time() - start)*1000)
                       return (proxy, delay) if delay < MAX_DELAY else (proxy, float('inf'))
                   return (proxy, float('inf'))
-              except:
+              except Exception as e:
                   return (proxy, float('inf'))
 
           valid = []
@@ -104,7 +108,7 @@ jobs:
                       valid.append(proxy)
 
           # 4. 按延迟排序并保存
-          valid.sort(key=lambda x: x.get('delay', MAX_DELAY))
+          valid.sort(key=lambda x: x.get('delay', MAX_DELAY) if 'delay' in x else MAX_DELAY)
           final = valid[:MAX_PROXIES]
           output = {
               'proxies': final,
@@ -124,10 +128,14 @@ jobs:
 
           python gen_hk.py
 
-      - name: Commit HK file
+      # ========== 关键修改：只提交根目录的香港节点文件 ==========
+      - name: Commit HK file (only root directory)
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Update HK Trojan (real speed test) 🚀"
-          file_pattern: sub_trojan_hk.yaml
+          # 只匹配根目录的 sub_trojan_hk.yaml
+          file_pattern: "sub_trojan_hk.yaml"
           commit_options: "--allow-empty"
           push_options: "--force"
+          # 明确指定工作目录为仓库根目录
+          working_directory: "."
