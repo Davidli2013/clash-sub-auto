@@ -13,21 +13,62 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Generate subscriptions with subconverter
-        run: |
-          # 合并所有订阅源到一个文件
-          echo "mixed:" > all_subs.yaml
-          while IFS= read -r url; do
-            echo "  - \"$url\"" >> all_subs.yaml
-          done < <(yq e '.subs[]' config.yaml)
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
 
-          # 启动 subconverter 并生成4个订阅文件
-          docker run --rm -v $(pwd):/workdir -w /workdir sprov0616/subconverter:latest \
-            subconverter -g "https://example.com#$(cat all_subs.yaml | base64 -w 0)" \
-              -f clash -o /workdir/sub_all.yaml \
-              -r "香港|HK|hk" -O /workdir/sub_hk.yaml \
-              -r "新加坡|SG|sg" -O /workdir/sub_sg.yaml \
-              -r "日本|JP|jp" -O /workdir/sub_jp.yaml
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml requests
+
+      - name: Generate subscriptions with Python
+        run: |
+          cat > generate_subs.py << 'EOF'
+          import yaml
+          import requests
+          import base64
+
+          # 读取配置文件
+          with open('config.yaml', 'r', encoding='utf-8') as f:
+              config = yaml.safe_load(f)
+
+          # 合并所有订阅
+          all_proxies = []
+          for url in config['subs']:
+              try:
+                  res = requests.get(url, timeout=30)
+                  res.raise_for_status()
+                  sub_yaml = yaml.safe_load(base64.b64decode(res.text).decode('utf-8'))
+                  all_proxies.extend(sub_yaml.get('proxies', []))
+              except Exception as e:
+                  print(f"Failed to process {url}: {e}")
+
+          # 生成综合订阅
+          sub_all = {
+              'proxies': all_proxies,
+              'proxy-groups': [{'name': 'auto', 'type': 'url-test', 'proxies': [p['name'] for p in all_proxies], 'url': 'http://www.gstatic.com/generate_204', 'interval': 300}]
+          }
+          with open('sub_all.yaml', 'w', encoding='utf-8') as f:
+              yaml.dump(sub_all, f, allow_unicode=True)
+
+          # 按地区过滤生成订阅
+          def filter_and_save(keywords, filename):
+              filtered = [p for p in all_proxies if any(k in p['name'] for k in keywords)]
+              sub = {
+                  'proxies': filtered,
+                  'proxy-groups': [{'name': 'auto', 'type': 'url-test', 'proxies': [p['name'] for p in filtered], 'url': 'http://www.gstatic.com/generate_204', 'interval': 300}]
+              }
+              with open(filename, 'w', encoding='utf-8') as f:
+                  yaml.dump(sub, f, allow_unicode=True)
+
+          filter_and_save(['香港', 'HK', 'hk'], 'sub_hk.yaml')
+          filter_and_save(['新加坡', 'SG', 'sg'], 'sub_sg.yaml')
+          filter_and_save(['日本', 'JP', 'jp'], 'sub_jp.yaml')
+          EOF
+
+          python generate_subs.py
 
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v5
