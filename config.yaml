@@ -34,6 +34,14 @@ subs:
   - https://raw.githubusercontent.com/aiboboxx/clashfree/main/clash.yml
   - https://raw.githubusercontent.com/barry-far/V2ray-Config/main/All_Configs_Sub.txt
   - https://raw.githubusercontent.com/skywolf627/VmessActions/main/clash.yml
+  - "https://raw.githubusercontent.com/barry-far/V2ray-config/main/All_Configs_Sub.txt?referrer=grok.com"
+  - "https://raw.githubusercontent.com/abbasdvd3/clash/main/hamrah2.yaml"
+  - "https://raw.githubusercontent.com/SnapdragonLee/SystemProxy/master/dist/clash_config_extra.yaml"
+  - "https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub1.txt?referrer=grok.com"
+  - "https://raw.githubusercontent.com/Misaka-blog/chromego_merge/main/sub/merged_proxies_new.yaml?referrer=grok.com"
+  - "https://raw.githubusercontent.com/Barabama/FreeNodes/main/nodes/ndnode.yaml?referrer=grok.com"
+  - "https://raw.githubusercontent.com/free-clash-v2ray/free-clash-v2ray.github.io/main/uploads/2026/01/3-20260111.yaml?referrer=grok.com"
+  - "https://raw.githubusercontent.com/free18/v2ray/main/c.yaml?referrer=grok.com"
 
 # 重点：只保留 trojan
 global_filter:
