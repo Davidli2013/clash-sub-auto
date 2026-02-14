@@ -1,12 +1,13 @@
-name: Auto Update JP/SG Trojan (Every 2 Hours, 300 Nodes Pool)
+name: Auto Update JP/SG Trojan (Weekly, 300 Nodes Pool)
 on:
   schedule:
-    - cron: '0 */2 * * *'  # 每2小时触发一次（UTC时间，对应内地+8小时）
-  workflow_dispatch:
+    - cron: '0 0 * * 0'  # 每周日UTC 0点更新（对应内地8点）
+  workflow_dispatch:      # 手动触发兜底
 
 jobs:
   update_jp_sg:
     runs-on: ubuntu-latest
+    timeout-minutes: 10   # 防止脚本卡死
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -32,28 +33,35 @@ jobs:
           import urllib3
           urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
+          # 核心配置：每个地区保留300个去重节点，只筛选不测速
           MAX_PROXIES = 300
           JP_KEYWORDS = ['日本', 'JP', 'jp', '东京', 'Tokyo']
           SG_KEYWORDS = ['新加坡', 'SG', 'sg', 'Singapore']
 
+          # 1. 读取订阅源
           with open('config.yaml', 'r', encoding='utf-8') as f:
               cfg = yaml.safe_load(f)
           subs = cfg.get('subs', [])
+          if not subs:
+              print("❌ 无订阅源，退出")
+              exit(0)
 
           all_trojan = []
           seen_nodes = set()
 
+          # 2. 提取Trojan节点（仅去重，不测速）
           for url in subs:
               try:
                   r = requests.get(url, timeout=30, verify=False)
                   try:
-                      txt = base64.b64decode(r.text).decode('utf-8', 'ignore')
+                      txt = base64.b64decode(r.text).decode('utf-8', errors='ignore')
                   except:
                       txt = r.text
                   data = yaml.safe_load(txt)
                   if 'proxies' in data:
                       for p in data['proxies']:
                           if p.get('type') == 'trojan':
+                              # 去重规则：服务器+端口+密码
                               server = p.get('server', '')
                               port = str(p.get('port', ''))
                               password = p.get('password', '')
@@ -61,17 +69,25 @@ jobs:
                                   key = f"{server}:{port}:{password}"
                                   if key not in seen_nodes:
                                       seen_nodes.add(key)
+                                      # 清理Karing不兼容字段
                                       clean_p = {k: v for k, v in p.items() if k not in ['delay', 'client-fingerprint']}
                                       all_trojan.append(clean_p)
-              except:
+              except Exception as e:
+                  print(f"订阅源 {url} 处理失败: {str(e)[:50]}")
                   continue
 
+          # 3. 分别筛选日本/新加坡节点
           jp_nodes = [p for p in all_trojan if any(kw.lower() in p.get('name','').lower() for kw in JP_KEYWORDS)]
           sg_nodes = [p for p in all_trojan if any(kw.lower() in p.get('name','').lower() for kw in SG_KEYWORDS)]
           
+          # 4. 各保留前300个（足够备用场景使用）
           jp_final = jp_nodes[:MAX_PROXIES]
           sg_final = sg_nodes[:MAX_PROXIES]
 
+          print(f"✅ 日本：提取{len(jp_nodes)}个 → 保留{len(jp_final)}个（300上限）")
+          print(f"✅ 新加坡：提取{len(sg_nodes)}个 → 保留{len(sg_final)}个（300上限）")
+
+          # 5. 生成Karing兼容的纯节点文件
           def write_file(nodes, filename):
               output = {'proxies': nodes}
               with open(filename, 'w', encoding='utf-8') as f:
@@ -86,7 +102,7 @@ jobs:
       - name: Commit JP/SG files
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Update JP/SG Trojan (every 2h, 300 nodes) 🛡️"
+          commit_message: "Update JP/SG Trojan (weekly, 300 nodes) 🛡️"
           file_pattern: "sub_trojan_jp.yaml sub_trojan_sg.yaml"
           commit_options: "--allow-empty"
           push_options: "--force"
