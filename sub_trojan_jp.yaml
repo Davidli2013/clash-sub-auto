@@ -1,7 +1,64 @@
-proxies: []
+proxies:
+- name: 日本 - 东京 - NTT PC Communications, Inc. - 2
+  server: 160.16.144.208
+  port: 3423
+  type: trojan
+  password: 9372cb81c7b0ad903f91f2f8a4d3f02b
+  sni: www.nintendogames.net
+  skip-cert-verify: true
+  udp: true
+  delay: 1102
+- name: 🇯🇵JP-160.16.117.182-0235
+  server: 160.16.117.182
+  port: 193
+  type: trojan
+  password: 9372cb81c7b0ad903f91f2f8a4d3f02b
+  sni: www.nintendogames.net
+  skip-cert-verify: false
+- name: 🇯🇵 日本3|@stairnode
+  server: 160.16.132.38
+  port: 193
+  type: trojan
+  password: 9372cb81c7b0ad903f91f2f8a4d3f02b
+  sni: www.nintendogames.net
+  skip-cert-verify: false
+- name: 🇯🇵JP-153.121.65.107-0257
+  server: 153.121.65.107
+  port: 1281
+  type: trojan
+  password: 9372cb81c7b0ad903f91f2f8a4d3f02b
+  sni: www.nintendogames.net
+  skip-cert-verify: false
+- name: 🇯🇵JP-160.16.57.238-0842
+  server: 160.16.57.238
+  port: 40548
+  type: trojan
+  password: 9372cb81c7b0ad903f91f2f8a4d3f02b
+  sni: www.nintendogames.net
+  skip-cert-verify: false
+- name: 🇯🇵 JP 50 → tg@nicevpn123
+  server: 139.162.91.35
+  port: 443
+  type: trojan
+  password: d22c4619-9dd1-41b1-a00e-c565a09066c8
+  skip-cert-verify: true
+  udp: true
+- name: 🇯🇵JP-153.125.148.41-3963
+  server: trs12.bolab.net
+  port: 443
+  type: trojan
+  password: 14bdba6dede262387ebdebaa706e1c90
+  skip-cert-verify: false
 proxy-groups:
-- name: Auto-JP-Trojan
+- name: Auto-JP-SG-Trojan
   type: url-test
-  proxies: []
+  proxies:
+  - 日本 - 东京 - NTT PC Communications, Inc. - 2
+  - 🇯🇵JP-160.16.117.182-0235
+  - 🇯🇵 日本3|@stairnode
+  - 🇯🇵JP-153.121.65.107-0257
+  - 🇯🇵JP-160.16.57.238-0842
+  - 🇯🇵 JP 50 → tg@nicevpn123
+  - 🇯🇵JP-153.125.148.41-3963
   url: http://www.gstatic.com/generate_204
   interval: 300

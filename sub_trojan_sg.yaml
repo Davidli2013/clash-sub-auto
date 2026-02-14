@@ -1,7 +1,130 @@
-proxies: []
+proxies:
+- name: 🇸🇬 SG 7 → tg@nicevpn123
+  server: 188.166.252.91
+  port: 443
+  type: trojan
+  password: I4bO2YDEgs
+  sni: aka.ms
+  skip-cert-verify: true
+  udp: true
+- name: 🇸🇬SG-13.250.177.51-2727
+  server: uk01.trojanyyds.xyz
+  port: 443
+  type: trojan
+  password: cd41b9d7-df15-46ad-a778-257b0851525a
+  skip-cert-verify: false
+- name: 🇸🇬SG-13.250.177.51-2631
+  server: sg02.trojanyyds.xyz
+  port: 443
+  type: trojan
+  password: cd41b9d7-df15-46ad-a778-257b0851525a
+  skip-cert-verify: false
+- name: 🇸🇬SG-13.250.177.51-2642
+  server: in01.trojanyyds.xyz
+  port: 443
+  type: trojan
+  password: cd41b9d7-df15-46ad-a778-257b0851525a
+  skip-cert-verify: false
+- name: 🇸🇬SG-13.250.177.51-2461
+  server: de01.trojanyyds.xyz
+  port: 443
+  type: trojan
+  password: cd41b9d7-df15-46ad-a778-257b0851525a
+  skip-cert-verify: false
+- name: 🇸🇬SG-13.250.177.51-2706
+  server: sg01.trojanyyds.xyz
+  port: 443
+  type: trojan
+  password: cd41b9d7-df15-46ad-a778-257b0851525a
+  skip-cert-verify: false
+- name: 🇸🇬SG-13.250.177.51-2299
+  server: us01.trojanyyds.xyz
+  port: 443
+  type: trojan
+  password: cd41b9d7-df15-46ad-a778-257b0851525a
+  skip-cert-verify: false
+- name: 🇸🇬SG-13.250.177.51-2781
+  server: jp01.trojanyyds.xyz
+  port: 443
+  type: trojan
+  password: cd41b9d7-df15-46ad-a778-257b0851525a
+  skip-cert-verify: false
+- name: 🇸🇬 SG 39 → tg@nicevpn123
+  server: sg3-full.privateip.net
+  port: 443
+  type: trojan
+  password: b3965d2d-3b82-45cc-927b-1336aca3f3fe
+  skip-cert-verify: true
+  udp: true
+- name: 🇸🇬 SG 16 → tg@nicevpn123
+  server: 134.209.105.33
+  port: 443
+  type: trojan
+  password: yR7hP9aw5L
+  sni: aka.ms
+  skip-cert-verify: true
+  udp: true
+- name: 🇸🇬 新加坡|@stairnode
+  server: 160.16.89.176
+  port: 3901
+  type: trojan
+  password: 9372cb81c7b0ad903f91f2f8a4d3f02b
+  sni: www.nintendogames.net
+  skip-cert-verify: false
+- name: 新加坡 - 新加坡 - M247 Europe SRL - 1
+  server: 153.121.39.240
+  port: 3901
+  type: trojan
+  password: 9372cb81c7b0ad903f91f2f8a4d3f02b
+  sni: www.nintendogames.net
+  skip-cert-verify: true
+  udp: true
+  delay: 1170
+- name: 🇸🇬SG-172.104.51.247-5646
+  server: trojan1.udpgw.com
+  port: 443
+  type: trojan
+  password: affae2e0-e84b-11ec-b09f-1239d0255272
+  skip-cert-verify: false
+- name: 🇸🇬SG-31.192.234.199-4703
+  server: sg-full.privateip.net
+  port: 443
+  type: trojan
+  password: d4bdfc72-7f0c-4ff0-aa4d-3530736f4088
+  skip-cert-verify: false
+- name: 🇸🇬 SG 27 → tg@nicevpn123
+  server: 139.162.49.215
+  port: 443
+  type: trojan
+  password: b3965d2d-3b82-45cc-927b-1336aca3f3fe
+  skip-cert-verify: true
+  udp: true
+- name: 🇸🇬SG-15.235.197.4-8768
+  server: 15.235.197.4
+  port: 80
+  type: trojan
+  password: 16bcc187-a1a0-4b8a-8b69-627f38b7cc0d
+  sni: 15.235.197.4
+  skip-cert-verify: false
 proxy-groups:
-- name: Auto-SG-Trojan
+- name: Auto-JP-SG-Trojan
   type: url-test
-  proxies: []
+  proxies:
+  - 🇸🇬 SG 7 → tg@nicevpn123
+  - 🇸🇬SG-13.250.177.51-2727
+  - 🇸🇬SG-13.250.177.51-2631
+  - 🇸🇬SG-13.250.177.51-2642
+  - 🇸🇬SG-13.250.177.51-2461
+  - 🇸🇬SG-13.250.177.51-2706
+  - 🇸🇬SG-13.250.177.51-2299
+  - 🇸🇬SG-13.250.177.51-2781
+  - 🇸🇬 SG 39 → tg@nicevpn123
+  - 🇸🇬 SG 16 → tg@nicevpn123
+  - 🇸🇬 新加坡|@stairnode
+  - 新加坡 - 新加坡 - M247 Europe SRL - 1
+  - 🇸🇬SG-172.104.51.247-5646
+  - 🇸🇬SG-31.192.234.199-4703
+  - 🇸🇬 SG 27 → tg@nicevpn123
+  - 🇸🇬SG-15.235.197.4-8768
   url: http://www.gstatic.com/generate_204
   interval: 300
