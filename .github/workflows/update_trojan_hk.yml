@@ -1,16 +1,13 @@
-name: Auto Update HK Trojan (4x/day, Filter+Deduplicate)
+name: Auto Update HK Trojan (Every 2 Hours, 300 Nodes Pool)
 on:
   schedule:
-    - cron: '0 0 * * *'
-    - cron: '0 6 * * *'
-    - cron: '0 12 * * *'
-    - cron: '0 18 * * *'
-  workflow_dispatch:
+    - cron: '0 */2 * * *'  # 每2小时触发1次（UTC时间，内地+8小时）
+  workflow_dispatch:       # 手动触发兜底
 
 jobs:
   update_hk:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 10    # 防止卡死
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -27,44 +24,43 @@ jobs:
       - name: Install dependencies
         run: pip install pyyaml requests urllib3
 
-      - name: Generate HK Trojan
+      - name: Generate HK Trojan (300 Nodes)
         run: |
           cat > gen_hk.py << 'EOF'
           import yaml
           import requests
           import base64
           import urllib3
-          import os
           urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-          MAX_PROXIES = 100
+          # 核心配置：300个节点池，只筛选+去重，不测速
+          MAX_PROXIES = 300
           FILTER_KEYWORDS = ['香港', 'HK', 'hk']
 
-          if not os.path.exists('config.yaml'):
-              print("❌ 找不到config.yaml")
-              exit(1)
-
+          # 1. 读取订阅源
           with open('config.yaml', 'r', encoding='utf-8') as f:
               cfg = yaml.safe_load(f)
           subs = cfg.get('subs', [])
           if not subs:
-              print("❌ 没有订阅源")
-              exit(1)
+              print("❌ 无订阅源，退出")
+              exit(0)
 
           all_trojan = []
           seen_nodes = set()
 
+          # 2. 提取Trojan节点（仅去重，不测速）
           for url in subs:
               try:
                   r = requests.get(url, timeout=30, verify=False)
                   try:
-                      txt = base64.b64decode(r.text).decode('utf-8', 'ignore')
+                      txt = base64.b64decode(r.text).decode('utf-8', errors='ignore')
                   except:
                       txt = r.text
                   data = yaml.safe_load(txt)
                   if 'proxies' in data:
                       for p in data['proxies']:
                           if p.get('type') == 'trojan':
+                              # 去重规则：服务器+端口+密码
                               server = p.get('server', '')
                               port = str(p.get('port', ''))
                               password = p.get('password', '')
@@ -72,35 +68,33 @@ jobs:
                                   key = f"{server}:{port}:{password}"
                                   if key not in seen_nodes:
                                       seen_nodes.add(key)
-                                      all_trojan.append(p)
+                                      # 清理Karing不兼容字段
+                                      clean_p = {k: v for k, v in p.items() if k not in ['delay', 'client-fingerprint']}
+                                      all_trojan.append(clean_p)
               except Exception as e:
-                  print(f"订阅源 {url} 失败: {e}")
+                  print(f"订阅源 {url} 处理失败: {str(e)[:50]}")
                   continue
 
+          # 3. 筛选香港节点
           hk_nodes = [p for p in all_trojan if any(kw.lower() in p.get('name','').lower() for kw in FILTER_KEYWORDS)]
+          
+          # 4. 保留前300个（足够本地测速筛选）
           final_nodes = hk_nodes[:MAX_PROXIES]
+          print(f"✅ 提取{len(hk_nodes)}个香港节点 → 保留{len(final_nodes)}个（300上限）")
 
-          output = {
-              'proxies': final_nodes,
-              'proxy-groups': [{
-                  'name': 'Auto-HK-Trojan',
-                  'type': 'url-test',
-                  'proxies': [p.get('name', f'HK-{i}') for i, p in enumerate(final_nodes)],
-                  'url': 'http://www.gstatic.com/generate_204',
-                  'interval': 300
-              }]
-          }
+          # 5. 生成Karing兼容的纯节点文件
+          output = {'proxies': final_nodes}
           with open('sub_trojan_hk.yaml', 'w', encoding='utf-8') as f:
               yaml.dump(output, f, allow_unicode=True, sort_keys=False)
           EOF
 
           python gen_hk.py
 
-      - name: Commit & Push HK File
+      - name: Commit HK file
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "[Auto] Update HK Trojan Nodes 🚀"
+          commit_message: "Update HK Trojan (every 2h, 300 nodes) 🚀"
           file_pattern: "sub_trojan_hk.yaml"
-          commit_options: "--allow-empty --no-verify"
+          commit_options: "--allow-empty"
           push_options: "--force"
           branch: main
