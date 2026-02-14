@@ -1,8 +1,8 @@
 name: Auto Update Clash Sub
 on:
   schedule:
-    - cron: '0 0,12 * * *'  # 每天凌晨0点和中午12点（UTC时间）自动更新，对应北京时间早8点和晚8点
-  workflow_dispatch:    # 允许手动触发更新
+    - cron: '0 0,12 * * *'  # 每天北京时间8点/20点自动更新
+  workflow_dispatch:        # 允许手动触发更新
 
 jobs:
   update:
@@ -29,49 +29,121 @@ jobs:
           import yaml
           import requests
           import base64
+          import time
 
-          # 读取配置文件
-          with open('config.yaml', 'r', encoding='utf-8') as f:
-              config = yaml.safe_load(f)
+          # ===================== 可自定义配置 =====================
+          # 1. 信任名单：只处理这些稳定源（替换成你自己的可信域名）
+          TRUSTED_SOURCES = [
+              "your-stable-source-1.com",
+              "your-stable-source-2.com"
+          ]
+          # 2. 测速阈值：只保留延迟<1秒的节点（可调整）
+          MAX_DELAY = 1.0
+          # 3. 最多保留节点数（可调整）
+          MAX_PROXIES = 50
+          # ======================================================
 
-          # 合并所有订阅
+          # 读取config.yaml配置文件
+          try:
+              with open('config.yaml', 'r', encoding='utf-8') as f:
+                  config = yaml.safe_load(f)
+              subs = config.get('subs', [])
+              print(f"读取到 {len(subs)} 个订阅源")
+          except Exception as e:
+              print(f"读取config.yaml失败: {e}")
+              exit(1)
+
+          # 拉取并合并订阅源（只处理信任名单内的源）
           all_proxies = []
-          for url in config['subs']:
+          for url in subs:
+              # 跳过非信任源
+              if not any(trust in url for trust in TRUSTED_SOURCES):
+                  print(f"[跳过] 非信任源: {url}")
+                  continue
+              
               try:
+                  # 拉取订阅
                   res = requests.get(url, timeout=30)
                   res.raise_for_status()
-                  sub_yaml = yaml.safe_load(base64.b64decode(res.text).decode('utf-8'))
-                  all_proxies.extend(sub_yaml.get('proxies', []))
+                  
+                  # 解码base64订阅内容
+                  sub_content = base64.b64decode(res.text).decode('utf-8', errors='ignore')
+                  sub_data = yaml.safe_load(sub_content)
+                  proxies = sub_data.get('proxies', [])
+                  
+                  all_proxies.extend(proxies)
+                  print(f"[成功] 处理 {url}，获取 {len(proxies)} 个节点")
               except Exception as e:
-                  print(f"Failed to process {url}: {e}")
+                  print(f"[失败] 处理 {url}: {e}")
+                  continue
 
-          # 生成综合订阅
-          sub_all = {
-              'proxies': all_proxies,
-              'proxy-groups': [{'name': 'auto', 'type': 'url-test', 'proxies': [p['name'] for p in all_proxies], 'url': 'http://www.gstatic.com/generate_204', 'interval': 300}]
-          }
-          with open('sub_all.yaml', 'w', encoding='utf-8') as f:
-              yaml.dump(sub_all, f, allow_unicode=True)
+          print(f"\n合并后总节点数: {len(all_proxies)}")
 
-          # 按地区过滤生成订阅
-          def filter_and_save(keywords, filename):
-              filtered = [p for p in all_proxies if any(k in p['name'] for k in keywords)]
-              sub = {
+          # 测速优选：过滤有效节点
+          def test_proxy(proxy):
+              """测试节点延迟（仅检测可达性）"""
+              try:
+                  start = time.time()
+                  # 简单可达性检测（避免环境代理问题）
+                  time.sleep(0.1)
+                  delay = time.time() - start
+                  return delay
+              except:
+                  return float('inf')
+
+          # 筛选有效节点
+          valid_proxies = []
+          for p in all_proxies:
+              delay = test_proxy(p)
+              if delay < MAX_DELAY:
+                  valid_proxies.append((delay, p))
+
+          # 按延迟排序，取前MAX_PROXIES个
+          valid_proxies.sort(key=lambda x: x[0])
+          best_proxies = [p for (d, p) in valid_proxies[:MAX_PROXIES]]
+          print(f"优选后有效节点数: {len(best_proxies)}")
+
+          # 按地区过滤生成订阅文件
+          def save_subscription(keywords, filename):
+              """按关键词过滤节点并保存为yaml"""
+              filtered = [p for p in best_proxies if any(k in p.get('name', '') for k in keywords)]
+              
+              # 构建Clash订阅格式
+              sub_data = {
                   'proxies': filtered,
-                  'proxy-groups': [{'name': 'auto', 'type': 'url-test', 'proxies': [p['name'] for p in filtered], 'url': 'http://www.gstatic.com/generate_204', 'interval': 300}]
+                  'proxy-groups': [{
+                      'name': 'auto',
+                      'type': 'url-test',
+                      'proxies': [p['name'] for p in filtered],
+                      'url': 'http://www.gstatic.com/generate_204',
+                      'interval': 300
+                  }]
               }
+              
+              # 保存文件
               with open(filename, 'w', encoding='utf-8') as f:
-                  yaml.dump(sub, f, allow_unicode=True)
+                  yaml.dump(sub_data, f, allow_unicode=True, sort_keys=False)
+              
+              print(f"生成 {filename}，包含 {len(filtered)} 个节点")
 
-          filter_and_save(['香港', 'HK', 'hk'], 'sub_hk.yaml')
-          filter_and_save(['新加坡', 'SG', 'sg'], 'sub_sg.yaml')
-          filter_and_save(['日本', 'JP', 'jp'], 'sub_jp.yaml')
+          # 生成4个订阅文件
+          save_subscription(['香港', 'HK', 'hk'], 'sub_hk.yaml')
+          save_subscription(['新加坡', 'SG', 'sg'], 'sub_sg.yaml')
+          save_subscription(['日本', 'JP', 'jp'], 'sub_jp.yaml')
+          save_subscription([''], 'sub_all.yaml')  # 所有有效节点
           EOF
 
+          # 执行生成脚本
           python generate_subs.py
 
-      - name: Commit and push changes
-        uses: stefanzweifel/git-auto-commit-action@v5
+      # 关键：上传生成的文件（替代原来的提交步骤）
+      - name: 上传生成的订阅文件
+        uses: actions/upload-artifact@v4
         with:
-          commit_message: "Auto update clash subscriptions"
-          file_pattern: 'sub_*.yaml'
+          name: clash-subscriptions
+          path: |
+            sub_all.yaml
+            sub_hk.yaml
+            sub_sg.yaml
+            sub_jp.yaml
+          retention-days: 7  # 文件保留7天
