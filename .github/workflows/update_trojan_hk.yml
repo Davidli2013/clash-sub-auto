@@ -1,18 +1,23 @@
-name: Auto Update HK Trojan (4x/day, 100 Nodes Pool)
+name: Auto Update HK Trojan (4x/day, Filter+Deduplicate)
 on:
   schedule:
-    - cron: '0 0,6,12,18 * * *'  # 北京时间8/14/20/2点更新
-  workflow_dispatch:            # 手动触发
+    - cron: '0 0 * * *'
+    - cron: '0 6 * * *'
+    - cron: '0 12 * * *'
+    - cron: '0 18 * * *'
+  workflow_dispatch:
 
 jobs:
   update_hk:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.PAT }}
+          ref: main
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -20,33 +25,32 @@ jobs:
           python-version: '3.10'
 
       - name: Install dependencies
-        run: |
-          pip install pyyaml requests urllib3
-          sudo apt update && sudo apt install -y curl netcat-openbsd
+        run: pip install pyyaml requests urllib3
 
-      - name: Generate HK Trojan (100 Nodes Pool)
+      - name: Generate HK Trojan
         run: |
           cat > gen_hk.py << 'EOF'
           import yaml
           import requests
           import base64
           import urllib3
-          import subprocess
-          import time
-          from concurrent.futures import ThreadPoolExecutor, as_completed
+          import os
           urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-          # ========== 核心配置（适配远端+本地双重筛选） ==========
-          MAX_WORKERS = 20          # 更高并发，覆盖更多节点
-          MAX_DELAY = 1000          # 远端延迟放宽到1000ms（只筛完全不可用的）
-          TIMEOUT = 30              # 超时延长到30秒
-          MAX_PROXIES = 100         # 远端保留前100个有效节点（给本地留足空间）
-          FILTER_KEYWORDS = ['香港', 'HK', 'hk']  # 筛选关键词
+          MAX_PROXIES = 100
+          FILTER_KEYWORDS = ['香港', 'HK', 'hk']
 
-          # 1. 读取订阅源，提取所有Trojan节点（去重）
+          if not os.path.exists('config.yaml'):
+              print("❌ 找不到config.yaml")
+              exit(1)
+
           with open('config.yaml', 'r', encoding='utf-8') as f:
               cfg = yaml.safe_load(f)
-          subs = cfg['subs']
+          subs = cfg.get('subs', [])
+          if not subs:
+              print("❌ 没有订阅源")
+              exit(1)
+
           all_trojan = []
           seen_nodes = set()
 
@@ -54,7 +58,7 @@ jobs:
               try:
                   r = requests.get(url, timeout=30, verify=False)
                   try:
-                      txt = base64.b64decode(r.text).decode('utf-8', errors='ignore')
+                      txt = base64.b64decode(r.text).decode('utf-8', 'ignore')
                   except:
                       txt = r.text
                   data = yaml.safe_load(txt)
@@ -62,103 +66,41 @@ jobs:
                       for p in data['proxies']:
                           if p.get('type') == 'trojan':
                               server = p.get('server', '')
-                              port = p.get('port', '')
+                              port = str(p.get('port', ''))
                               password = p.get('password', '')
-                              node_id = f"{server}:{port}:{password}"
-                              if node_id not in seen_nodes:
-                                  seen_nodes.add(node_id)
-                                  all_trojan.append(p)
+                              if server and port and password:
+                                  key = f"{server}:{port}:{password}"
+                                  if key not in seen_nodes:
+                                      seen_nodes.add(key)
+                                      all_trojan.append(p)
               except Exception as e:
-                  print(f"处理订阅源 {url} 失败: {e}")
+                  print(f"订阅源 {url} 失败: {e}")
                   continue
 
-          # 2. 筛选香港节点
-          hk_nodes = []
-          for p in all_trojan:
-              name = p.get('name', '').lower()
-              if any(kw in name for kw in FILTER_KEYWORDS):
-                  hk_nodes.append(p)
-          print(f"✅ 提取到 {len(hk_nodes)} 个香港Trojan节点")
+          hk_nodes = [p for p in all_trojan if any(kw.lower() in p.get('name','').lower() for kw in FILTER_KEYWORDS)]
+          final_nodes = hk_nodes[:MAX_PROXIES]
 
-          # 3. 远端宽松测速（只筛掉完全不可用的节点）
-          def loose_remote_test(proxy):
-              """
-              远端宽松验证：只要端口通 OR HTTP可达，就判定为候选节点
-              不严格卡延迟，只做基础连通性验证
-              """
-              try:
-                  server = proxy.get('server')
-                  port = proxy.get('port')
-                  sni = proxy.get('sni', server)
-                  if not server or not port:
-                      return (proxy, 9999)  # 兜底延迟，排后面
-                  
-                  # 验证1：端口连通性
-                  nc_cmd = f"nc -zv -w {TIMEOUT//2} {server} {port}"
-                  nc_result = subprocess.run(
-                      nc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
-                  )
-                  
-                  # 验证2：HTTP可达性
-                  curl_cmd = f"curl -I -m {TIMEOUT} https://{sni}:{port} --insecure"
-                  curl_result = subprocess.run(
-                      curl_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
-                  )
-                  
-                  # 只要一个验证通过，就算候选节点
-                  if nc_result.returncode == 0 or curl_result.returncode == 0:
-                      # 计算基础延迟（用于排序，不筛除）
-                      start = time.time()
-                      delay = round((time.time() - start) * 1000)
-                      return (proxy, min(delay, MAX_DELAY))
-                  return (proxy, 9999)
-              except Exception as e:
-                  return (proxy, 9999)
-
-          # 4. 并发测速，收集所有候选节点
-          candidate_nodes = []
-          with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
-              futures = {executor.submit(loose_remote_test, p): p for p in hk_nodes}
-              for future in as_completed(futures):
-                  proxy, delay = future.result()
-                  proxy['remote_delay'] = delay  # 标记远端延迟，方便本地参考
-                  candidate_nodes.append(proxy)
-
-          # 5. 按远端延迟排序，保留前100个候选节点
-          candidate_nodes.sort(key=lambda x: x.get('remote_delay', 9999))
-          final_nodes = candidate_nodes[:MAX_PROXIES]
-          
-          # 移除远端延迟标记，符合Clash标准格式
-          for node in final_nodes:
-              node.pop('remote_delay', None)
-
-          print(f"✅ 远端筛选出 {len(final_nodes)} 个候选节点（保留前100个）")
-
-          # 6. 生成订阅文件（包含url-test，本地自动二次筛选）
-          output_data = {
+          output = {
               'proxies': final_nodes,
               'proxy-groups': [{
                   'name': 'Auto-HK-Trojan',
                   'type': 'url-test',
-                  'proxies': [p['name'] for p in final_nodes],
+                  'proxies': [p.get('name', f'HK-{i}') for i, p in enumerate(final_nodes)],
                   'url': 'http://www.gstatic.com/generate_204',
-                  'interval': 300,  # 本地每5分钟自动测速一次
-                  'tolerance': 50   # 本地测速容差，更精准
+                  'interval': 300
               }]
           }
-
           with open('sub_trojan_hk.yaml', 'w', encoding='utf-8') as f:
-              yaml.dump(output_data, f, allow_unicode=True, sort_keys=False)
-          print(f"✅ 生成香港Trojan文件，共 {len(final_nodes)} 个候选节点")
+              yaml.dump(output, f, allow_unicode=True, sort_keys=False)
           EOF
 
           python gen_hk.py
 
-      - name: Commit HK file
+      - name: Commit & Push HK File
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Update HK Trojan (100 nodes pool) 🚀"
+          commit_message: "[Auto] Update HK Trojan Nodes 🚀"
           file_pattern: "sub_trojan_hk.yaml"
-          commit_options: "--allow-empty"
+          commit_options: "--allow-empty --no-verify"
           push_options: "--force"
-          working_directory: "."
+          branch: main
