@@ -1,8 +1,8 @@
 name: Auto Update Clash Sub
 on:
   schedule:
-    - cron: '0 0 * * *'  # 每天凌晨0点（UTC时间）自动更新，对应北京时间早8点
-  workflow_dispatch:    # 允许你手动触发更新
+    - cron: '0 0,12 * * *'  # 每天凌晨0点和中午12点（UTC时间）自动更新，对应北京时间早8点和晚8点
+  workflow_dispatch:    # 允许手动触发更新
 
 jobs:
   update:
@@ -27,5 +27,5 @@ jobs:
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Auto update clash subscription"
-          file_pattern: 'sub.yaml'
+          commit_message: "Auto update clash subscriptions"
+          file_pattern: 'sub_*.yaml'
