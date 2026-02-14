@@ -13,10 +13,21 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Run Sub-Store in Docker
+      - name: Generate subscriptions with subconverter
         run: |
-          docker run --rm -v $(pwd):/workdir -w /workdir node:20 \
-            sh -c "npm install -g https://github.com/sub-store-org/sub-store-cli/releases/download/v0.0.1/sub-store-cli.tgz && sub-store-cli run -c config.yaml"
+          # 合并所有订阅源到一个文件
+          echo "mixed:" > all_subs.yaml
+          while IFS= read -r url; do
+            echo "  - \"$url\"" >> all_subs.yaml
+          done < <(yq e '.subs[]' config.yaml)
+
+          # 启动 subconverter 并生成4个订阅文件
+          docker run --rm -v $(pwd):/workdir -w /workdir sprov0616/subconverter:latest \
+            subconverter -g "https://example.com#$(cat all_subs.yaml | base64 -w 0)" \
+              -f clash -o /workdir/sub_all.yaml \
+              -r "香港|HK|hk" -O /workdir/sub_hk.yaml \
+              -r "新加坡|SG|sg" -O /workdir/sub_sg.yaml \
+              -r "日本|JP|jp" -O /workdir/sub_jp.yaml
 
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v5
