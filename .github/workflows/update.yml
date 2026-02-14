@@ -1,8 +1,8 @@
-name: Auto Update Clash Sub
+name: Auto Update Trojan Only (HK Only)
 on:
   schedule:
-    - cron: '0 0,12 * * *'  # 每天北京时间8点/20点自动更新
-  workflow_dispatch:        # 允许手动触发更新
+    - cron: '0 */6 * * *'  # 每6小时自动更新一次
+  workflow_dispatch:        # 允许手动触发
 
 jobs:
   update:
@@ -12,8 +12,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          # 关键：使用你配置的 PAT，解决提交权限问题
-          token: ${{ secrets.PAT }}
+          token: ${{ secrets.PAT }}  # 使用你配置的 PAT
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -21,128 +20,87 @@ jobs:
           python-version: '3.10'
 
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pyyaml requests
+        run: pip install pyyaml requests urllib3
 
-      - name: Generate subscriptions with Python
+      - name: Generate HK Trojan Subscription
         run: |
-          cat > generate_subs.py << 'EOF'
+          cat > gen.py << 'EOF'
           import yaml
           import requests
           import base64
-          import time
+          from urllib.parse import urlparse
+          import urllib3
+          urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-          # ===================== 可自定义配置 =====================
-          # 1. 信任名单：只处理这些稳定源（替换成你自己的可信域名）
-          TRUSTED_SOURCES = [
-              "your-stable-source-1.com",
-              "your-stable-source-2.com"
-          ]
-          # 2. 测速阈值：只保留延迟<1秒的节点（可调整）
-          MAX_DELAY = 1.0
-          # 3. 最多保留节点数（可调整）
-          MAX_PROXIES = 50
-          # ======================================================
+          # 读取 config.yaml
+          with open('config.yaml', 'r', encoding='utf-8') as f:
+              cfg = yaml.safe_load(f)
 
-          # 读取config.yaml配置文件
-          try:
-              with open('config.yaml', 'r', encoding='utf-8') as f:
-                  config = yaml.safe_load(f)
-              subs = config.get('subs', [])
-              print(f"读取到 {len(subs)} 个订阅源")
-          except Exception as e:
-              print(f"读取config.yaml失败: {e}")
-              exit(1)
+          subs = cfg['subs']
+          global_filter = cfg.get('global_filter', {})
+          allowed_protocols = global_filter.get('allowed_protocols', ['trojan'])
+          max_delay = global_filter.get('max_delay', 150) / 1000  # 转换为秒
 
-          # 拉取并合并订阅源（只处理信任名单内的源）
           all_proxies = []
+
+          # 拉取并过滤所有订阅源
           for url in subs:
-              # 跳过非信任源
-              if not any(trust in url for trust in TRUSTED_SOURCES):
-                  print(f"[跳过] 非信任源: {url}")
-                  continue
-              
               try:
-                  # 拉取订阅
-                  res = requests.get(url, timeout=30)
-                  res.raise_for_status()
-                  
-                  # 解码base64订阅内容
-                  sub_content = base64.b64decode(res.text).decode('utf-8', errors='ignore')
-                  sub_data = yaml.safe_load(sub_content)
-                  proxies = sub_data.get('proxies', [])
-                  
-                  all_proxies.extend(proxies)
-                  print(f"[成功] 处理 {url}，获取 {len(proxies)} 个节点")
+                  r = requests.get(url, timeout=20, verify=False)
+                  # 尝试解码 Base64
+                  try:
+                      txt = base64.b64decode(r.text).decode('utf-8', errors='ignore')
+                  except:
+                      txt = r.text
+                  # 解析 YAML
+                  data = yaml.safe_load(txt)
+                  if 'proxies' in data:
+                      for p in data['proxies']:
+                          # 1. 只保留 trojan 协议
+                          if p.get('type') in allowed_protocols:
+                              # 2. 只保留名称含“香港”或“HK”的节点
+                              name = p.get('name', '').lower()
+                              if '香港' in name or 'hk' in name:
+                                  all_proxies.append(p)
               except Exception as e:
-                  print(f"[失败] 处理 {url}: {e}")
+                  print(f"处理 {url} 失败: {e}")
                   continue
 
-          print(f"\n合并后总节点数: {len(all_proxies)}")
-
-          # 测速优选：过滤有效节点
-          def test_proxy(proxy):
-              """测试节点延迟（仅检测可达性）"""
-              try:
-                  start = time.time()
-                  # 简单可达性检测（避免环境代理问题）
-                  time.sleep(0.1)
-                  delay = time.time() - start
-                  return delay
-              except:
-                  return float('inf')
-
-          # 筛选有效节点
-          valid_proxies = []
+          # 去重（按节点名称）
+          unique_proxies = []
+          seen_names = set()
           for p in all_proxies:
-              delay = test_proxy(p)
-              if delay < MAX_DELAY:
-                  valid_proxies.append((delay, p))
+              name = p.get('name')
+              if name and name not in seen_names:
+                  seen_names.add(name)
+                  unique_proxies.append(p)
 
-          # 按延迟排序，取前MAX_PROXIES个
-          valid_proxies.sort(key=lambda x: x[0])
-          best_proxies = [p for (d, p) in valid_proxies[:MAX_PROXIES]]
-          print(f"优选后有效节点数: {len(best_proxies)}")
-
-          # 按地区过滤生成订阅文件
-          def save_subscription(keywords, filename):
-              """按关键词过滤节点并保存为yaml"""
-              filtered = [p for p in best_proxies if any(k in p.get('name', '') for k in keywords)]
-              
-              # 构建Clash订阅格式
-              sub_data = {
-                  'proxies': filtered,
-                  'proxy-groups': [{
-                      'name': 'auto',
+          # 构建最终的订阅文件
+          output = {
+              'proxies': unique_proxies[:50],  # 最多保留50个，避免文件过大
+              'proxy-groups': [
+                  {
+                      'name': 'Auto-HK-Trojan',
                       'type': 'url-test',
-                      'proxies': [p['name'] for p in filtered],
+                      'proxies': [p['name'] for p in unique_proxies[:50]],
                       'url': 'http://www.gstatic.com/generate_204',
                       'interval': 300
-                  }]
-              }
-              
-              # 保存文件
-              with open(filename, 'w', encoding='utf-8') as f:
-                  yaml.dump(sub_data, f, allow_unicode=True, sort_keys=False)
-              
-              print(f"生成 {filename}，包含 {len(filtered)} 个节点")
+                  }
+              ]
+          }
 
-          # 生成4个订阅文件
-          save_subscription(['香港', 'HK', 'hk'], 'sub_hk.yaml')
-          save_subscription(['新加坡', 'SG', 'sg'], 'sub_sg.yaml')
-          save_subscription(['日本', 'JP', 'jp'], 'sub_jp.yaml')
-          save_subscription([''], 'sub_all.yaml')  # 所有有效节点
+          # 保存到 sub_trojan_hk.yaml
+          with open('sub_trojan_hk.yaml', 'w', encoding='utf-8') as f:
+              yaml.dump(output, f, allow_unicode=True, sort_keys=False)
+
+          print(f"✅ 生成香港 trojan 订阅文件，共 {len(unique_proxies)} 个节点")
           EOF
 
-          # 执行生成脚本
-          python generate_subs.py
+          # 执行脚本
+          python gen.py
 
-      # 核心：自动提交文件到仓库，拿到可分享链接
-      - name: Auto commit subscriptions
+      - name: Commit and push
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Auto update clash subscriptions 🚀"
-          file_pattern: "sub_*.yaml"
-          branch: main
-          push_options: "--force"
+          commit_message: "Update HK Trojan only subscription"
+          file_pattern: sub_trojan_hk.yaml
