@@ -13,16 +13,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install Sub-Store
-        run: npm install -g https://github.com/sub-store-org/sub-store-cli.git  # 使用 HTTPS 协议
-
-      - name: Run Sub-Store
-        run: sub-store-cli run -c config.yaml
+      - name: Run Sub-Store in Docker
+        run: |
+          docker run --rm -v $(pwd):/workdir -w /workdir node:20 \
+            sh -c "npm install -g @sub-store/cli && sub-store-cli run -c config.yaml"
 
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v5
