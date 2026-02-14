@@ -1,4 +1,12 @@
 proxies:
+- name: 日本 - 东京 - Amazon Technologies Inc. - 5
+  server: 18.179.36.198
+  port: 6688
+  type: trojan
+  password: 1a17b19d-4896-4531-af79-6e91d8ef8228
+  sni: baidu.com
+  skip-cert-verify: true
+  udp: true
 - name: 日本 - 东京 - NTT PC Communications, Inc. - 2
   server: 160.16.144.208
   port: 3423
@@ -7,16 +15,60 @@ proxies:
   sni: www.nintendogames.net
   skip-cert-verify: true
   udp: true
-  delay: 1102
-- name: 🇯🇵JP-160.16.117.182-0235
-  server: 160.16.117.182
-  port: 193
+- name: 日本 - 横滨市 - InfoSphere - 1
+  server: 160.16.57.238
+  port: 400
+  type: trojan
+  password: 9372cb81c7b0ad903f91f2f8a4d3f02b
+  sni: www.nintendogames.net
+  skip-cert-verify: true
+  udp: true
+- name: 日本 - 横滨市 - InfoSphere - 3
+  server: 13.113.192.229
+  port: 2595
+  type: trojan
+  password: BxceQaOe
+  sni: t.me%252Fripaojiedian
+  skip-cert-verify: true
+  udp: true
+- name: 🇯🇵_JP_日本->🇨🇳_CN_中国
+  password: 5fb072e0ddd631cf66cf752b09210480
+  port: 3373
+  server: 52.195.8.127
+  skip-cert-verify: true
+  sni: www.nintendogames.net
+  tls: false
+  type: trojan
+- name: 🇯🇵 日本|@stairnode
+  server: 54.92.111.249
+  port: 2762
+  type: trojan
+  password: BxceQaOe
+  sni: t.me%252Fripaojiedian
+  skip-cert-verify: true
+- name: 🇯🇵 日本2|@stairnode
+  server: 57.180.43.205
+  port: 3423
   type: trojan
   password: 9372cb81c7b0ad903f91f2f8a4d3f02b
   sni: www.nintendogames.net
   skip-cert-verify: false
 - name: 🇯🇵 日本3|@stairnode
   server: 160.16.132.38
+  port: 193
+  type: trojan
+  password: 9372cb81c7b0ad903f91f2f8a4d3f02b
+  sni: www.nintendogames.net
+  skip-cert-verify: false
+- name: 🇯🇵JP-160.16.105.192-0227
+  server: 160.16.105.192
+  port: 400
+  type: trojan
+  password: 9372cb81c7b0ad903f91f2f8a4d3f02b
+  sni: www.nintendogames.net
+  skip-cert-verify: false
+- name: 🇯🇵JP-160.16.117.182-0235
+  server: 160.16.117.182
   port: 193
   type: trojan
   password: 9372cb81c7b0ad903f91f2f8a4d3f02b
@@ -29,6 +81,33 @@ proxies:
   password: 9372cb81c7b0ad903f91f2f8a4d3f02b
   sni: www.nintendogames.net
   skip-cert-verify: false
+- name: 🇯🇵JP-168.138.44.176-0578
+  server: 168.138.44.176
+  port: 443
+  type: trojan
+  password: 8d2d5953-d649-4034-94f2-72f2df2623da
+  skip-cert-verify: false
+- name: 🇯🇵JP-153.121.65.107-0833
+  server: 153.121.65.107
+  port: 3373
+  type: trojan
+  password: 9372cb81c7b0ad903f91f2f8a4d3f02b
+  sni: www.nintendogames.net
+  skip-cert-verify: false
+- name: 🇯🇵JP-43.207.171.246-0834
+  server: 43.207.171.246
+  port: 1820
+  type: trojan
+  password: BxceQaOe
+  sni: t.me%2Fripaojiedian
+  skip-cert-verify: false
+- name: 🇯🇵JP-43.207.73.82-0839
+  server: 43.207.73.82
+  port: 3901
+  type: trojan
+  password: 9372cb81c7b0ad903f91f2f8a4d3f02b
+  sni: www.nintendogames.net
+  skip-cert-verify: false
 - name: 🇯🇵JP-160.16.57.238-0842
   server: 160.16.57.238
   port: 40548
@@ -36,6 +115,249 @@ proxies:
   password: 9372cb81c7b0ad903f91f2f8a4d3f02b
   sni: www.nintendogames.net
   skip-cert-verify: false
+- name: 🇯🇵JP-138.2.45.89-1376
+  server: 138.2.45.89
+  port: 44301
+  type: trojan
+  password: 6d64570c-81d4-30fa-b2e2-dce73e1a2702
+  sni: osav101.jd0001.top
+  skip-cert-verify: false
+- name: 🇯🇵JP-23.145.24.30-1504
+  server: 23.145.24.30
+  port: 443
+  type: trojan
+  password: 265f092f-418b-30c9-a479-4800fd44dd19mielink
+  skip-cert-verify: false
+- name: 🇯🇵JP-52.196.144.61-1628
+  server: f5465c4.pg.gladns.com
+  port: 3389
+  type: trojan
+  password: 0c6a3341e8d5ab17
+  skip-cert-verify: false
+- name: 🇯🇵JP-157.254.193.251-1657
+  server: zzjp01.fuqiangren.com
+  port: 20220
+  type: trojan
+  password: b57f94c6-7385-47f7-9c8a-55de6098bd2b
+  skip-cert-verify: false
+- name: 🇯🇵JP-140.227.54.4-2251
+  server: trs09.bolab.net
+  port: 443
+  type: trojan
+  password: 7a566d21dfcd0f12490275fd3dd3cfc4
+  skip-cert-verify: false
+- name: 🇯🇵JP-138.2.45.243-2262
+  server: 138.2.45.243
+  port: 443
+  type: trojan
+  password: c19d1432-8b3e-4818-8837-3d160cf65908
+  skip-cert-verify: false
+- name: 🇯🇵JP-49.212.221.47-2293
+  server: 49.212.221.47
+  port: 2053
+  type: trojan
+  password: 96983eb4-c8f1-316e-ab00-500014ed3d8b
+  skip-cert-verify: false
+- name: 🇯🇵JP-155.248.172.87-2298
+  server: 155.248.172.87
+  port: 28443
+  type: trojan
+  password: 750a29bf-0a40-437f-b120-38de74ae7eaf
+  skip-cert-verify: false
+- name: 🇯🇵JP-153.127.215.49-2311
+  server: trs16.bolab.net
+  port: 22
+  type: trojan
+  password: 40c89b10235c40321e7a3cef82b53a03
+  skip-cert-verify: false
+- name: 🇯🇵JP-153.127.203.108-2329
+  server: trs17.bolab.net
+  port: 22
+  type: trojan
+  password: 40c89b10235c40321e7a3cef82b53a03
+  skip-cert-verify: false
+- name: 🇯🇵JP-168.138.43.89-2331
+  server: 168.138.43.89
+  port: 443
+  type: trojan
+  password: d06a3f01-1ff0-4792-9b8e-a5a604bc74a2
+  skip-cert-verify: false
+- name: 🇯🇵JP-133.167.100.203-2419
+  server: 133.167.100.203
+  port: 2053
+  type: trojan
+  password: 96983eb4-c8f1-316e-ab00-500014ed3d8b
+  skip-cert-verify: false
+- name: 🇯🇵JP-133.242.146.108-2436
+  server: jp01a.roc-taiwan.net.ua
+  port: 65011
+  type: trojan
+  password: 96983eb4-c8f1-316e-ab00-500014ed3d8b
+  skip-cert-verify: false
+- name: 🇯🇵JP-160.16.145.107-2459
+  server: 160.16.145.107
+  port: 2053
+  type: trojan
+  password: 96983eb4-c8f1-316e-ab00-500014ed3d8b
+  skip-cert-verify: false
+- name: 🇯🇵JP-150.230.217.213-2484
+  server: 150.230.217.213
+  port: 443
+  type: trojan
+  password: c09eb137-bf68-4658-84e0-102d94b74168
+  skip-cert-verify: false
+- name: 🇯🇵JP-133.242.205.220-2486
+  server: jp02a.roc-taiwan.net.ua
+  port: 65012
+  type: trojan
+  password: 96983eb4-c8f1-316e-ab00-500014ed3d8b
+  skip-cert-verify: false
+- name: 🇯🇵JP-133.125.42.51-2536
+  server: jp05a.roc-taiwan.org.ua
+  port: 65015
+  type: trojan
+  password: 96983eb4-c8f1-316e-ab00-500014ed3d8b
+  skip-cert-verify: false
+- name: 🇯🇵JP-153.127.8.129-2572
+  server: jp04a.roc-taiwan.net.ua
+  port: 65014
+  type: trojan
+  password: 96983eb4-c8f1-316e-ab00-500014ed3d8b
+  skip-cert-verify: false
+- name: 🇯🇵JP-150.230.96.103-2615
+  server: 150.230.96.103
+  port: 443
+  type: trojan
+  password: da777aae-defb-41d0-a183-2c27da2b4677
+  skip-cert-verify: false
+- name: 🇯🇵JP-153.127.47.114-2617
+  server: jp08a.roc-taiwan.org.ua
+  port: 65018
+  type: trojan
+  password: 96983eb4-c8f1-316e-ab00-500014ed3d8b
+  skip-cert-verify: false
+- name: 🇯🇵JP-133.242.210.166-2645
+  server: jp07a.roc-taiwan.org.ua
+  port: 65017
+  type: trojan
+  password: 96983eb4-c8f1-316e-ab00-500014ed3d8b
+  skip-cert-verify: false
+- name: 🇯🇵JP-153.125.148.41-2660
+  server: trs12.bolab.net
+  port: 22
+  type: trojan
+  password: 40c89b10235c40321e7a3cef82b53a03
+  skip-cert-verify: false
+- name: 🇯🇵JP-153.120.4.221-2697
+  server: jp06a.roc-taiwan.org.ua
+  port: 65016
+  type: trojan
+  password: 96983eb4-c8f1-316e-ab00-500014ed3d8b
+  skip-cert-verify: false
+- name: 🇯🇵JP-219.94.250.108-2721
+  server: 219.94.250.108
+  port: 2053
+  type: trojan
+  password: 96983eb4-c8f1-316e-ab00-500014ed3d8b
+  skip-cert-verify: false
+- name: 🇯🇵JP-133.242.134.182-2766
+  server: jp03a.roc-taiwan.net.ua
+  port: 65013
+  type: trojan
+  password: 96983eb4-c8f1-316e-ab00-500014ed3d8b
+  skip-cert-verify: false
+- name: 🇯🇵JP-153.121.74.146-2772
+  server: 153.121.74.146
+  port: 2053
+  type: trojan
+  password: 96983eb4-c8f1-316e-ab00-500014ed3d8b
+  skip-cert-verify: false
+- name: 🇯🇵JP-141.147.191.85-2779
+  server: 141.147.191.85
+  port: 28443
+  type: trojan
+  password: 750a29bf-0a40-437f-b120-38de74ae7eaf
+  skip-cert-verify: false
+- name: 🇯🇵JP-153.125.148.41-3963
+  server: trs12.bolab.net
+  port: 443
+  type: trojan
+  password: 14bdba6dede262387ebdebaa706e1c90
+  skip-cert-verify: false
+- name: 🇯🇵JP-106.180.225.69-4211
+  server: 106.180.225.69
+  port: 1443
+  type: trojan
+  password: 7x42LetRa0
+  skip-cert-verify: false
+- name: 🇯🇵JP-132.226.5.246-4212
+  server: 132.226.5.246
+  port: 443
+  type: trojan
+  password: 4f7dc540-d244-4e64-af21-4b5bb300add3
+  sni: www.tokyo2023.ga
+  skip-cert-verify: false
+- name: 🇯🇵JP-43.206.67.76-4250
+  server: 43.206.67.76
+  port: 36306
+  type: trojan
+  password: 1b5eff5a-f36b-4149-8001-7c8c0c4ed2eb
+  sni: sunmoon02.abzoones.xyz
+  skip-cert-verify: false
+- name: 🇯🇵JP-150.230.201.192-4251
+  server: 150.230.201.192
+  port: 443
+  type: trojan
+  password: f42e1a2e-e650-44f4-8d17-bcb68663da18
+  sni: www.seetheworldjp.ga
+  skip-cert-verify: false
+- name: 🇯🇵JP-15.168.28.231-4254
+  server: 15.168.28.231
+  port: 443
+  type: trojan
+  password: c51d3975-a40c-4a5b-929b-c8595ed87850
+  sni: wel-usgt.optage.moe
+  skip-cert-verify: false
+- name: 🇯🇵 JP 13 → tg@nicevpn123
+  server: dir01.netorigins2u.site
+  port: 36864
+  type: trojan
+  password: 3016be06-2f91-4b8f-9e6a-bd55f2c55610
+  sni: hu01.abpilot.xyz
+  skip-cert-verify: true
+  udp: true
+- name: 🇯🇵 JP 36 → tg@nicevpn123
+  server: dir01.netorigins2u.site
+  port: 36116
+  type: trojan
+  password: 3016be06-2f91-4b8f-9e6a-bd55f2c55610
+  sni: jp01.abpilot.xyz
+  skip-cert-verify: true
+  udp: true
+- name: 🇯🇵 JP 37 → tg@nicevpn123
+  server: 149.28.28.167
+  port: 433
+  type: trojan
+  password: 96d7e494-afd9-4eda-ad22-759646f46a9a
+  sni: apis-jp1.veadev.com
+  skip-cert-verify: true
+  udp: true
+- name: 🇯🇵 JP 43 → tg@nicevpn123
+  server: jp2.mmmmmmmmmm.cfd
+  port: 45127
+  type: trojan
+  password: 2062a5ca-a34e-47bf-9810-db91185f07fc
+  sni: apple.com
+  skip-cert-verify: true
+  udp: true
+- name: 🇯🇵 JP 45 → tg@nicevpn123
+  server: dir01.netorigins2u.site
+  port: 36201
+  type: trojan
+  password: 3016be06-2f91-4b8f-9e6a-bd55f2c55610
+  sni: sg01.abpilot.xyz
+  skip-cert-verify: true
+  udp: true
 - name: 🇯🇵 JP 50 → tg@nicevpn123
   server: 139.162.91.35
   port: 443
@@ -43,22 +365,19 @@ proxies:
   password: d22c4619-9dd1-41b1-a00e-c565a09066c8
   skip-cert-verify: true
   udp: true
-- name: 🇯🇵JP-153.125.148.41-3963
-  server: trs12.bolab.net
-  port: 443
+- name: 🇯🇵 JP 66 → tg@nicevpn123
+  server: dir01.netorigins2u.site
+  port: 36501
   type: trojan
-  password: 14bdba6dede262387ebdebaa706e1c90
-  skip-cert-verify: false
-proxy-groups:
-- name: Auto-JP-SG-Trojan
-  type: url-test
-  proxies:
-  - 日本 - 东京 - NTT PC Communications, Inc. - 2
-  - 🇯🇵JP-160.16.117.182-0235
-  - 🇯🇵 日本3|@stairnode
-  - 🇯🇵JP-153.121.65.107-0257
-  - 🇯🇵JP-160.16.57.238-0842
-  - 🇯🇵 JP 50 → tg@nicevpn123
-  - 🇯🇵JP-153.125.148.41-3963
-  url: http://www.gstatic.com/generate_204
-  interval: 300
+  password: 3016be06-2f91-4b8f-9e6a-bd55f2c55610
+  sni: us01.abpilot.xyz
+  skip-cert-verify: true
+  udp: true
+- name: 🇯🇵 JP 7 → tg@nicevpn123
+  server: jp4.mmmmmmmmmm.cfd
+  port: 54234
+  type: trojan
+  password: 2062a5ca-a34e-47bf-9810-db91185f07fc
+  sni: apple.com
+  skip-cert-verify: true
+  udp: true
