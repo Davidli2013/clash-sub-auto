@@ -1,11 +1,11 @@
-name: Auto Update Trojan (HK/JP/SG) with Real Speed Test
+name: Auto Update HK Trojan (4x/day, Real Test)
 on:
   schedule:
-    - cron: '0 */6 * * *'  # 每6小时更新（实测耗时约5-10分钟）
-  workflow_dispatch:        # 手动触发
+    - cron: '0 0,6,12,18 * * *'  # 北京时间8/14/20/2点更新（一天4次）
+  workflow_dispatch:            # 手动触发
 
 jobs:
-  update:
+  update_hk:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -21,37 +21,33 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install pyyaml requests urllib3 pysocks
-          # 安装 Trojan 测速依赖（Ubuntu 环境）
-          sudo apt update && sudo apt install -y curl netcat-openbsd
+          pip install pyyaml requests urllib3
+          sudo apt update && sudo apt install -y netcat-openbsd
 
-      - name: Generate Trojan Subscriptions (Real Speed Test)
+      - name: Generate HK Trojan (Real Speed Test)
         run: |
-          cat > gen.py << 'EOF'
+          cat > gen_hk.py << 'EOF'
           import yaml
           import requests
           import base64
           import urllib3
           import subprocess
-          import re
           import time
-          from concurrent.futures import ThreadPoolExecutor, as_completed
+          from concurrent.futures import ThreadPoolExecutor
           urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-          # ===================== 核心配置 =====================
-          MAX_WORKERS = 10  # 并发测速数（别太高，避免被屏蔽）
-          MAX_DELAY = 150   # 保留延迟<150ms的节点
-          TIMEOUT = 10      # 每个节点测速超时时间（秒）
-          MAX_PROXIES = 50  # 每个地区最多保留50个节点
-          # ==================================================
+          # 配置
+          MAX_WORKERS = 10  # 并发数
+          MAX_DELAY = 150   # 延迟<150ms
+          TIMEOUT = 10      # 超时时间
+          MAX_PROXIES = 50  # 最多保留50个
 
-          # 1. 读取订阅源并提取所有 Trojan 节点
+          # 1. 提取所有Trojan节点
           with open('config.yaml', 'r', encoding='utf-8') as f:
               cfg = yaml.safe_load(f)
           subs = cfg['subs']
-
           all_trojan = []
-          seen_nodes = set()  # 去重标识（服务器+端口+密码）
+          seen_nodes = set()
 
           for url in subs:
               try:
@@ -64,7 +60,6 @@ jobs:
                   if 'proxies' in data:
                       for p in data['proxies']:
                           if p.get('type') == 'trojan':
-                              # 生成唯一标识去重
                               server = p.get('server', '')
                               port = p.get('port', '')
                               password = p.get('password', '')
@@ -72,107 +67,67 @@ jobs:
                               if node_id not in seen_nodes:
                                   seen_nodes.add(node_id)
                                   all_trojan.append(p)
-              except Exception as e:
+              except:
                   continue
 
-          print(f"✅ 提取并去重后，共 {len(all_trojan)} 个 Trojan 节点")
+          # 2. 筛选香港节点
+          hk_nodes = []
+          for p in all_trojan:
+              name = p.get('name', '').lower()
+              if '香港' in name or 'hk' in name:
+                  hk_nodes.append(p)
+          print(f"✅ 提取到 {len(hk_nodes)} 个香港Trojan节点")
 
-          # 2. 真实测速函数（测试 Trojan 节点连通性和延迟）
-          def test_trojan_delay(proxy):
-              """
-              实测 Trojan 节点延迟：
-              1. 测试服务器端口是否通
-              2. 模拟握手检测连通性
-              3. 计算往返延迟
-              """
+          # 3. 真实测速
+          def test_delay(proxy):
               try:
                   server = proxy.get('server')
                   port = proxy.get('port')
-                  password = proxy.get('password')
-                  
-                  if not all([server, port, password]):
-                      return (proxy, float('inf'))
-                  
-                  # 步骤1：测试端口是否开放（快速检测）
-                  start_time = time.time()
-                  nc_cmd = f"nc -zv -w {TIMEOUT} {server} {port}"
+                  start = time.time()
                   result = subprocess.run(
-                      nc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+                      f"nc -zv -w {TIMEOUT} {server} {port}",
+                      shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
                   )
-                  if result.returncode != 0:
-                      return (proxy, float('inf'))
-                  
-                  # 步骤2：计算延迟（端口检测耗时≈实际握手延迟）
-                  delay = round((time.time() - start_time) * 1000)  # 转毫秒
-                  return (proxy, delay) if delay < MAX_DELAY else (proxy, float('inf'))
-                  
-              except Exception as e:
+                  if result.returncode == 0:
+                      delay = round((time.time() - start)*1000)
+                      return (proxy, delay) if delay < MAX_DELAY else (proxy, float('inf'))
+                  return (proxy, float('inf'))
+              except:
                   return (proxy, float('inf'))
 
-          # 3. 并发测速（避免单线程太慢）
-          print(f"🚀 开始实测 {len(all_trojan)} 个节点延迟（并发数：{MAX_WORKERS}）")
-          valid_nodes = []
-          
+          valid = []
           with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
-              futures = [executor.submit(test_trojan_delay, node) for node in all_trojan]
-              for future in as_completed(futures):
-                  proxy, delay = future.result()
+              futures = [executor.submit(test_delay, p) for p in hk_nodes]
+              for f in futures:
+                  proxy, delay = f.result()
                   if delay < MAX_DELAY:
-                      proxy['delay'] = delay  # 给节点添加延迟属性
-                      valid_nodes.append(proxy)
-                      print(f"✅ 有效节点：{proxy.get('name')} - 延迟 {delay}ms")
-                  else:
-                      print(f"❌ 无效节点：{proxy.get('name')} - 超时/延迟过高")
+                      valid.append(proxy)
 
-          print(f"\n✅ 实测完成，共 {len(valid_nodes)} 个有效 Trojan 节点")
-
-          # 4. 按地区筛选
-          regions = {
-              'hk': {'keywords': ['香港', 'HK', 'hk'], 'file': 'sub_trojan_hk.yaml'},
-              'jp': {'keywords': ['日本', 'JP', 'jp'], 'file': 'sub_trojan_jp.yaml'},
-              'sg': {'keywords': ['新加坡', 'SG', 'sg'], 'file': 'sub_trojan_sg.yaml'}
+          # 4. 按延迟排序并保存
+          valid.sort(key=lambda x: x.get('delay', MAX_DELAY))
+          final = valid[:MAX_PROXIES]
+          output = {
+              'proxies': final,
+              'proxy-groups': [{
+                  'name': 'Auto-HK-Trojan',
+                  'type': 'url-test',
+                  'proxies': [p['name'] for p in final],
+                  'url': 'http://www.gstatic.com/generate_204',
+                  'interval': 300
+              }]
           }
 
-          for region, info in regions.items():
-              # 筛选对应地区+按延迟排序
-              filtered = []
-              for p in valid_nodes:
-                  name = p.get('name', '').lower()
-                  if any(kw in name or kw.lower() in name for kw in info['keywords']):
-                      filtered.append(p)
-              
-              # 按延迟从小到大排序
-              filtered.sort(key=lambda x: x.get('delay', MAX_DELAY))
-              final_nodes = filtered[:MAX_PROXIES]
-
-              # 构建订阅文件（移除delay属性，符合Clash格式）
-              for node in final_nodes:
-                  node.pop('delay', None)
-              
-              output = {
-                  'proxies': final_nodes,
-                  'proxy-groups': [{
-                      'name': f'Auto-{region.upper()}-Trojan',
-                      'type': 'url-test',
-                      'proxies': [p['name'] for p in final_nodes],
-                      'url': 'http://www.gstatic.com/generate_204',
-                      'interval': 300
-                  }]
-              }
-
-              # 保存文件
-              with open(info['file'], 'w', encoding='utf-8') as f:
-                  yaml.dump(output, f, allow_unicode=True, sort_keys=False)
-              print(f"\n📄 生成 {info['file']} - 保留 {len(final_nodes)} 个低延迟节点")
+          with open('sub_trojan_hk.yaml', 'w', encoding='utf-8') as f:
+              yaml.dump(output, f, allow_unicode=True, sort_keys=False)
+          print(f"✅ 生成香港Trojan文件，保留 {len(final)} 个有效节点")
           EOF
 
-          # 执行脚本
-          python gen.py
+          python gen_hk.py
 
-      - name: Commit all files
+      - name: Commit HK file
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Update Trojan (HK/JP/SG) with real speed test 🚀"
-          file_pattern: "sub_trojan_*.yaml"
+          commit_message: "Update HK Trojan (real speed test) 🚀"
+          file_pattern: sub_trojan_hk.yaml
           commit_options: "--allow-empty"
           push_options: "--force"
