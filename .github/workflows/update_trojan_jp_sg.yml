@@ -1,13 +1,13 @@
-name: Auto Update JP/SG Trojan (Weekly, 300 Nodes Pool)
+name: Auto Update JP/SG Nodes (Weekly, Trojan First)
 on:
   schedule:
-    - cron: '0 0 * * 0'  # 每周日UTC 0点更新（对应内地8点）
-  workflow_dispatch:      # 手动触发兜底
+    - cron: '0 0 * * 0'   # 每周日更新
+  workflow_dispatch:       # 手动触发
 
 jobs:
   update_jp_sg:
     runs-on: ubuntu-latest
-    timeout-minutes: 10   # 防止脚本卡死
+    timeout-minutes: 10
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -22,9 +22,9 @@ jobs:
           python-version: '3.10'
 
       - name: Install dependencies
-        run: pip install pyyaml requests urllib3
+        run: pip install pyyaml requests urllib3 base64
 
-      - name: Generate JP/SG Trojan (300 Nodes)
+      - name: Generate JP/SG Nodes (Trojan First)
         run: |
           cat > gen_jp_sg.py << 'EOF'
           import yaml
@@ -33,76 +33,93 @@ jobs:
           import urllib3
           urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-          # 核心配置：每个地区保留300个去重节点，只筛选不测速
-          MAX_PROXIES = 300
-          JP_KEYWORDS = ['日本', 'JP', 'jp', '东京', 'Tokyo']
-          SG_KEYWORDS = ['新加坡', 'SG', 'sg', 'Singapore']
+          # 配置：日/新Trojan优先，兼容通用协议
+          MAX_JP_NODES = 20
+          MAX_SG_NODES = 20
+          JP_KEYWORDS = ['日本', 'JP', 'jp', '东京', 'Tokyo', 'tokyo', 'Japan', 'japan']
+          SG_KEYWORDS = ['新加坡', 'SG', 'sg', 'Singapore', 'singapore']
+          # 协议优先级：Trojan > VMess > Shadowsocks
+          PROTOCOL_PRIORITY = ['trojan', 'vmess', 'shadowsocks']
 
-          # 1. 读取订阅源
+          # 读取订阅链接
           with open('config.yaml', 'r', encoding='utf-8') as f:
               cfg = yaml.safe_load(f)
           subs = cfg.get('subs', [])
           if not subs:
-              print("❌ 无订阅源，退出")
+              print("❌ 无订阅链接！")
               exit(0)
 
-          all_trojan = []
+          # 提取节点 + 去重 + 按协议排序
+          all_nodes = []
           seen_nodes = set()
 
-          # 2. 提取Trojan节点（仅去重，不测速）
-          for url in subs:
+          for idx, url in enumerate(subs):
+              print(f"处理订阅 {idx+1}/{len(subs)}: {url}")
               try:
                   r = requests.get(url, timeout=30, verify=False)
                   try:
-                      txt = base64.b64decode(r.text).decode('utf-8', errors='ignore')
+                      content = base64.b64decode(r.text).decode('utf-8', errors='ignore')
                   except:
-                      txt = r.text
-                  data = yaml.safe_load(txt)
+                      content = r.text
+                  
+                  data = yaml.safe_load(content)
                   if 'proxies' in data:
                       for p in data['proxies']:
-                          if p.get('type') == 'trojan':
-                              # 去重规则：服务器+端口+密码
-                              server = p.get('server', '')
-                              port = str(p.get('port', ''))
-                              password = p.get('password', '')
-                              if server and port and password:
-                                  key = f"{server}:{port}:{password}"
-                                  if key not in seen_nodes:
-                                      seen_nodes.add(key)
-                                      # 清理Karing不兼容字段
-                                      clean_p = {k: v for k, v in p.items() if k not in ['delay', 'client-fingerprint']}
-                                      all_trojan.append(clean_p)
+                          node_type = p.get('type')
+                          if node_type not in PROTOCOL_PRIORITY:
+                              continue
+                          # 去重：不同协议核心信息
+                          if node_type == 'trojan':
+                              key = f"{p.get('server')}:{p.get('port')}:{p.get('password')}"
+                          elif node_type == 'vmess':
+                              key = f"{p.get('server')}:{p.get('port')}:{p.get('id')}"
+                          elif node_type == 'shadowsocks':
+                              key = f"{p.get('server')}:{p.get('port')}:{p.get('password')}"
+                          else:
+                              continue
+                          
+                          if key not in seen_nodes and key.strip():
+                              seen_nodes.add(key)
+                              # 标记优先级，方便排序
+                              p['_priority'] = PROTOCOL_PRIORITY.index(node_type)
+                              clean_p = {k: v for k, v in p.items() if k not in ['delay', 'client-fingerprint']}
+                              all_nodes.append(clean_p)
               except Exception as e:
-                  print(f"订阅源 {url} 处理失败: {str(e)[:50]}")
+                  print(f"订阅 {url} 处理失败: {str(e)[:50]}")
                   continue
 
-          # 3. 分别筛选日本/新加坡节点
-          jp_nodes = [p for p in all_trojan if any(kw.lower() in p.get('name','').lower() for kw in JP_KEYWORDS)]
-          sg_nodes = [p for p in all_trojan if any(kw.lower() in p.get('name','').lower() for kw in SG_KEYWORDS)]
-          
-          # 4. 各保留前300个（足够备用场景使用）
-          jp_final = jp_nodes[:MAX_PROXIES]
-          sg_final = sg_nodes[:MAX_PROXIES]
+          # 按协议优先级排序（Trojan优先）
+          all_nodes.sort(key=lambda x: x['_priority'])
+          for p in all_nodes:
+              p.pop('_priority', None)
 
-          print(f"✅ 日本：提取{len(jp_nodes)}个 → 保留{len(jp_final)}个（300上限）")
-          print(f"✅ 新加坡：提取{len(sg_nodes)}个 → 保留{len(sg_final)}个（300上限）")
+          # 筛选日/新节点
+          jp_nodes = [p for p in all_nodes if any(kw in p.get('name','').lower() for kw in JP_KEYWORDS)]
+          sg_nodes = [p for p in all_nodes if any(kw in p.get('name','').lower() for kw in SG_KEYWORDS)]
 
-          # 5. 生成Karing兼容的纯节点文件
-          def write_file(nodes, filename):
+          # 限制数量
+          jp_final = jp_nodes[:MAX_JP_NODES]
+          sg_final = sg_nodes[:MAX_SG_NODES]
+
+          # 生成文件
+          def write_sub(nodes, filename):
               output = {'proxies': nodes}
               with open(filename, 'w', encoding='utf-8') as f:
                   yaml.dump(output, f, allow_unicode=True, sort_keys=False)
 
-          write_file(jp_final, 'sub_trojan_jp.yaml')
-          write_file(sg_final, 'sub_trojan_sg.yaml')
+          write_sub(jp_final, 'sub_trojan_jp.yaml')
+          write_sub(sg_final, 'sub_trojan_sg.yaml')
+
+          print(f"✅ 日本节点（Trojan优先）：{len(jp_final)} 个（最多20个）")
+          print(f"✅ 新加坡节点（Trojan优先）：{len(sg_final)} 个（最多20个）")
           EOF
 
           python gen_jp_sg.py
 
-      - name: Commit JP/SG files
+      - name: Commit files
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Update JP/SG Trojan (weekly, 300 nodes) 🛡️"
+          commit_message: "Auto update JP/SG nodes (Trojan first) 🚀"
           file_pattern: "sub_trojan_jp.yaml sub_trojan_sg.yaml"
           commit_options: "--allow-empty"
           push_options: "--force"
