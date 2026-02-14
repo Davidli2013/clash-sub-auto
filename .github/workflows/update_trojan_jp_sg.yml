@@ -154,7 +154,7 @@ jobs:
                   }]
               }
               
-              # 保存文件
+              # 保存文件（只保存到根目录）
               with open(info['file'], 'w', encoding='utf-8') as f:
                   yaml.dump(output_data, f, allow_unicode=True, sort_keys=False)
               print(f"✅ 生成{info['name']}Trojan文件：{info['file']}，保留 {len(final_nodes)} 个低延迟节点")
@@ -163,10 +163,15 @@ jobs:
           # 执行测速生成脚本
           python gen_jp_sg.py
 
-      - name: Commit JP/SG files
+      # ========== 关键修改：只提交根目录的节点文件 ==========
+      - name: Commit JP/SG files (only root directory)
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Update JP/SG Trojan (weekly real speed test) 🛡️"
+          # 只匹配根目录的 sub_trojan_jp.yaml 和 sub_trojan_sg.yaml
           file_pattern: "sub_trojan_jp.yaml sub_trojan_sg.yaml"
-          commit_options: "--allow-empty"  # 强制提交，保证时间同步
+          # 移除可能触发workflow目录修改的配置
+          commit_options: "--allow-empty"
           push_options: "--force"
+          # 明确指定工作目录为仓库根目录
+          working_directory: "."
