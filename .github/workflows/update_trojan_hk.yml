@@ -1,13 +1,13 @@
-name: Auto Update HK Trojan (Every 2 Hours, 300 Nodes Pool)
+name: Auto Update HK Trojan (Every 2 Hours, Pure Trojan)
 on:
   schedule:
-    - cron: '0 */2 * * *'  # 每2小时触发1次（UTC时间，内地+8小时）
-  workflow_dispatch:       # 手动触发兜底
+    - cron: '0 */2 * * *'  # 每2小时更新
+  workflow_dispatch:       # 手动触发
 
 jobs:
   update_hk:
     runs-on: ubuntu-latest
-    timeout-minutes: 10    # 防止卡死
+    timeout-minutes: 10
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -22,9 +22,9 @@ jobs:
           python-version: '3.10'
 
       - name: Install dependencies
-        run: pip install pyyaml requests urllib3
+        run: pip install pyyaml requests urllib3 base64
 
-      - name: Generate HK Trojan (300 Nodes)
+      - name: Generate HK Nodes (Pure Trojan)
         run: |
           cat > gen_hk.py << 'EOF'
           import yaml
@@ -33,67 +33,65 @@ jobs:
           import urllib3
           urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-          # 核心配置：300个节点池，只筛选+去重，不测速
-          MAX_PROXIES = 300
-          FILTER_KEYWORDS = ['香港', 'HK', 'hk']
+          # 配置：香港仅Trojan，最多50个
+          MAX_HK_NODES = 50
+          HK_KEYWORDS = ['香港', 'HK', 'hk', 'HongKong', 'hongkong']
+          ALLOWED_TYPES = ['trojan']
 
-          # 1. 读取订阅源
+          # 读取订阅链接
           with open('config.yaml', 'r', encoding='utf-8') as f:
               cfg = yaml.safe_load(f)
           subs = cfg.get('subs', [])
           if not subs:
-              print("❌ 无订阅源，退出")
+              print("❌ 无订阅链接！")
               exit(0)
 
-          all_trojan = []
+          # 提取节点 + 去重
+          all_nodes = []
           seen_nodes = set()
 
-          # 2. 提取Trojan节点（仅去重，不测速）
-          for url in subs:
+          for idx, url in enumerate(subs):
+              print(f"处理订阅 {idx+1}/{len(subs)}: {url}")
               try:
                   r = requests.get(url, timeout=30, verify=False)
                   try:
-                      txt = base64.b64decode(r.text).decode('utf-8', errors='ignore')
+                      content = base64.b64decode(r.text).decode('utf-8', errors='ignore')
                   except:
-                      txt = r.text
-                  data = yaml.safe_load(txt)
+                      content = r.text
+                  
+                  data = yaml.safe_load(content)
                   if 'proxies' in data:
                       for p in data['proxies']:
-                          if p.get('type') == 'trojan':
-                              # 去重规则：服务器+端口+密码
-                              server = p.get('server', '')
-                              port = str(p.get('port', ''))
-                              password = p.get('password', '')
-                              if server and port and password:
-                                  key = f"{server}:{port}:{password}"
-                                  if key not in seen_nodes:
-                                      seen_nodes.add(key)
-                                      # 清理Karing不兼容字段
-                                      clean_p = {k: v for k, v in p.items() if k not in ['delay', 'client-fingerprint']}
-                                      all_trojan.append(clean_p)
+                          if p.get('type') not in ALLOWED_TYPES:
+                              continue
+                          # 去重：Trojan核心信息
+                          key = f"{p.get('server')}:{p.get('port')}:{p.get('password')}"
+                          if key not in seen_nodes and key.strip():
+                              seen_nodes.add(key)
+                              clean_p = {k: v for k, v in p.items() if k not in ['delay', 'client-fingerprint']}
+                              all_nodes.append(clean_p)
               except Exception as e:
-                  print(f"订阅源 {url} 处理失败: {str(e)[:50]}")
+                  print(f"订阅 {url} 处理失败: {str(e)[:50]}")
                   continue
 
-          # 3. 筛选香港节点
-          hk_nodes = [p for p in all_trojan if any(kw.lower() in p.get('name','').lower() for kw in FILTER_KEYWORDS)]
-          
-          # 4. 保留前300个（足够本地测速筛选）
-          final_nodes = hk_nodes[:MAX_PROXIES]
-          print(f"✅ 提取{len(hk_nodes)}个香港节点 → 保留{len(final_nodes)}个（300上限）")
+          # 筛选香港节点
+          hk_nodes = [p for p in all_nodes if any(kw in p.get('name','').lower() for kw in HK_KEYWORDS)]
+          hk_final = hk_nodes[:MAX_HK_NODES]
 
-          # 5. 生成Karing兼容的纯节点文件
-          output = {'proxies': final_nodes}
+          # 生成文件
+          output = {'proxies': hk_final}
           with open('sub_trojan_hk.yaml', 'w', encoding='utf-8') as f:
               yaml.dump(output, f, allow_unicode=True, sort_keys=False)
+
+          print(f"✅ 香港纯Trojan节点：{len(hk_final)} 个（最多50个）")
           EOF
 
           python gen_hk.py
 
-      - name: Commit HK file
+      - name: Commit file
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Update HK Trojan (every 2h, 300 nodes) 🚀"
+          commit_message: "Auto update HK Trojan nodes (pure) 🚀"
           file_pattern: "sub_trojan_hk.yaml"
           commit_options: "--allow-empty"
           push_options: "--force"
