@@ -1,0 +1,172 @@
+name: Auto Update JP/SG Trojan (Weekly, Real Test)
+on:
+  schedule:
+    - cron: '0 0 * * 0'  # 每周日北京时间8点自动更新（一周1次）
+  workflow_dispatch:      # 允许手动触发测试
+
+jobs:
+  update_jp_sg:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.PAT }}  # 复用你配置的PAT
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install pyyaml requests urllib3
+          sudo apt update && sudo apt install -y netcat-openbsd
+
+      - name: Generate JP/SG Trojan (Real Speed Test)
+        run: |
+          cat > gen_jp_sg.py << 'EOF'
+          import yaml
+          import requests
+          import base64
+          import urllib3
+          import subprocess
+          import time
+          from concurrent.futures import ThreadPoolExecutor, as_completed
+          urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+          # ===================== 核心配置 =====================
+          MAX_WORKERS = 10  # 并发测速数（平衡速度和稳定性）
+          MAX_DELAY = 150   # 仅保留延迟<150ms的节点
+          TIMEOUT = 10      # 每个节点测速超时时间（秒）
+          MAX_PROXIES = 50  # 每个地区最多保留50个节点
+          # ==================================================
+
+          # 1. 读取订阅源并提取所有Trojan节点（去重）
+          with open('config.yaml', 'r', encoding='utf-8') as f:
+              cfg = yaml.safe_load(f)
+          subs = cfg['subs']
+          all_trojan = []
+          seen_nodes = set()  # 按服务器+端口+密码去重
+
+          for url in subs:
+              try:
+                  r = requests.get(url, timeout=20, verify=False)
+                  # 兼容Base64和明文订阅
+                  try:
+                      txt = base64.b64decode(r.text).decode('utf-8', errors='ignore')
+                  except:
+                      txt = r.text
+                  # 解析节点
+                  data = yaml.safe_load(txt)
+                  if 'proxies' in data:
+                      for p in data['proxies']:
+                          if p.get('type') == 'trojan':
+                              server = p.get('server', '')
+                              port = p.get('port', '')
+                              password = p.get('password', '')
+                              node_id = f"{server}:{port}:{password}"
+                              if node_id not in seen_nodes:
+                                  seen_nodes.add(node_id)
+                                  all_trojan.append(p)
+              except Exception as e:
+                  print(f"处理订阅源 {url} 失败: {e}")
+                  continue
+
+          print(f"✅ 提取并去重后，共 {len(all_trojan)} 个Trojan节点")
+
+          # 2. 真实测速函数（测试端口连通性+计算延迟）
+          def test_trojan_delay(proxy):
+              try:
+                  server = proxy.get('server')
+                  port = proxy.get('port')
+                  if not server or not port:
+                      return (proxy, float('inf'))
+                  
+                  # 测试端口是否开放（核心测速逻辑）
+                  start_time = time.time()
+                  nc_cmd = f"nc -zv -w {TIMEOUT} {server} {port}"
+                  result = subprocess.run(
+                      nc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+                  )
+                  if result.returncode != 0:
+                      return (proxy, float('inf'))
+                  
+                  # 计算延迟（毫秒）
+                  delay = round((time.time() - start_time) * 1000)
+                  return (proxy, delay) if delay < MAX_DELAY else (proxy, float('inf'))
+              except Exception as e:
+                  return (proxy, float('inf'))
+
+          # 3. 并发测速所有Trojan节点
+          print(f"🚀 开始实测节点延迟（并发数：{MAX_WORKERS}）")
+          valid_nodes = []
+          with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+              futures = [executor.submit(test_trojan_delay, node) for node in all_trojan]
+              for future in as_completed(futures):
+                  proxy, delay = future.result()
+                  if delay < MAX_DELAY:
+                      proxy['delay'] = delay
+                      valid_nodes.append(proxy)
+
+          print(f"✅ 实测完成，共 {len(valid_nodes)} 个有效Trojan节点")
+
+          # 4. 按地区筛选并生成文件
+          regions = {
+              'jp': {
+                  'keywords': ['日本', 'JP', 'jp'],
+                  'file': 'sub_trojan_jp.yaml',
+                  'name': '日本'
+              },
+              'sg': {
+                  'keywords': ['新加坡', 'SG', 'sg'],
+                  'file': 'sub_trojan_sg.yaml',
+                  'name': '新加坡'
+              }
+          }
+
+          for region, info in regions.items():
+              # 筛选对应地区节点
+              filtered_nodes = []
+              for p in valid_nodes:
+                  name = p.get('name', '').lower()
+                  if any(kw in name or kw.lower() in name for kw in info['keywords']):
+                      filtered_nodes.append(p)
+              
+              # 按延迟排序，取前MAX_PROXIES个
+              filtered_nodes.sort(key=lambda x: x.get('delay', MAX_DELAY))
+              final_nodes = filtered_nodes[:MAX_PROXIES]
+              
+              # 移除delay属性，符合Clash标准格式
+              for node in final_nodes:
+                  node.pop('delay', None)
+              
+              # 构建订阅文件
+              output_data = {
+                  'proxies': final_nodes,
+                  'proxy-groups': [{
+                      'name': f'Auto-{region.upper()}-Trojan',
+                      'type': 'url-test',
+                      'proxies': [p['name'] for p in final_nodes],
+                      'url': 'http://www.gstatic.com/generate_204',
+                      'interval': 300
+                  }]
+              }
+              
+              # 保存文件
+              with open(info['file'], 'w', encoding='utf-8') as f:
+                  yaml.dump(output_data, f, allow_unicode=True, sort_keys=False)
+              print(f"✅ 生成{info['name']}Trojan文件：{info['file']}，保留 {len(final_nodes)} 个低延迟节点")
+          EOF
+
+          # 执行测速生成脚本
+          python gen_jp_sg.py
+
+      - name: Commit JP/SG files
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Update JP/SG Trojan (weekly real speed test) 🛡️"
+          file_pattern: "sub_trojan_jp.yaml sub_trojan_sg.yaml"
+          commit_options: "--allow-empty"  # 强制提交，保证时间同步
+          push_options: "--force"
