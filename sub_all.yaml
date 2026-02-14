@@ -1,0 +1,7 @@
+proxies: []
+proxy-groups:
+- name: auto
+  type: url-test
+  proxies: []
+  url: http://www.gstatic.com/generate_204
+  interval: 300
