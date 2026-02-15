@@ -16,110 +16,110 @@ proxies:
   skip-cert-verify: true
   udp: true
 - name: 🇸🇬 新加坡|@stairnode
-  server: 160.16.89.176
+  server: 160.16.81.84
   port: 3901
   type: trojan
   password: 9372cb81c7b0ad903f91f2f8a4d3f02b
   sni: www.nintendogames.net
   skip-cert-verify: false
 - name: 🇸🇬 新加坡3|@stairnode
-  server: 43.207.67.101
-  port: 3127
+  server: 13.192.163.115
+  port: 381
   type: trojan
   password: BxceQaOe
   sni: t.me%252Fripaojiedian
   skip-cert-verify: true
-- name: 🇸🇬SG-103.172.116.196-2036
+- name: 🇸🇬SG-103.172.116.196-1987
   server: 103.172.116.196
   port: 3389
   type: trojan
   password: 0c6a3341e8d5ab17
   skip-cert-verify: false
-- name: 🇸🇬SG-168.138.189.17-2240
+- name: 🇸🇬SG-168.138.189.17-2191
   server: 168.138.189.17
   port: 28443
   type: trojan
   password: 750a29bf-0a40-437f-b120-38de74ae7eaf
   skip-cert-verify: false
-- name: 🇸🇬SG-13.250.177.51-2299
+- name: 🇸🇬SG-13.250.177.51-2250
   server: us01.trojanyyds.xyz
   port: 443
   type: trojan
   password: cd41b9d7-df15-46ad-a778-257b0851525a
   skip-cert-verify: false
-- name: 🇸🇬SG-13.250.177.51-2461
+- name: 🇸🇬SG-13.250.177.51-2412
   server: de01.trojanyyds.xyz
   port: 443
   type: trojan
   password: cd41b9d7-df15-46ad-a778-257b0851525a
   skip-cert-verify: false
-- name: 🇸🇬SG-13.250.177.51-2631
+- name: 🇸🇬SG-13.250.177.51-2582
   server: sg02.trojanyyds.xyz
   port: 443
   type: trojan
   password: cd41b9d7-df15-46ad-a778-257b0851525a
   skip-cert-verify: false
-- name: 🇸🇬SG-13.250.177.51-2642
+- name: 🇸🇬SG-13.250.177.51-2593
   server: in01.trojanyyds.xyz
   port: 443
   type: trojan
   password: cd41b9d7-df15-46ad-a778-257b0851525a
   skip-cert-verify: false
-- name: 🇸🇬SG-13.250.177.51-2706
+- name: 🇸🇬SG-13.250.177.51-2657
   server: sg01.trojanyyds.xyz
   port: 443
   type: trojan
   password: cd41b9d7-df15-46ad-a778-257b0851525a
   skip-cert-verify: false
-- name: 🇸🇬SG-13.250.177.51-2727
+- name: 🇸🇬SG-13.250.177.51-2678
   server: uk01.trojanyyds.xyz
   port: 443
   type: trojan
   password: cd41b9d7-df15-46ad-a778-257b0851525a
   skip-cert-verify: false
-- name: 🇸🇬SG-13.250.177.51-2781
+- name: 🇸🇬SG-13.250.177.51-2732
   server: jp01.trojanyyds.xyz
   port: 443
   type: trojan
   password: cd41b9d7-df15-46ad-a778-257b0851525a
   skip-cert-verify: false
-- name: 🇸🇬SG-139.162.45.139-2792
+- name: 🇸🇬SG-139.162.45.139-2743
   server: 139.162.45.139
   port: 443
   type: trojan
   password: FLpONjB2Lb
   skip-cert-verify: false
-- name: 🇸🇬SG-31.192.234.199-4703
+- name: 🇸🇬SG-31.192.234.199-4650
   server: sg-full.privateip.net
   port: 443
   type: trojan
   password: d4bdfc72-7f0c-4ff0-aa4d-3530736f4088
   skip-cert-verify: false
-- name: 🇸🇬SG-172.104.51.247-5646
+- name: 🇸🇬SG-172.104.51.247-5611
   server: trojan1.udpgw.com
   port: 443
   type: trojan
   password: affae2e0-e84b-11ec-b09f-1239d0255272
   skip-cert-verify: false
-- name: 🇸🇬SG-18.141.8.87-5647
+- name: 🇸🇬SG-18.141.8.87-5612
   server: 18.141.8.87
   port: 443
   type: trojan
   password: iyinglong
   skip-cert-verify: false
-- name: 🇸🇬SG-128.199.185.211-5648
+- name: 🇸🇬SG-128.199.185.211-5613
   server: trojan2.udpgw.com
   port: 443
   type: trojan
   password: 973ef350-f6a5-11ec-9274-1239d0255272
   skip-cert-verify: false
-- name: 🇸🇬SG-18.140.67.76-5649
+- name: 🇸🇬SG-18.140.67.76-5614
   server: 18.140.67.76
   port: 443
   type: trojan
   password: iyinglong
   skip-cert-verify: false
-- name: 🇸🇬SG-103.253.24.212-5651
+- name: 🇸🇬SG-103.253.24.212-5616
   server: sg1-trojan.bonds.id
   port: 443
   type: trojan
