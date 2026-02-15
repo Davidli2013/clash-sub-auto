@@ -1,4 +1,6 @@
+# 订阅源列表：同时包含保留grok参数和去除参数的版本（并列）
 subs:
+  # 保留 ?referrer=grok.com 参数的链接（标识grok生成）
   - https://raw.githubusercontent.com/mahdibland/ShadowsocksAggregator/master/Eternity.txt
   - https://raw.githubusercontent.com/barry-far/V2ray-Configs/main/All_Configs_Sub.txt
   - https://raw.githubusercontent.com/ermaozi01/free_nodes/main/Clash/20260213.yaml
@@ -34,16 +36,24 @@ subs:
   - https://raw.githubusercontent.com/aiboboxx/clashfree/main/clash.yml
   - https://raw.githubusercontent.com/barry-far/V2ray-Config/main/All_Configs_Sub.txt
   - https://raw.githubusercontent.com/skywolf627/VmessActions/main/clash.yml
-  - "https://raw.githubusercontent.com/barry-far/V2ray-config/main/All_Configs_Sub.txt?referrer=grok.com"
-  - "https://raw.githubusercontent.com/abbasdvd3/clash/main/hamrah2.yaml"
-  - "https://raw.githubusercontent.com/SnapdragonLee/SystemProxy/master/dist/clash_config_extra.yaml"
-  - "https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub1.txt?referrer=grok.com"
-  - "https://raw.githubusercontent.com/Misaka-blog/chromego_merge/main/sub/merged_proxies_new.yaml?referrer=grok.com"
-  - "https://raw.githubusercontent.com/Barabama/FreeNodes/main/nodes/ndnode.yaml?referrer=grok.com"
-  - "https://raw.githubusercontent.com/free-clash-v2ray/free-clash-v2ray.github.io/main/uploads/2026/01/3-20260111.yaml?referrer=grok.com"
-  - "https://raw.githubusercontent.com/free18/v2ray/main/c.yaml?referrer=grok.com"
+  - https://raw.githubusercontent.com/barry-far/V2ray-config/main/All_Configs_Sub.txt?referrer=grok.com
+  - https://raw.githubusercontent.com/abbasdvd3/clash/main/hamrah2.yaml
+  - https://raw.githubusercontent.com/SnapdragonLee/SystemProxy/master/dist/clash_config_extra.yaml
+  - https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub1.txt?referrer=grok.com
+  - https://raw.githubusercontent.com/Misaka-blog/chromego_merge/main/sub/merged_proxies_new.yaml?referrer=grok.com
+  - https://raw.githubusercontent.com/Barabama/FreeNodes/main/nodes/ndnode.yaml?referrer=grok.com
+  - https://raw.githubusercontent.com/free-clash-v2ray/free-clash-v2ray.github.io/main/uploads/2026/01/3-20260111.yaml?referrer=grok.com
+  - https://raw.githubusercontent.com/free18/v2ray/main/c.yaml?referrer=grok.com
 
-# 重点：只保留 trojan
+  # 去除 ?referrer=grok.com 参数的链接（兼容更多工具）
+  - https://raw.githubusercontent.com/barry-far/V2ray-config/main/All_Configs_Sub.txt
+  - https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub1.txt
+  - https://raw.githubusercontent.com/Misaka-blog/chromego_merge/main/sub/merged_proxies_new.yaml
+  - https://raw.githubusercontent.com/Barabama/FreeNodes/main/nodes/ndnode.yaml
+  - https://raw.githubusercontent.com/free-clash-v2ray/free-clash-v2ray.github.io/main/uploads/2026/01/3-20260111.yaml
+  - https://raw.githubusercontent.com/free18/v2ray/main/c.yaml
+
+# 全局过滤规则：仅保留 trojan 协议，延迟上限 150ms
 global_filter:
   allowed_protocols: ["trojan"]
   max_delay: 150
