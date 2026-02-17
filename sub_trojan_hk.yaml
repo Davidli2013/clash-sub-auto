@@ -284,6 +284,16 @@ proxies:
   password: 73658d71-be45-4495-bc3e-e69d36ce73b5
   sni: telewebion.com
   skip-cert-verify: false
+- name: 🇭🇰HK香港
+  type: trojan
+  server: h7.89060004.xyz
+  port: 443
+  alterId: 0
+  tls: true
+  password: 4c205c81-5694-43fe-a287-af563a2ebc05
+  sni: h7.89060004.xyz
+  skip-cert-verify: true
+  udp: true
 - name: 🇭🇰 HK 10 → tg@nicevpn123
   server: chjs.lydurlclub.top
   port: 443
