@@ -256,6 +256,14 @@ proxies:
   password: 73658d71-be45-4495-bc3e-e69d36ce73b5
   sni: telewebion.com
   skip-cert-verify: false
+- name: HK23｜原生/疑似家宽｜高风险 (黑名单)
+  network: tcp
+  password: 0a169d7d-a30f-4d90-af1b-55f6ef6afcb7
+  port: 31103
+  server: 220.130.58.136
+  skip-cert-verify: true
+  sni: green2.cdntencentmusic.com
+  type: trojan
 - name: 🇭🇰 HK 10 → tg@nicevpn123
   server: chjs.lydurlclub.top
   port: 443
