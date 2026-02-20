@@ -81,7 +81,7 @@ for filename in os.listdir('sources'):
             with open(filepath, 'r', encoding='utf-8') as f:
                 proxies = parse_proxies(f.read())
                 all_proxies.extend(proxies)
-        except:
+        except Exception:
             pass
 
 hk_proxies = filter_hk(all_proxies)
