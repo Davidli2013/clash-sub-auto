@@ -1,4 +1,4 @@
-name: Auto Update HK Trojan
+name: Update Trojan HK YAML
 
 on:
   schedule:
@@ -9,73 +9,82 @@ jobs:
   update:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
 
-    - run: pip install pyyaml requests
+      - name: Install dependencies
+        run: pip install pyyaml requests
 
-    - name: Download all sources
-      run: |
-        mkdir -p sources
-        curl -sSL "https://raw.githubusercontent.com/freev2ray/free-v2ray-core/main/data/trojan" -o sources/trojan.txt || true
-        curl -sSL "https://raw.githubusercontent.com/freev2ray/free-v2ray-core/main/data/vmess" -o sources/vmess.txt || true
-        curl -sSL "https://raw.githubusercontent.com/freev2ray/free-v2ray-core/main/data/ss" -o sources/ss.txt || true
-        curl -sSL "https://raw.githubusercontent.com/v2rayfree/v2ray-free/main/list" -o sources/v2ray_free.txt || true
-        curl -sSL "https://raw.githubusercontent.com/pojiezhiyuanjun/v2ray/main/cf" -o sources/v2rayng.txt || true
+      - name: Download all sources
+        run: |
+          mkdir -p sources
+          curl -sSL "https://raw.githubusercontent.com/freev2ray/free-v2ray-core/main/data/trojan" -o sources/trojan.txt || true
+          curl -sSL "https://raw.githubusercontent.com/freev2ray/free-v2ray-core/main/data/vmess" -o sources/vmess.txt || true
+          curl -sSL "https://raw.githubusercontent.com/freev2ray/free-v2ray-core/main/data/ss" -o sources/ss.txt || true
+          curl -sSL "https://raw.githubusercontent.com/freev2ray/free-v2ray-free/main/list" -o sources/v2ray-free.txt || true
+          curl -sSL "https://raw.githubusercontent.com/posiehxiunjun/v2ray/main/cf" -o sources/v2rayng.txt || true
 
-    - name: Run filter script
-      run: |
-        python3 << 'PYEOF'
-import yaml
-import os
+      - name: Run filter script
+        run: |
+          python3 << 'EOF'
+          import os
+          import yaml
 
-def parse_proxies(content):
-    proxies = []
-    try:
-        data = yaml.safe_load(content)
-        if data and 'proxies' in data:
-            return data['proxies']
-    except:
-        pass
-    return []
+          def parse_proxies(content):
+              try:
+                  data = yaml.safe_load(content)
+                  if data and 'proxies' in data:
+                      return data['proxies']
+              except:
+                  pass
+              return []
 
-def filter_hk(proxies):
-    keywords = ['hk', 'hongkong', '香港', 'HK']
-    filtered = []
-    for p in proxies:
-        name = p.get('name', '').lower()
-        server = p.get('server', '').lower()
-        for kw in keywords:
-            if kw.lower() in name or kw.lower() in server:
-                filtered.append(p)
-                break
-    return filtered
+          def filter_hk(proxies):
+              keywords = ['hk', 'hongkong', '香港', 'HK']
+              filtered = []
+              for p in proxies:
+                  name = p.get('name', '').lower()
+                  server = p.get('server', '').lower()
+                  for kw in keywords:
+                      if kw.lower() in name or kw.lower() in server:
+                          filtered.append(p)
+                          break
+              return filtered
 
-all_proxies = []
-for filename in os.listdir('sources'):
-    if filename.endswith('.txt'):
-        filepath = os.path.join('sources', filename)
-        try:
-            with open(filepath, 'r', encoding='utf-8') as f:
-                content = f.read()
-                proxies = parse_proxies(content)
-                all_proxies.extend(proxies)
-        except:
-            pass
+          all_proxies = []
+          for filename in os.listdir('sources'):
+              if filename.endswith('.txt'):
+                  filepath = os.path.join('sources', filename)
+                  try:
+                      with open(filepath, 'r', encoding='utf-8') as f:
+                          content = f.read()
+                          proxies = parse_proxies(content)
+                          all_proxies.extend(proxies)
+                  except Exception as e:
+                      print(f"Error reading {filename}: {e}")
 
-hk_proxies = filter_hk(all_proxies)
-print(f"Total: {len(all_proxies)}, HK: {len(hk_proxies)}")
+          hk_proxies = filter_hk(all_proxies)
+          print(f"Found {len(hk_proxies)} HK proxies")
 
-output = {'proxies': hk_proxies}
-with open('sub_trojan_hk.yaml', 'w', encoding='utf-8') as f:
-    yaml.dump(output, f, default_flow_style=False, allow_unicode=True)
-PYEOF
+          # 保留最好的50个（这里先简单取前50，可后续加入测速逻辑）
+          best_hk_proxies = hk_proxies[:50]
 
-    - name: Commit changes
-      uses: stefanzweifel/git-auto-commit-action@v5
-      with:
-        commit_message: "Auto update HK all protocols"
-        file_pattern: "sub_trojan_hk.yaml"
+          # 写回 YAML 文件
+          output_config = {
+              "proxies": best_hk_proxies
+          }
+
+          with open('sub_trojan_hk.yaml', 'w', encoding='utf-8') as f:
+              yaml.dump(output_config, f, default_flow_style=False, allow_unicode=True, sort_keys=False)
+          EOF
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Actions"
+          git add sub_trojan_hk.yaml
+          git commit -m "Auto update HK Trojan nodes (pure) 🚀" || echo "No changes to commit"
+          git push
