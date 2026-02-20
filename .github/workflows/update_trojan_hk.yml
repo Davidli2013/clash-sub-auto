@@ -26,9 +26,9 @@ jobs:
         curl -sSL "https://raw.githubusercontent.com/v2rayfree/v2ray-free/main/list" -o sources/v2ray_free.txt || true
         curl -sSL "https://raw.githubusercontent.com/pojiezhiyuanjun/v2ray/main/cf" -o sources/v2rayng.txt || true
 
-    - name: Parse and filter
+    - name: Run filter script
       run: |
-        python3 - << 'EOF'
+        python3 << 'PYEOF'
 import yaml
 import os
 
@@ -40,26 +40,7 @@ def parse_proxies(content):
             return data['proxies']
     except:
         pass
-    in_proxies = False
-    current = {}
-    for line in content.split('\n'):
-        line = line.rstrip()
-        if line == 'proxies:':
-            in_proxies = True
-            continue
-        if in_proxies and line.startswith('  - '):
-            if current:
-                proxies.append(current)
-            current = {}
-            line = line[4:]
-        if ': ' in line:
-            idx = line.index(': ')
-            key = line[:idx].strip()
-            val = line[idx+2:].strip()
-            current[key] = val
-    if current:
-        proxies.append(current)
-    return proxies
+    return []
 
 def filter_hk(proxies):
     keywords = ['hk', 'hongkong', '香港', 'HK']
@@ -79,7 +60,8 @@ for filename in os.listdir('sources'):
         filepath = os.path.join('sources', filename)
         try:
             with open(filepath, 'r', encoding='utf-8') as f:
-                proxies = parse_proxies(f.read())
+                content = f.read()
+                proxies = parse_proxies(content)
                 all_proxies.extend(proxies)
         except:
             pass
@@ -90,9 +72,10 @@ print(f"Total: {len(all_proxies)}, HK: {len(hk_proxies)}")
 output = {'proxies': hk_proxies}
 with open('sub_trojan_hk.yaml', 'w', encoding='utf-8') as f:
     yaml.dump(output, f, default_flow_style=False, allow_unicode=True)
-EOF
+PYEOF
 
-    - uses: stefanzweifel/git-auto-commit-action@v5
+    - name: Commit changes
+      uses: stefanzweifel/git-auto-commit-action@v5
       with:
         commit_message: "Auto update HK all protocols"
         file_pattern: "sub_trojan_hk.yaml"
