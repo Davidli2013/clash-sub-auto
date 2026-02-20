@@ -1,0 +1,81 @@
+name: Auto Update HK Trojan
+
+on:
+  schedule:
+    - cron: '0 */2 * * *'
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update && sudo apt-get install -y python3 python3-pip
+        pip3 install pyyaml requests
+
+    - name: Download sources
+      run: |
+        mkdir -p sources
+        curl -sSL "https://raw.githubusercontent.com/freev2ray/free-v2ray-core/main/data/trojan" -o sources/trojan.txt || true
+        curl -sSL "https://raw.githubusercontent.com/freev2ray/free-v2ray-core/main/data/vmess" -o sources/vmess.txt || true
+        curl -sSL "https://raw.githubusercontent.com/freev2ray/free-v2ray-core/main/data/ss" -o sources/ss.txt || true
+
+    - name: Create filter script
+      run: |
+        cat > filter.py << 'EOF'
+import yaml
+import os
+
+def parse_proxies(content):
+    proxies = []
+    try:
+        data = yaml.safe_load(content)
+        if data and 'proxies' in data:
+            return data['proxies']
+    except:
+        pass
+    return []
+
+def filter_hk(proxies):
+    keywords = ['hk', 'hongkong', '香港', 'HK']
+    filtered = []
+    for p in proxies:
+        name = p.get('name', '').lower()
+        server = p.get('server', '').lower()
+        for kw in keywords:
+            if kw.lower() in name or kw.lower() in server:
+                filtered.append(p)
+                break
+    return filtered
+
+all_proxies = []
+for filename in os.listdir('sources'):
+    if filename.endswith('.txt'):
+        filepath = os.path.join('sources', filename)
+        try:
+            with open(filepath, 'r', encoding='utf-8') as f:
+                content = f.read()
+                proxies = parse_proxies(content)
+                all_proxies.extend(proxies)
+        except:
+            pass
+
+hk_proxies = filter_hk(all_proxies)
+print(f"Total: {len(all_proxies)}, HK: {len(hk_proxies)}")
+
+output = {'proxies': hk_proxies}
+with open('sub_trojan_hk.yaml', 'w', encoding='utf-8') as f:
+    yaml.dump(output, f, default_flow_style=False, allow_unicode=True)
+EOF
+
+    - name: Run filter
+      run: python3 filter.py
+
+    - name: Commit changes
+      uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: "Auto update HK proxies"
+        file_pattern: "sub_trojan_hk.yaml"
