@@ -1,368 +1,251 @@
-proxies:
-- name: 中国 - 香港 - Akile LTD - 4
-  server: cdnfire.xiaomispeed.com
-  port: 21115
-  type: trojan
-  password: 8ae35cce-016e-4454-b06b-0b4e4527b92a
-  sni: cdnfire.xiaomispeed.com
-  skip-cert-verify: true
-  udp: true
-  network: tcp
-- name: 中国 - 香港 - Hong Kong Telecommunications (HKT) Limited Mass Internet - 1
-  server: 95.40.55.141
-  port: 2826
-  type: trojan
-  password: BxceQaOe
-  sni: t.me%2Fripaojiedian
-  skip-cert-verify: true
-  udp: true
-- name: 中国 - 香港 - Hong Kong Telecommunications (HKT) Limited Mass Internet - 2
-  server: 203.198.123.162
-  port: 443
-  type: trojan
-  password: BxceQaOe
-  sni: 203.198.123.162
-  skip-cert-verify: true
-  udp: true
-- name: 中国 - 香港 - Ipxo LLC - 5
-  server: green2.cdntencentmusic.com
-  port: 31102
-  type: trojan
-  password: 3f83b84d-b69a-4386-887a-ee51b1d18fe8
-  sni: green2.cdntencentmusic.com
-  skip-cert-verify: true
-  udp: true
-  network: tcp
-- name: 中国 - 香港 - Ipxo LLC - 6
-  server: green2.cdntencentmusic.com
-  port: 31101
-  type: trojan
-  password: b9c3a952-bd14-4d4a-a1db-afd53fa1c414
-  sni: green2.cdntencentmusic.com
-  udp: true
-  network: tcp
-- name: 香港节点
-  password: BxceQaOe
-  port: 443
-  server: 58.152.53.45
-  skip-cert-verify: true
-  sni: t.me%2Fripaojiedian
-  tls: true
-  type: trojan
-- name: 香港节点_1
-  password: 19877587-ed94-4033-88cd-4ac50a5e8718
-  port: 443
-  server: wangcai.cf.877774.xyz
-  skip-cert-verify: true
-  sni: dimskiee.biz.id
-  tls: true
-  type: trojan
-  ws-opts:
-    headers:
-      Host: dimskiee.biz.id
-    path: /WangCai-8
-- name: 🇭🇰 香港3|@stairnode
-  server: 54.64.61.41
-  port: 3373
-  type: trojan
-  password: 9372cb81c7b0ad903f91f2f8a4d3f02b
-  sni: www.nintendogames.net
-  skip-cert-verify: true
-- name: 🇭🇰 香港4|@stairnode
-  server: 43.199.159.115
-  port: 3292
-  type: trojan
-  password: BxceQaOe
-  sni: t.me%2Fripaojiedian
-  skip-cert-verify: true
-- name: 🇭🇰 香港5|@stairnode
-  server: 43.207.149.184
-  port: 26378
-  type: trojan
-  password: BxceQaOe
-  sni: t.me%2Fripaojiedian
-  skip-cert-verify: true
-- name: 🇭🇰HK-58.152.53.227-0180
-  server: 58.152.53.227
-  port: 443
-  type: trojan
-  password: 64a59181551b5773e390bd717a7b7c06
-  sni: www.nintendogames.net
-  skip-cert-verify: false
-- name: 🇭🇰HK-103.135.103.229-1500
-  server: 103.135.103.229
-  port: 443
-  type: trojan
-  password: 265f092f-418b-30c9-a479-4800fd44dd19mielink
-  skip-cert-verify: false
-- name: 🇭🇰HK-43.154.172.79-1564
-  server: 43.154.172.79
-  port: 10102
-  type: trojan
-  password: 0f098bb2-9fad-3cc3-8acf-2a3268c1eb27
-  skip-cert-verify: false
-- name: 🇭🇰HK-103.103.245.125-1624
-  server: 103.103.245.125
-  port: 50418
-  type: trojan
-  password: a70b39d1-62ea-4d9e-b681-9c5408352234
-  skip-cert-verify: false
-- name: 🇭🇰HK-43.198.82.55-1759
-  server: 43.198.82.55
-  port: 3292
-  type: trojan
-  password: BxceQaOe
-  sni: t.me%2Fripaojiedian
-  skip-cert-verify: false
-- name: 🇭🇰HK-58.152.25.236-1771
-  server: 58.152.25.236
-  port: 443
-  type: trojan
-  password: BxceQaOe
-  sni: t.me%2Fripaojiedian
-  skip-cert-verify: false
-- name: 🇭🇰HK-58.152.46.60-1772
-  server: 58.152.46.60
-  port: 443
-  type: trojan
-  password: BxceQaOe
-  sni: '%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%2B%5BBy%2BDukeMehdi%5D%2Btrojan-HK%2B'
-  skip-cert-verify: false
-- name: 🇭🇰HK-58.152.25.86-1773
-  server: 58.152.25.86
-  port: 443
-  type: trojan
-  password: BxceQaOe
-  sni: '%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%20%5BBy%20DukeMehdi%5D%20trojan-HK%20'
-  skip-cert-verify: false
-- name: 🇭🇰HK-194.156.99.39-2372
-  server: 194.156.99.39
-  port: 443
-  type: trojan
-  password: xxoo
-  skip-cert-verify: false
-- name: 🇭🇰HK-45.11.104.94-2482
-  server: 45.11.104.94
-  port: 3389
-  type: trojan
-  password: d4e41ff772c7fd45
-  sni: sbank.ir
-  skip-cert-verify: false
-- name: 🇭🇰HK-210.0.158.220-2634
-  server: 210.0.158.220
-  port: 28443
-  type: trojan
-  password: 750a29bf-0a40-437f-b120-38de74ae7eaf
-  skip-cert-verify: false
-- name: 🇭🇰HK-45.149.92.71-3590
-  server: jp.mjt001.com
-  port: 443
-  type: trojan
-  password: 459d23f4-dcfd-4fef-9ba3-ef0ad10fc336
-  sni: jp.mjt001.com
-  skip-cert-verify: false
-- name: 🇭🇰HK-20.187.85.198-4236
-  server: 20.187.85.198
-  port: 443
-  type: trojan
-  password: b26e31e5-eac1-45b0-9069-83830bd69521
-  sni: hkt.iamnotagoodman.com
-  skip-cert-verify: false
-- name: 🇭🇰HK-104.208.100.101-4237
-  server: 104.208.100.101
-  port: 443
-  type: trojan
-  password: ceaea123-1b4b-469b-8358-bcd5f5529305
-  sni: uk.liangyuandian.top
-  skip-cert-verify: false
-- name: 🇭🇰HK-45.149.92.71-4739
-  server: usla.mjt000.com
-  port: 443
-  type: trojan
-  password: e4af2638-bb12-4e4a-84f1-a032e23ca63f
-  skip-cert-verify: false
-- name: 🇭🇰HK-45.149.92.71-4741
-  server: hinet.mjt000.com
-  port: 443
-  type: trojan
-  password: 92435aa8-f3b6-466a-ad58-c55cbb6d2acf
-  skip-cert-verify: false
-- name: 🇭🇰HK-58.152.25.208-4781
-  server: 58.152.25.208
-  port: 443
-  type: trojan
-  password: BxceQaOe
-  sni: t.me/ripaojiedian
-  skip-cert-verify: false
-- name: 🇭🇰HK-58.152.18.130-4919
-  server: 58.152.18.130
-  port: 443
-  type: trojan
-  password: BxceQaOe
-  sni: t.me/ripaojiedian
-  skip-cert-verify: false
-- name: 🇭🇰HK-45.149.92.71-5772
-  server: jp.iamnotagoodman.com
-  port: 443
-  type: trojan
-  password: 8aab51da-6b67-4bd2-b6e6-5ab3008cf53e
-  skip-cert-verify: false
-- name: 🇭🇰HK-43.198.12.229-6960
-  server: 43.198.12.229
-  port: 28443
-  type: trojan
-  password: ae7cc604-d970-4200-9a9b-eb45087b4fc1
-  sni: mzy.hruqoaw.cn
-  skip-cert-verify: false
-- name: 🇭🇰HK-119.247.119.212-6966
-  server: 119.247.119.212
-  port: 443
-  type: trojan
-  password: bb5b1337-fa9e-4e00-b8c6-1110e626171d
-  sni: sg-01.tiktokcdn.top
-  skip-cert-verify: false
-- name: 🇭🇰HK-219.76.13.181-6967
-  server: 219.76.13.181
-  port: 443
-  type: trojan
-  password: SyOxpKxC8u5jgNa3DCZ34y3D9CRenFcaABpYATEeqI2RSaXD76zS8YF0Owl3lZ
-  sni: arbettp.freetrade.link
-  skip-cert-verify: false
-- name: 🇭🇰HK-219.76.13.180-6968
-  server: 219.76.13.180
-  port: 443
-  type: trojan
-  password: F3CSSRxD8uljgF73IAn34C3aE9wSqAzZDp5ZOCpxDBRacNYelOYayKTe826Xy0
-  sni: stutter.freetrade.link
-  skip-cert-verify: false
-- name: 🇭🇰HK-47.52.101.237-6970
-  server: 47.52.101.237
-  port: 443
-  type: trojan
-  password: ZRYSly2IRuFlgpZCaep3Ey3DDXqTDczO04aeC8F36OjaYSCABnA573wN8xxK9S
-  sni: httah.freetrade.link
-  skip-cert-verify: false
-- name: 🇭🇰HK-219.76.13.175-6973
-  server: 219.76.13.175
-  port: 443
-  type: trojan
-  password: ZFYOpKqD8uEClpZ2ya83cyCDalwSOYz3F3eCxnBD4eSXNSR5R0aAATj7I3x69g
-  sni: golang.protocolbuffer.com
-  skip-cert-verify: false
-- name: 🇭🇰HK-20.24.192.3-7028
-  server: 20.24.192.3
-  port: 20712
-  type: trojan
-  password: ca2345ba-46e7-3991-b1b7-45d18954caf1
-  sni: ssl.ssl12.xyz
-  skip-cert-verify: false
-- name: 🇭🇰HK-103.234.53.23-9080
-  server: 103.234.53.23
-  port: 50014
-  type: trojan
-  password: 73658d71-be45-4495-bc3e-e69d36ce73b5
-  sni: telewebion.com
-  skip-cert-verify: false
-- name: HK32｜原生/疑似家宽｜非常安全
-  network: tcp
-  password: 4250b3bb-d1ae-4e77-bf71-4069e0d2c383
-  port: 31101
-  server: 220.130.58.136
-  skip-cert-verify: true
-  sni: green2.cdntencentmusic.com
-  type: trojan
-- name: HK6｜原生/疑似家宽｜非常安全
-  network: tcp
-  password: 26635779-8ce6-4c07-ae5d-f3769ec95ddd
-  port: 31101
-  server: green2.cdntencentmusic.com
-  skip-cert-verify: true
-  sni: green2.cdntencentmusic.com
-  type: trojan
-- name: HK16｜原生/疑似家宽｜非常安全
-  network: tcp
-  password: 45d5fe0e-5a37-4881-ace7-df1c9046ba91
-  port: 31101
-  server: green2.cdntencentmusic.com
-  skip-cert-verify: true
-  sni: green2.cdntencentmusic.com
-  type: trojan
-- name: HK22｜原生/疑似家宽｜非常安全
-  network: tcp
-  password: 04e5b584-1850-483d-a844-9ad624a4ca8e
-  port: 31101
-  server: 220.130.58.136
-  skip-cert-verify: true
-  sni: 220.130.58.136
-  type: trojan
-- name: HK23｜原生/疑似家宽｜非常安全
-  network: tcp
-  password: 04e5b584-1850-483d-a844-9ad624a4ca8e
-  port: 31101
-  server: green2.cdntencentmusic.com
-  skip-cert-verify: true
-  sni: green2.cdntencentmusic.com
-  type: trojan
-- name: HK30｜原生/疑似家宽｜非常安全
-  network: tcp
-  password: 858fc0a5-69ad-48e3-8c6d-e4375cca8fc9
-  port: 31102
-  server: 220.130.58.136
-  skip-cert-verify: true
-  sni: green2.cdntencentmusic.com
-  type: trojan
-- name: HK31｜原生/疑似家宽｜非常安全
-  network: tcp
-  password: 5f6ded93-4ab8-4a99-9c84-b19b9993f27c
-  port: 31102
-  server: green2.cdntencentmusic.com
-  skip-cert-verify: true
-  sni: green2.cdntencentmusic.com
-  type: trojan
-- name: HK35｜原生/疑似家宽｜非常安全
-  network: tcp
-  password: 54952640-8e23-4faa-96ae-061e431a9913
-  port: 31102
-  server: 220.130.58.136
-  skip-cert-verify: true
-  sni: green2.cdntencentmusic.com
-  type: trojan
-- name: HK36｜原生/疑似家宽｜非常安全
-  network: tcp
-  password: 0a169d7d-a30f-4d90-af1b-55f6ef6afcb7
-  port: 31103
-  server: 220.130.58.136
-  skip-cert-verify: true
-  sni: green2.cdntencentmusic.com
-  type: trojan
-- name: HK39｜原生/疑似家宽｜非常安全
-  network: tcp
-  password: fdd6c2d0-2eaf-4e95-bfaa-432beb680ca9
-  port: 31102
-  server: green2.cdntencentmusic.com
-  skip-cert-verify: true
-  sni: green2.cdntencentmusic.com
-  type: trojan
-- name: HK53｜原生/疑似家宽｜非常安全
-  network: tcp
-  password: fe040a20-827e-42eb-994f-ec16d4ae5aa4
-  port: 31101
-  server: green2.cdntencentmusic.com
-  skip-cert-verify: true
-  sni: green2.cdntencentmusic.com
-  type: trojan
-- name: 🇭🇰 HK 10 → tg@nicevpn123
-  server: chjs.lydurlclub.top
-  port: 443
-  type: trojan
-  password: 507ca9a0-2d8e-4b65-8763-82dfbdbd599f
-  skip-cert-verify: true
-  udp: true
-- name: 🇭🇰 HK 2 → tg@nicevpn123
-  server: 210.17.253.122
-  port: 42030
-  type: trojan
-  password: 2b38ff78-05bb-4261-895c-440950cf0dbd
-  sni: hkg01.service.nahidacloud.top
-  skip-cert-verify: true
-  udp: true
+import yaml
+import time
+import schedule
+import random
+import requests
+import socket
+from ping3 import ping
+from typing import List, Dict, Tuple
+from dataclasses import dataclass
+import logging
+
+# 配置日志
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('node_checker.log'),
+        logging.StreamHandler()
+    ]
+)
+
+# 节点数据类
+@dataclass
+class ProxyNode:
+    name: str
+    type: str  # trojan/vmess/vless/ssr
+    server: str
+    port: int
+    password: str
+    sni: str = ""
+    skip_cert_verify: bool = True
+    udp: bool = True
+    network: str = "tcp"
+    latency: float = 9999.0  # 延迟(ms)
+    availability: float = 0.0  # 可用性(0-1)
+
+    def to_dict(self) -> Dict:
+        """转换为Clash配置字典"""
+        base = {
+            "name": self.name,
+            "type": self.type,
+            "server": self.server,
+            "port": self.port,
+            "password": self.password,
+            "skip-cert-verify": self.skip_cert_verify,
+            "udp": self.udp
+        }
+        if self.sni:
+            base["sni"] = self.sni
+        if self.network != "tcp":
+            base["network"] = self.network
+        return base
+
+# 全局配置
+CONFIG_FILE = "sub_trojan_hk.yaml"
+CHECK_INTERVAL = 2  # 检测间隔(小时)
+MAX_NODES = 60      # 保留最优节点数量
+TEST_URLS = [
+    "http://www.google.com",
+    "http://www.youtube.com",
+    "http://www.twitter.com"
+]
+TIMEOUT = 10  # 超时时间(秒)
+
+def load_proxy_nodes(file_path: str) -> List[ProxyNode]:
+    """加载配置文件中的所有节点"""
+    nodes = []
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            config = yaml.safe_load(f)
+        
+        if not config or "proxies" not in config:
+            logging.error("配置文件格式错误，未找到proxies节点")
+            return nodes
+        
+        for proxy in config["proxies"]:
+            try:
+                node = ProxyNode(
+                    name=proxy.get("name", f"未知节点_{random.randint(1000,9999)}"),
+                    type=proxy.get("type", "trojan"),
+                    server=proxy.get("server", ""),
+                    port=proxy.get("port", 443),
+                    password=proxy.get("password", ""),
+                    sni=proxy.get("sni", ""),
+                    skip_cert_verify=proxy.get("skip-cert-verify", True),
+                    udp=proxy.get("udp", True),
+                    network=proxy.get("network", "tcp")
+                )
+                nodes.append(node)
+            except Exception as e:
+                logging.warning(f"解析节点失败: {e}")
+                continue
+                
+    except Exception as e:
+        logging.error(f"加载配置文件失败: {e}")
+    
+    return nodes
+
+def test_node_connectivity(node: ProxyNode) -> Tuple[float, float]:
+    """
+    测试节点连通性
+    返回: (延迟ms, 可用性0-1)
+    """
+    latency = 9999.0
+    availability = 0.0
+    
+    try:
+        # 1. 测试基础网络连通性(ping)
+        ip = socket.gethostbyname(node.server)
+        ping_result = ping(ip, timeout=TIMEOUT)
+        if ping_result:
+            latency = ping_result * 1000  # 转换为ms
+        
+        # 2. 测试代理可用性
+        success_count = 0
+        test_proxy = {
+            'http': f'socks5://{ip}:{node.port}',
+            'https': f'socks5://{ip}:{node.port}'
+        }
+        
+        for test_url in TEST_URLS:
+            try:
+                response = requests.get(
+                    test_url,
+                    proxies=test_proxy,
+                    timeout=TIMEOUT,
+                    verify=not node.skip_cert_verify
+                )
+                if response.status_code == 200:
+                    success_count += 1
+            except:
+                continue
+        
+        availability = success_count / len(TEST_URLS)
+        
+    except Exception as e:
+        logging.debug(f"节点 {node.name} 测试失败: {e}")
+    
+    return latency, availability
+
+def check_all_nodes(nodes: List[ProxyNode]) -> List[ProxyNode]:
+    """检测所有节点并排序"""
+    logging.info(f"开始检测 {len(nodes)} 个节点...")
+    checked_nodes = []
+    
+    for i, node in enumerate(nodes):
+        if i % 10 == 0:
+            logging.info(f"已检测 {i}/{len(nodes)} 个节点")
+        
+        # 测试节点
+        latency, availability = test_node_connectivity(node)
+        node.latency = latency
+        node.availability = availability
+        
+        # 只保留可用节点(可用性>0 且 延迟<500ms)
+        if availability > 0 and latency < 500:
+            checked_nodes.append(node)
+    
+    # 排序: 可用性优先，其次延迟
+    checked_nodes.sort(
+        key=lambda x: (-x.availability, x.latency)
+    )
+    
+    logging.info(f"检测完成，可用节点数: {len(checked_nodes)}")
+    return checked_nodes
+
+def update_config_file(nodes: List[ProxyNode], file_path: str):
+    """更新配置文件，保留最优节点"""
+    # 截取最优的MAX_NODES个节点
+    best_nodes = nodes[:MAX_NODES]
+    
+    # 构建新配置
+    new_config = {
+        "mixed-port": 7890,
+        "allow-lan": True,
+        "mode": "Rule",
+        "log-level": "info",
+        "external-controller": "127.0.0.1:9090",
+        "proxies": [node.to_dict() for node in best_nodes],
+        "proxy-groups": [
+            {
+                "name": "香港节点优选",
+                "type": "url-test",
+                "proxies": [node.name for node in best_nodes],
+                "url": "http://www.google.com/generate_204",
+                "interval": 300
+            },
+            {
+                "name": "自动选择",
+                "type": "select",
+                "proxies": ["香港节点优选", "DIRECT"]
+            }
+        ],
+        "rules": [
+            "GEOIP,CN,DIRECT",
+            "MATCH,香港节点优选"
+        ]
+    }
+    
+    # 写入文件
+    try:
+        with open(file_path, 'w', encoding='utf-8') as f:
+            yaml.dump(
+                new_config,
+                f,
+                default_flow_style=False,
+                allow_unicode=True,
+                sort_keys=False
+            )
+        logging.info(f"配置文件已更新，保留 {len(best_nodes)} 个最优节点")
+    except Exception as e:
+        logging.error(f"更新配置文件失败: {e}")
+
+def main_task():
+    """主任务：检测并更新节点"""
+    # 1. 加载所有节点
+    all_nodes = load_proxy_nodes(CONFIG_FILE)
+    if not all_nodes:
+        logging.error("未加载到任何节点")
+        return
+    
+    # 2. 检测节点可用性
+    available_nodes = check_all_nodes(all_nodes)
+    
+    # 3. 更新配置文件
+    update_config_file(available_nodes, CONFIG_FILE)
+
+def run_scheduler():
+    """启动定时任务"""
+    logging.info("节点自动检测服务启动...")
+    
+    # 立即执行一次
+    main_task()
+    
+    # 定时执行（每2小时）
+    schedule.every(CHECK_INTERVAL).hours.do(main_task)
+    
+    # 保持运行
+    while True:
+        schedule.run_pending()
+        time.sleep(60)  # 每分钟检查一次任务
+
+if __name__ == "__main__":
+    # 支持命令行参数扩展（可选）
+    import sys
+    if len(sys.argv) > 1 and sys.argv[1] == "once":
+        # 只执行一次检测
+        main_task()
+    else:
+        # 启动定时任务
+        run_scheduler()
