@@ -1,0 +1,20 @@
+mixed-port: 7890
+allow-lan: true
+mode: Rule
+log-level: info
+external-controller: 127.0.0.1:9090
+proxies: []
+proxy-groups:
+- name: jp Auto
+  type: url-test
+  proxies: []
+  url: http://www.google.com/generate_204
+  interval: 300
+- name: jp Manual
+  type: select
+  proxies:
+  - jp Auto
+  - DIRECT
+rules:
+- GEOIP,CN,DIRECT
+- MATCH,jp Auto
