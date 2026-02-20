@@ -1,0 +1,211 @@
+name: Auto Update HK SG JP Nodes
+
+on:
+  schedule:
+    - cron: '0 8-23/2 * * *'
+  workflow_dispatch:
+
+jobs:
+  update-region-nodes:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install pyyaml requests ping3 pysocks
+
+      - name: Download and filter HK/SG/JP nodes
+        run: |
+          python3 << 'EOF'
+          import os
+          import yaml
+          import random
+          import socket
+          import requests
+          from ping3 import ping
+          from typing import List, Dict
+
+          CONFIG_FILE = "config.yaml"
+          MAX_NODES_PER_REGION = 100
+          TIMEOUT = 15
+          MAX_LATENCY = 1500
+          TEST_URL = "http://www.google.com/generate_204"
+
+          REGION_CONFIG = {
+              "hk": {
+                  "filename": "sub_hk.yaml",
+                  "keywords": ["hk", "hongkong", "香港", "🇭🇰", "HK", "HongKong"],
+                  "prefix": "HK-"
+              },
+              "sg": {
+                  "filename": "sub_sg.yaml",
+                  "keywords": ["sg", "singapore", "新加坡", "🇸🇬", "SG", "Singapore"],
+                  "prefix": "SG-"
+              },
+              "jp": {
+                  "filename": "sub_jp.yaml",
+                  "keywords": ["jp", "japan", "日本", "🇯🇵", "JP", "Japan", "东京", "大阪"],
+                  "prefix": "JP-"
+              }
+          }
+
+          ALLOWED_PROTOCOLS = ["trojan", "vmess", "vless", "shadowsocks", "ssr"]
+
+          class ProxyNode:
+              def __init__(self, d, prefix):
+                  self.name = f"{prefix}{d.get('name', f'Node{random.randint(1000,9999)}')}"
+                  self.type = d.get("type", "")
+                  self.server = d.get("server", "")
+                  self.port = d.get("port", 443)
+                  self.password = d.get("password", "")
+                  self.sni = d.get("sni", "")
+                  self.skip_cert_verify = d.get("skip-cert-verify", True)
+                  self.udp = d.get("udp", True)
+                  self.network = d.get("network", "tcp")
+                  self.uuid = d.get("uuid", "")
+                  self.cipher = d.get("cipher", "")
+                  self.latency = 9999.0
+                  self.available = False
+
+              def to_dict(self):
+                  b = {
+                      "name": self.name,
+                      "type": self.type,
+                      "server": self.server,
+                      "port": self.port,
+                      "skip-cert-verify": self.skip_cert_verify,
+                      "udp": self.udp
+                  }
+                  if self.type == "trojan":
+                      b["password"] = self.password
+                      if self.sni:
+                          b["sni"] = self.sni
+                  elif self.type in ["vmess", "vless"]:
+                      b["uuid"] = self.uuid
+                      if self.sni:
+                          b["servername"] = self.sni
+                  elif self.type in ["shadowsocks", "ssr"]:
+                      b["password"] = self.password
+                      b["cipher"] = self.cipher
+                  if self.network != "tcp":
+                      b["network"] = self.network
+                  return b
+
+          def load_subs():
+              with open(CONFIG_FILE, 'r', encoding='utf-8') as f:
+                  return yaml.safe_load(f).get("subs", [])
+
+          def get_content(url):
+              try:
+                  r = requests.get(url, timeout=TIMEOUT)
+                  r.raise_for_status()
+                  return r.text
+              except:
+                  return ""
+
+          def parse_proxies(txt):
+              try:
+                  d = yaml.safe_load(txt)
+                  if isinstance(d, dict) and "proxies" in d:
+                      return d["proxies"]
+                  elif isinstance(d, list):
+                      return d
+              except:
+                  pass
+              return []
+
+          def filter_region(proxies, kws):
+              res = []
+              for p in proxies:
+                  if not isinstance(p, dict):
+                      continue
+                  if p.get("type") not in ALLOWED_PROTOCOLS:
+                      continue
+                  n = str(p.get("name", "")).lower()
+                  s = str(p.get("server", "")).lower()
+                  if any(kw.lower() in n or kw.lower() in s for kw in kws):
+                      res.append(p)
+              return res
+
+          def test_node(node):
+              try:
+                  ip = socket.gethostbyname(node.server)
+                  t = ping(ip, timeout=TIMEOUT)
+                  if t:
+                      node.latency = round(t*1000, 2)
+              except:
+                  pass
+
+          def make_config(nodes, region_name):
+              names = [n.name for n in nodes]
+              return {
+                  "mixed-port": 7890,
+                  "allow-lan": True,
+                  "mode": "Rule",
+                  "log-level": "info",
+                  "external-controller": "127.0.0.1:9090",
+                  "proxies": [n.to_dict() for n in nodes],
+                  "proxy-groups": [
+                      {
+                          "name": f"{region_name} Auto",
+                          "type": "url-test",
+                          "proxies": names,
+                          "url": TEST_URL,
+                          "interval": 300
+                      },
+                      {
+                          "name": f"{region_name} Manual",
+                          "type": "select",
+                          "proxies": names + [f"{region_name} Auto", "DIRECT"]
+                      }
+                  ],
+                  "rules": [
+                      "GEOIP,CN,DIRECT",
+                      "MATCH," + f"{region_name} Auto"
+                  ]
+              }
+
+          def main():
+              subs = load_subs()
+              all_p = []
+              for u in subs:
+                  txt = get_content(u)
+                  ps = parse_proxies(txt)
+                  all_p.extend(ps)
+
+              for code, cfg in REGION_CONFIG.items():
+                  region_p = filter_region(all_p, cfg["keywords"])
+                  nodes = [ProxyNode(p, cfg["prefix"]) for p in region_p]
+                  for n in nodes:
+                      test_node(n)
+                  nodes.sort(key=lambda x: x.latency)
+                  valid = [x for x in nodes if x.latency < MAX_LATENCY]
+                  if len(valid) < 10 and nodes:
+                      valid = nodes[:10]
+                  best = valid[:MAX_NODES_PER_REGION]
+                  conf = make_config(best, code.upper())
+                  with open(cfg["filename"], 'w', encoding='utf-8') as f:
+                      yaml.dump(conf, f, default_flow_style=False, allow_unicode=True, sort_keys=False)
+
+          if __name__ == "__main__":
+              main()
+          EOF
+
+      - name: Commit and push
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add sub_hk.yaml sub_sg.yaml sub_jp.yaml
+          git diff --cached --quiet || (git commit -m "Auto update HK SG JP nodes" && git push https://${GH_PAT}@github.com/Davidli2013/clash-sub-auto.git HEAD:main)
