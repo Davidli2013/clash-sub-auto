@@ -9,26 +9,26 @@ jobs:
   update:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
 
-      - run: pip install pyyaml requests
+    - run: pip install pyyaml requests
 
-      - name: Download all sources
-        run: |
-          mkdir -p sources
-          curl -sSL "https://raw.githubusercontent.com/freev2ray/free-v2ray-core/main/data/trojan" -o sources/trojan.txt || true
-          curl -sSL "https://raw.githubusercontent.com/freev2ray/free-v2ray-core/main/data/vmess" -o sources/vmess.txt || true
-          curl -sSL "https://raw.githubusercontent.com/freev2ray/free-v2ray-core/main/data/ss" -o sources/ss.txt || true
-          curl -sSL "https://raw.githubusercontent.com/v2rayfree/v2ray-free/main/list" -o sources/v2ray_free.txt || true
-          curl -sSL "https://raw.githubusercontent.com/pojiezhiyuanjun/v2ray/main/cf" -o sources/v2rayng.txt || true
+    - name: Download all sources
+      run: |
+        mkdir -p sources
+        curl -sSL "https://raw.githubusercontent.com/freev2ray/free-v2ray-core/main/data/trojan" -o sources/trojan.txt || true
+        curl -sSL "https://raw.githubusercontent.com/freev2ray/free-v2ray-core/main/data/vmess" -o sources/vmess.txt || true
+        curl -sSL "https://raw.githubusercontent.com/freev2ray/free-v2ray-core/main/data/ss" -o sources/ss.txt || true
+        curl -sSL "https://raw.githubusercontent.com/v2rayfree/v2ray-free/main/list" -o sources/v2ray_free.txt || true
+        curl -sSL "https://raw.githubusercontent.com/pojiezhiyuanjun/v2ray/main/cf" -o sources/v2rayng.txt || true
 
-      - name: Parse and filter
-        run: |
-          python3 << 'EOF'
+    - name: Parse and filter
+      run: |
+        python3 - << 'EOF'
 import yaml
 import os
 
@@ -81,7 +81,7 @@ for filename in os.listdir('sources'):
             with open(filepath, 'r', encoding='utf-8') as f:
                 proxies = parse_proxies(f.read())
                 all_proxies.extend(proxies)
-        except Exception:
+        except:
             pass
 
 hk_proxies = filter_hk(all_proxies)
@@ -92,7 +92,7 @@ with open('sub_trojan_hk.yaml', 'w', encoding='utf-8') as f:
     yaml.dump(output, f, default_flow_style=False, allow_unicode=True)
 EOF
 
-      - uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "Auto update HK all protocols"
-          file_pattern: "sub_trojan_hk.yaml"
+    - uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: "Auto update HK all protocols"
+        file_pattern: "sub_trojan_hk.yaml"
