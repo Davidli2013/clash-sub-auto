@@ -1,98 +1,97 @@
-name: Auto Update HK Trojan (Every 2 Hours, Pure Trojan)
+name: Auto Update HK Trojan
+
 on:
   schedule:
-    - cron: '0 */2 * * *'  # 每2小时更新
-  workflow_dispatch:       # 手动触发
+    - cron: '0 */2 * * *'
+  workflow_dispatch:
 
 jobs:
-  update_hk:
+  update:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
         with:
-          fetch-depth: 0
-          token: ${{ secrets.PAT }}
-          ref: main
+          python-version: '3.11'
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
+      - run: pip install pyyaml requests
 
-      - name: Install dependencies
-        run: pip install pyyaml requests urllib3
-
-      - name: Generate HK Nodes (Pure Trojan)
+      - name: Download all sources
         run: |
-          cat > gen_hk.py << 'EOF'
-          import yaml
-          import requests
-          import base64
-          import urllib3
-          urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+          mkdir -p sources
+          curl -sSL "https://raw.githubusercontent.com/freev2ray/free-v2ray-core/main/data/trojan" -o sources/trojan.txt || true
+          curl -sSL "https://raw.githubusercontent.com/freev2ray/free-v2ray-core/main/data/vmess" -o sources/vmess.txt || true
+          curl -sSL "https://raw.githubusercontent.com/freev2ray/free-v2ray-core/main/data/ss" -o sources/ss.txt || true
+          curl -sSL "https://raw.githubusercontent.com/v2rayfree/v2ray-free/main/list" -o sources/v2ray_free.txt || true
+          curl -sSL "https://raw.githubusercontent.com/pojiezhiyuanjun/v2ray/main/cf" -o sources/v2rayng.txt || true
 
-          # 配置：香港仅Trojan，最多50个
-          MAX_HK_NODES = 50
-          HK_KEYWORDS = ['香港', 'HK', 'hk', 'HongKong', 'hongkong']
-          ALLOWED_TYPES = ['trojan']
+      - name: Parse and filter
+        run: |
+          python3 << 'EOF'
+import yaml
+import os
 
-          # 读取订阅链接
-          with open('config.yaml', 'r', encoding='utf-8') as f:
-              cfg = yaml.safe_load(f)
-          subs = cfg.get('subs', [])
-          if not subs:
-              print("❌ 无订阅链接！")
-              exit(0)
+def parse_proxies(content):
+    proxies = []
+    try:
+        data = yaml.safe_load(content)
+        if data and 'proxies' in data:
+            return data['proxies']
+    except:
+        pass
+    in_proxies = False
+    current = {}
+    for line in content.split('\n'):
+        line = line.rstrip()
+        if line == 'proxies:':
+            in_proxies = True
+            continue
+        if in_proxies and line.startswith('  - '):
+            if current:
+                proxies.append(current)
+            current = {}
+            line = line[4:]
+        if ': ' in line:
+            idx = line.index(': ')
+            key = line[:idx].strip()
+            val = line[idx+2:].strip()
+            current[key] = val
+    if current:
+        proxies.append(current)
+    return proxies
 
-          # 提取节点 + 去重
-          all_nodes = []
-          seen_nodes = set()
+def filter_hk(proxies):
+    keywords = ['hk', 'hongkong', '香港', 'HK']
+    filtered = []
+    for p in proxies:
+        name = p.get('name', '').lower()
+        server = p.get('server', '').lower()
+        for kw in keywords:
+            if kw.lower() in name or kw.lower() in server:
+                filtered.append(p)
+                break
+    return filtered
 
-          for idx, url in enumerate(subs):
-              print(f"处理订阅 {idx+1}/{len(subs)}: {url}")
-              try:
-                  r = requests.get(url, timeout=30, verify=False)
-                  try:
-                      content = base64.b64decode(r.text).decode('utf-8', errors='ignore')
-                  except:
-                      content = r.text
-                  
-                  data = yaml.safe_load(content)
-                  if 'proxies' in data:
-                      for p in data['proxies']:
-                          if p.get('type') not in ALLOWED_TYPES:
-                              continue
-                          # 去重：Trojan核心信息
-                          key = f"{p.get('server')}:{p.get('port')}:{p.get('password')}"
-                          if key not in seen_nodes and key.strip():
-                              seen_nodes.add(key)
-                              clean_p = {k: v for k, v in p.items() if k not in ['delay', 'client-fingerprint']}
-                              all_nodes.append(clean_p)
-              except Exception as e:
-                  print(f"订阅 {url} 处理失败: {str(e)[:50]}")
-                  continue
+all_proxies = []
+for filename in os.listdir('sources'):
+    if filename.endswith('.txt'):
+        filepath = os.path.join('sources', filename)
+        try:
+            with open(filepath, 'r', encoding='utf-8') as f:
+                proxies = parse_proxies(f.read())
+                all_proxies.extend(proxies)
+        except: pass
 
-          # 筛选香港节点
-          hk_nodes = [p for p in all_nodes if any(kw in p.get('name','').lower() for kw in HK_KEYWORDS)]
-          hk_final = hk_nodes[:MAX_HK_NODES]
+hk_proxies = filter_hk(all_proxies)
+print(f"Total: {len(all_proxies)}, HK: {len(hk_proxies)}")
 
-          # 生成文件
-          output = {'proxies': hk_final}
-          with open('sub_trojan_hk.yaml', 'w', encoding='utf-8') as f:
-              yaml.dump(output, f, allow_unicode=True, sort_keys=False)
+output = {'proxies': hk_proxies}
+with open('sub_hk.yaml', 'w', encoding='utf-8') as f:
+    yaml.dump(output, f, default_flow_style=False, allow_unicode=True)
+EOF
 
-          print(f"✅ 香港纯Trojan节点：{len(hk_final)} 个（最多50个）")
-          EOF
-
-          python gen_hk.py
-
-      - name: Commit file
-        uses: stefanzweifel/git-auto-commit-action@v5
+      - uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Auto update HK Trojan nodes (pure) 🚀"
-          file_pattern: "sub_trojan_hk.yaml"
-          commit_options: "--allow-empty"
-          push_options: "--force"
-          branch: main
+          commit_message: "Auto update HK all protocols"
+          file_pattern: "sub_hk.yaml"
