@@ -295,25 +295,29 @@ jobs:
               main()
           EOF
 
-      - name: Commit and push (修复Git冲突)
+      - name: Commit and push (终极修复-解决未跟踪文件冲突)
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           
-          # 关键修复：先拉取最新代码，解决推送冲突
-          git pull origin main --rebase
+          # 核心修复：删除本地未跟踪的节点文件，避免合并冲突
+          rm -rf sub_hk.yaml sub_sg.yaml sub_jp.yaml
           
-          # 添加所有地区文件
+          # 强制拉取远程最新代码，覆盖本地
+          git pull origin main --force
+          
+          # 重新添加生成的节点文件
           git add sub_hk.yaml sub_sg.yaml sub_jp.yaml
           
-          # 只有有变化才提交
+          # 仅当有变化时提交
           if git diff --cached --quiet; then
               echo "无节点更新，无需提交"
               exit 0
           fi
           
+          # 提交并推送
           git commit -m "Auto update HK SG JP nodes (keep 30+ nodes) 🚀"
-          git push https://${GH_PAT}@github.com/Davidli2013/clash-sub-auto.git HEAD:main
-          echo "更新已推送"
+          git push https://${GH_PAT}@github.com/Davidli2013/clash-sub-auto.git HEAD:main --force
+          echo "节点文件已强制推送至仓库"
