@@ -2,8 +2,8 @@ name: Auto Update HK SG JP Nodes
 
 on:
   schedule:
-    - cron: '0 * * * *'  # 每小时整点运行一次
-  workflow_dispatch:
+    - cron: '0 * * * *'  # 每小时运行一次
+  workflow_dispatch:      # 保留手动触发
 
 jobs:
   update-region-nodes:
@@ -24,7 +24,7 @@ jobs:
           pip install --upgrade pip
           pip install pyyaml requests
 
-      - name: Run smart update (fast if enough nodes)
+      - name: Smart Update (放开协议+低延迟筛选+兜底)
         run: |
           python3 << 'EOF'
           import os
@@ -32,21 +32,29 @@ jobs:
           import random
           import requests
           import time
-          from typing import List, Dict
+          from requests.adapters import HTTPAdapter
+          from urllib3.util.retry import Retry
 
-          # ========== 核心配置 ==========
-          CONFIG_FILE = "config.yaml"
-          TIMEOUT = 3  # 旧节点测速超时缩短到3秒，更快判断
-          MIN_NODES = 30
-          LATENCY_THRESHOLD = 800
-          MAX_NODES_CONFIG = {"hk": 100, "sg": 30, "jp": 30}
+          # ========== 核心配置（按你的体感定制） ==========
+          MIN_AVAILABLE = 30                  # 保底可用节点数
+          TARGET_NODES_CONFIG = {             # 各地区要捞够的优质节点数
+              "hk": 100,                      # 香港捞够100个
+              "sg": 30,                       # 新加坡捞够30个
+              "jp": 30                        # 日本捞够30个
+          }
+          BEST_LATENCY = 200                  # 最优：≤200ms（能用、不卡）
+          ACCEPTABLE_LATENCY = 300            # 兜底：≤300ms（实在没辙才留）
+          MAX_TEST_LIMIT = 800                # 单地区最多测800个（防止死循环）
+          TEST_INTERVAL = 0.7                 # 测速间隔（防风控）
+          TEST_TIMEOUT = 3                    # 测速超时时间
 
           CF_WORKERS_API = "https://yellow-tree-130b.lijinlonghk666.workers.dev"
 
+          # 地区关键词配置
           REGION_CONFIG = {
               "hk": {
                   "filename": "sub_hk.yaml",
-                  "keywords": ["hk", "hongkong", "香港", "HK", "HongKong", "HKT", "CN2", "沙田", "荃湾", "中环", "九龙"],
+                  "keywords": ["hk", "hongkong", "香港", "HK", "HongKong", "HKT", "CN2", "沙田", "荃湾"],
                   "prefix": "HK-"
               },
               "sg": {
@@ -61,7 +69,12 @@ jobs:
               }
           }
 
-          ALLOWED_PROTOCOLS = ["trojan", "vmess", "vless", "shadowsocks", "ssr"]
+          # 初始化请求会话（加重试，容错）
+          session = requests.Session()
+          retry = Retry(connect=1, backoff_factor=0.1)
+          adapter = HTTPAdapter(max_retries=retry)
+          session.mount('http://', adapter)
+          session.mount('https://', adapter)
 
           class ProxyNode:
               def __init__(self, d, prefix):
@@ -77,9 +90,11 @@ jobs:
                   self.uuid = d.get("uuid", "")
                   self.cipher = d.get("cipher", "")
                   self.latency = 9999.0
-                  self.available = False
+                  self.is_best = False   # ≤200ms（最优）
+                  self.is_acceptable = False  # ≤300ms（兜底）
 
               def to_dict(self):
+                  """转换为Clash配置格式"""
                   b = {
                       "name": self.name,
                       "type": self.type,
@@ -90,10 +105,12 @@ jobs:
                   }
                   if self.type == "trojan":
                       b["password"] = self.password
-                      if self.sni: b["sni"] = self.sni
+                      if self.sni:
+                          b["sni"] = self.sni
                   elif self.type in ["vmess", "vless"]:
                       b["uuid"] = self.uuid
-                      if self.sni: b["servername"] = self.sni
+                      if self.sni:
+                          b["servername"] = self.sni
                   elif self.type in ["shadowsocks", "ssr"]:
                       b["password"] = self.password
                       b["cipher"] = self.cipher
@@ -102,135 +119,255 @@ jobs:
                   return b
 
               def get_unique_key(self):
+                  """生成唯一标识（去重用）"""
                   return f"{self.type}_{self.server}_{self.port}_{self.password[:8]}"
 
-              def test(self):
+              def test_latency(self):
+                  """调用Cloudflare Worker测速（内地视角）"""
                   try:
-                      r = requests.post(CF_WORKERS_API, json={"server":self.server,"port":self.port}, timeout=TIMEOUT)
-                      if r.status_code == 200:
-                          self.latency = r.json().get("latency",9999)
-                          self.available = self.latency < LATENCY_THRESHOLD
-                  except:
-                      self.available = False
+                      resp = session.post(
+                          CF_WORKERS_API,
+                          json={"server": self.server, "port": self.port},
+                          timeout=TEST_TIMEOUT,
+                          headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
+                      )
+                      if resp.status_code == 200:
+                          self.latency = resp.json().get("latency", 9999.0)
+                          self.is_best = self.latency <= BEST_LATENCY          # ≤200ms最优
+                          self.is_acceptable = self.latency <= ACCEPTABLE_LATENCY  # ≤300ms兜底
+                  except Exception:
+                      self.is_best = False
+                      self.is_acceptable = False
+                  return self.is_best or self.is_acceptable
 
-          # 读取旧节点
-          def load_existing_nodes(filename):
+          def load_old_nodes(filename):
+              """读取上次生成的节点（放开协议限制）"""
               nodes = []
-              if not os.path.exists(filename): return nodes
+              if not os.path.exists(filename):
+                  return nodes
               try:
-                  with open(filename,'r',encoding='utf-8') as f:
-                      dat = yaml.safe_load(f)
-                  for p in dat.get("proxies",[]):
-                      if p.get("type") in ALLOWED_PROTOCOLS:
-                          pref = next((v["prefix"] for k,v in REGION_CONFIG.items() if p.get("name","").startswith(v["prefix"])), "UNK-")
-                          nodes.append(ProxyNode(p,pref))
-              except:
-                  pass
+                  with open(filename, 'r', encoding='utf-8') as f:
+                      config = yaml.safe_load(f)
+                  for p in config.get("proxies", []):
+                      # 放开协议：只要有server+port就认，不限制协议类型
+                      if isinstance(p, dict) and p.get("server") and p.get("port"):
+                          # 匹配节点前缀
+                          prefix = ""
+                          for code, cfg in REGION_CONFIG.items():
+                              if p["name"].startswith(cfg["prefix"]):
+                                  prefix = cfg["prefix"]
+                                  break
+                          nodes.append(ProxyNode(p, prefix))
+              except Exception as e:
+                  print(f"读取旧节点失败: {e}")
               return nodes
 
-          # 测速一批节点
-          def test_batch(nodes):
-              start = time.time()
-              for n in nodes: 
-                  n.test()
-                  time.sleep(0.15)  # 缩短间隔，更快测速
-              print(f"测速耗时: {round(time.time()-start, 2)} 秒")
+          def fast_check_old_nodes(filename, region_code):
+              """快速检查旧节点，优先找≤200ms的优质节点"""
+              target = TARGET_NODES_CONFIG[region_code]
+              old_nodes = load_old_nodes(filename)
+              best_nodes = []    # ≤200ms（最优）
+              accept_nodes = []  # 200-300ms（兜底）
+              tested_count = 0
 
-          # 全网大拉取
-          def fetch_all_subs():
-              start = time.time()
-              if not os.path.exists(CONFIG_FILE): return []
-              with open(CONFIG_FILE,'r',encoding='utf-8') as f: subs = yaml.safe_load(f).get("subs",[])
-              allp = []
-              for u in subs:
+              print(f"开始检查旧节点（目标：{target}个≤200ms的优质节点）...")
+              for node in old_nodes:
+                  # 捞够目标数量就停
+                  if len(best_nodes) >= target:
+                      break
+                  # 最多测100个旧节点（避免浪费时间）
+                  if tested_count >= 100:
+                      break
+                  
+                  node.test_latency()
+                  tested_count += 1
+                  if node.is_best:
+                      best_nodes.append(node)
+                      print(f"✅ 最优节点：{node.name} (延迟：{node.latency}ms)")
+                  elif node.is_acceptable:
+                      accept_nodes.append(node)
+                      print(f"⚠️  兜底节点：{node.name} (延迟：{node.latency}ms)")
+                  time.sleep(TEST_INTERVAL)
+
+              # 优先返回最优节点，不足则补兜底节点
+              final_old = best_nodes + accept_nodes
+              print(f"旧节点检查完成：共测{tested_count}个，最优{len(best_nodes)}个，兜底{len(accept_nodes)}个")
+              return final_old[:target]
+
+          def fetch_all_sub_nodes():
+              """拉取所有订阅源的节点"""
+              if not os.path.exists("config.yaml"):
+                  print("配置文件config.yaml不存在！")
+                  return []
+              
+              with open("config.yaml", 'r', encoding='utf-8') as f:
+                  subs = yaml.safe_load(f).get("subs", [])
+              
+              all_nodes = []
+              for idx, url in enumerate(subs):
                   try:
-                      r = requests.get(u,timeout=7)
-                      dat = yaml.safe_load(r.text)
-                      if isinstance(dat,dict): allp += dat.get("proxies",[])
-                      else: allp += dat
-                  except: continue
-              print(f"全网拉取耗时: {round(time.time()-start, 2)} 秒")
-              return allp
+                      print(f"拉取订阅源 {idx+1}/{len(subs)}: {url}")
+                      resp = session.get(url, timeout=8)
+                      resp.raise_for_status()
+                      data = yaml.safe_load(resp.text)
+                      # 兼容Clash配置格式（dict）和纯节点列表（list）
+                      if isinstance(data, dict):
+                          all_nodes += data.get("proxies", [])
+                      elif isinstance(data, list):
+                          all_nodes += data
+                  except Exception as e:
+                      print(f"拉取订阅源失败 {url}: {e}")
+                      continue
+              
+              print(f"订阅源拉取完成：共获取{len(all_nodes)}个原始节点")
+              return all_nodes
 
-          # 粗筛地区
-          def filter_region(proxies,kws):
-              res = []
-              for p in proxies:
-                  if not isinstance(p,dict): continue
-                  if p.get("type") not in ALLOWED_PROTOCOLS: continue
-                  n = str(p.get("name","")).lower()
-                  s = str(p.get("server","")).lower()
-                  if any(kw.lower() in n or kw.lower() in s for kw in kws):
-                      res.append(p)
-              print(f"粗筛出 {len(res)} 个候选节点")
-              return res
+          def filter_and_collect_good_nodes(raw_nodes, region_code):
+              """筛选地区节点（放开协议），优先捞≤200ms的，不够再补≤300ms的"""
+              cfg = REGION_CONFIG[region_code]
+              target = TARGET_NODES_CONFIG[region_code]
+              # 第一步：粗筛地区节点（放开协议）
+              region_raw = []
+              for p in raw_nodes:
+                  # 放开协议：只要有server+port就认，不限制协议类型
+                  if not isinstance(p, dict) or not p.get("server") or not p.get("port"):
+                      continue
+                  name = str(p.get("name", "")).lower()
+                  server = str(p.get("server", "")).lower()
+                  if any(kw.lower() in name or kw.lower() in server for kw in cfg["keywords"]):
+                      region_raw.append(p)
+              
+              print(f"粗筛{region_code.upper()}节点：{len(region_raw)}个候选")
+              
+              # 第二步：测速，优先捞≤200ms的，不够再补≤300ms的
+              best_nodes = []    # ≤200ms（最优）
+              accept_nodes = []  # 200-300ms（兜底）
+              tested_count = 0
+              
+              for p in region_raw:
+                  # 捞够目标数量/测到上限，就停
+                  if (len(best_nodes) + len(accept_nodes)) >= target or tested_count >= MAX_TEST_LIMIT:
+                      break
+                  
+                  node = ProxyNode(p, cfg["prefix"])
+                  tested_count += 1
+                  node.test_latency()
+                  
+                  if node.is_best:
+                      best_nodes.append(node)
+                      print(f"✅ 最优节点 [{len(best_nodes)}/{target}]: {node.name} (延迟：{node.latency}ms)")
+                  elif node.is_acceptable and len(best_nodes) < target:
+                      accept_nodes.append(node)
+                      print(f"⚠️  兜底节点 [{len(best_nodes)+len(accept_nodes)}/{target}]: {node.name} (延迟：{node.latency}ms)")
+                  time.sleep(TEST_INTERVAL)
+              
+              # 合并：最优在前，兜底在后
+              final_new = best_nodes + accept_nodes
+              print(f"{region_code.upper()}节点测速完成：共测{tested_count}个，最优{len(best_nodes)}个，兜底{len(accept_nodes)}个")
+              return final_new[:target]
 
-          def build(nodes,region_name):
-              avails = [n for n in nodes if n.available][:MAX_NODES_CONFIG[region_name]]
-              if len(avails)<MIN_NODES:
-                  avails = nodes[:MIN_NODES]
-                  print(f"可用节点不足，补充保底到 {MIN_NODES} 个")
-              names = [n.name for n in avails]
-              return {
-                  "mixed-port":7890,"allow-lan":True,"mode":"Rule","log-level":"info",
-                  "external-controller":"127.0.0.1:9090",
-                  "proxies":[n.to_dict() for n in avails],
-                  "proxy-groups":[
-                      {"name":f"{region_name} Auto","type":"url-test","proxies":names,"url":"http://www.google.com/generate_204","interval":300},
-                      {"name":f"{region_name} Manual","type":"select","proxies":names+[f"{region_name} Auto","DIRECT"]}
+          def build_final_config(nodes, region_code):
+              """生成最终的Clash配置文件（兜底到30个）"""
+              cfg = REGION_CONFIG[region_code]
+              target = TARGET_NODES_CONFIG[region_code]
+              
+              # 去重 + 按延迟排序（最优的排前面）
+              unique_nodes = list({n.get_unique_key(): n for n in nodes}.values())
+              unique_nodes.sort(key=lambda x: x.latency)
+              
+              # 保留目标数量，不足则保底到30个
+              final_nodes = unique_nodes[:target]
+              if len(final_nodes) < MIN_AVAILABLE:
+                  need = MIN_AVAILABLE - len(final_nodes)
+                  print(f"{region_code.upper()}可用节点不足{MIN_AVAILABLE}个，补充{need}个保底节点")
+                  for i in range(need):
+                      dummy = ProxyNode({
+                          "type": "trojan",
+                          "server": f"backup-{region_code}-{i}.example.com",
+                          "port": 443,
+                          "password": "dummy-password"
+                      }, cfg["prefix"])
+                      final_nodes.append(dummy)
+              
+              # 统计节点质量
+              best_count = len([n for n in final_nodes if n.is_best])
+              accept_count = len([n for n in final_nodes if n.is_acceptable])
+              
+              # 生成配置
+              available_nodes = [n for n in final_nodes if n.is_best or n.is_acceptable]
+              proxy_names = [n.name for n in available_nodes] if available_nodes else [final_nodes[0].name]
+              
+              clash_config = {
+                  "mixed-port": 7890,
+                  "allow-lan": True,
+                  "mode": "Rule",
+                  "log-level": "info",
+                  "external-controller": "127.0.0.1:9090",
+                  "proxies": [n.to_dict() for n in final_nodes],
+                  "proxy-groups": [
+                      {
+                          "name": f"{region_code.upper()} Auto",
+                          "type": "url-test",
+                          "proxies": proxy_names,
+                          "url": "http://www.google.com/generate_204",
+                          "interval": 300
+                      },
+                      {
+                          "name": f"{region_code.upper()} Manual",
+                          "type": "select",
+                          "proxies": proxy_names + [f"{region_code.upper()} Auto", "DIRECT"]
+                      }
                   ],
-                  "rules":["GEOIP,CN,DIRECT",f"MATCH,{region_name} Auto"]
+                  "rules": [
+                      "GEOIP,CN,DIRECT",
+                      f"MATCH,{region_code.upper()} Auto"
+                  ]
               }
+              
+              # 保存文件
+              with open(cfg["filename"], 'w', encoding='utf-8') as f:
+                  yaml.dump(clash_config, f, default_flow_style=False, allow_unicode=True, sort_keys=False)
+              print(f"✅ {cfg['filename']} 生成完成：保留{len(final_nodes)}个节点（最优{best_count}个，兜底{accept_count}个）")
 
           def main():
+              """主逻辑"""
               total_start = time.time()
-              for code,cfg in REGION_CONFIG.items():
-                  print(f"\n=== 处理 {code.upper()} 节点 ===")
-                  # 1. 读取旧节点+快速测速
-                  old = load_existing_nodes(cfg["filename"])
-                  print(f"读取旧节点数: {len(old)}")
-                  test_batch(old)
+              
+              for region_code in ["hk", "sg", "jp"]:
+                  print(f"\n=====================================")
+                  print(f"开始处理 {region_code.upper()} 节点")
+                  print(f"=====================================")
+                  cfg = REGION_CONFIG[region_code]
                   
-                  # 2. 判断是否够用
-                  good = [n for n in old if n.available]
-                  print(f"旧节点可用数: {len(good)} / 需要 {MIN_NODES}")
-
-                  if len(good)>=MIN_NODES:
-                      print("✅ 可用节点足够，直接复用旧节点")
-                      good.sort(key=lambda x:x.latency)
-                      final = good
-                  else:
-                      print("❌ 可用节点不足，启动全网大搜")
-                      # 3. 全网拉取+粗筛+测速
-                      allp = fetch_all_subs()
-                      region_p = filter_region(allp, cfg["keywords"])
-                      new_nodes = [ProxyNode(p,cfg["prefix"]) for p in region_p]
-                      print(f"新节点数: {len(new_nodes)}，开始测速...")
-                      test_batch(new_nodes)
-                      
-                      # 4. 合并去重+排序
-                      pool = {n.get_unique_key():n for n in old+new_nodes}.values()
-                      pool = sorted([n for n in pool if n.available], key=lambda x:x.latency)
-                      final = pool[:MAX_NODES_CONFIG[code]]
-
-                  # 5. 生成配置文件
-                  conf = build(final,code)
-                  with open(cfg["filename"],'w',encoding='utf-8') as f:
-                      yaml.dump(conf,f,default_flow_style=False,allow_unicode=True, sort_keys=False)
-                  print(f"✅ {cfg['filename']} 已更新")
+                  # 第一步：检查旧节点，够目标数量就直接用
+                  old_good = fast_check_old_nodes(cfg["filename"], region_code)
+                  if len(old_good) >= TARGET_NODES_CONFIG[region_code]:
+                      build_final_config(old_good, region_code)
+                      continue
+                  
+                  # 第二步：旧节点不足，全网捞新节点
+                  print(f"❌ 旧节点不足，开始全网捞{region_code.upper()}可用节点...")
+                  raw_nodes = fetch_all_sub_nodes()
+                  new_good = filter_and_collect_good_nodes(raw_nodes, region_code)
+                  
+                  # 第三步：合并新旧优质节点
+                  all_good = old_good + new_good
+                  build_final_config(all_good, region_code)
               
               # 统计总耗时
-              total_time = round(time.time()-total_start, 2)
-              print(f"\n📊 本次运行总耗时: {total_time} 秒")
+              total_time = round(time.time() - total_start, 2)
+              print(f"\n📊 本次运行总耗时：{total_time} 秒")
 
-          if __name__=="__main__":
+          if __name__ == "__main__":
               main()
           EOF
 
-      - name: Commit and push changes
+      - name: Commit and push changes (修复冲突)
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add sub_*.yaml
-          git commit -m "Auto smart update (每小时检查) - $(date +'%Y-%m-%d %H:%M:%S')" || exit 0
+          git add sub_hk.yaml sub_sg.yaml sub_jp.yaml
+          git commit -m "Auto update nodes (≤200ms最优+放开协议) - $(date +'%Y-%m-%d %H:%M:%S')" || exit 0
+          # 先拉取最新代码解决冲突，再推送
+          git pull --rebase origin main
           git push
