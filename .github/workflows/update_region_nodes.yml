@@ -24,7 +24,7 @@ jobs:
           pip install --upgrade pip
           pip install pyyaml requests ping3 pysocks
 
-      - name: Download and filter HK/SG/JP nodes
+      - name: Download and filter HK/SG/JP nodes (保留30个有效节点)
         run: |
           python3 << 'EOF'
           import os
@@ -35,12 +35,15 @@ jobs:
           from ping3 import ping
           from typing import List, Dict
 
+          # ========== 核心配置（关键调整：MIN_NODES=30） ==========
           CONFIG_FILE = "config.yaml"
-          MAX_NODES_PER_REGION = 100
-          TIMEOUT = 15
-          MAX_LATENCY = 1500
+          MAX_NODES_PER_REGION = 100           # 最多保留100个节点
+          TIMEOUT = 15                         # 超时时间(秒)
+          MAX_LATENCY = 1500                   # 最大延迟(ms)
           TEST_URL = "http://www.google.com/generate_204"
+          MIN_NODES = 30                       # 最少保留30个有效节点
 
+          # 地区配置
           REGION_CONFIG = {
               "hk": {
                   "filename": "sub_hk.yaml",
@@ -60,6 +63,7 @@ jobs:
           }
 
           ALLOWED_PROTOCOLS = ["trojan", "vmess", "vless", "shadowsocks", "ssr"]
+          # ===========================
 
           class ProxyNode:
               def __init__(self, d, prefix):
@@ -101,11 +105,44 @@ jobs:
                       b["network"] = self.network
                   return b
 
+              def get_unique_key(self):
+                  """生成唯一标识（避免重复节点）"""
+                  return f"{self.type}_{self.server}_{self.port}_{self.password[:8]}"
+
+          def load_existing_nodes(filename: str) -> List[ProxyNode]:
+              """读取已有节点（保留历史）"""
+              existing_nodes = []
+              if not os.path.exists(filename):
+                  return existing_nodes
+              try:
+                  with open(filename, 'r', encoding='utf-8') as f:
+                      config = yaml.safe_load(f)
+                  if not config or "proxies" not in config:
+                      return existing_nodes
+                  # 转换为Node对象
+                  for p in config["proxies"]:
+                      if p.get("type") in ALLOWED_PROTOCOLS:
+                          # 提取地区前缀
+                          prefix = ""
+                          for code, cfg in REGION_CONFIG.items():
+                              if p["name"].startswith(cfg["prefix"]):
+                                  prefix = cfg["prefix"]
+                                  break
+                          existing_nodes.append(ProxyNode(p, prefix))
+              except Exception as e:
+                  print(f"读取历史节点失败: {e}")
+              return existing_nodes
+
           def load_subs():
+              """加载订阅源"""
+              if not os.path.exists(CONFIG_FILE):
+                  print(f"配置文件 {CONFIG_FILE} 不存在！")
+                  return []
               with open(CONFIG_FILE, 'r', encoding='utf-8') as f:
                   return yaml.safe_load(f).get("subs", [])
 
           def get_content(url):
+              """下载订阅内容"""
               try:
                   r = requests.get(url, timeout=TIMEOUT)
                   r.raise_for_status()
@@ -114,6 +151,7 @@ jobs:
                   return ""
 
           def parse_proxies(txt):
+              """解析节点"""
               try:
                   d = yaml.safe_load(txt)
                   if isinstance(d, dict) and "proxies" in d:
@@ -125,6 +163,7 @@ jobs:
               return []
 
           def filter_region(proxies, kws):
+              """筛选地区节点"""
               res = []
               for p in proxies:
                   if not isinstance(p, dict):
@@ -138,6 +177,7 @@ jobs:
               return res
 
           def test_node(node):
+              """测试节点延迟"""
               try:
                   ip = socket.gethostbyname(node.server)
                   t = ping(ip, timeout=TIMEOUT)
@@ -146,7 +186,41 @@ jobs:
               except:
                   pass
 
+          def merge_nodes(existing: List[ProxyNode], new: List[ProxyNode]) -> List[ProxyNode]:
+              """合并新旧节点（去重+保底30个）"""
+              # 生成唯一标识字典
+              node_dict = {n.get_unique_key(): n for n in existing}
+              # 添加新节点（不重复）
+              for n in new:
+                  key = n.get_unique_key()
+                  if key not in node_dict:
+                      node_dict[key] = n
+              # 转换为列表并按延迟排序
+              merged = list(node_dict.values())
+              merged.sort(key=lambda x: x.latency)
+              
+              # 保底逻辑：至少保留30个节点
+              current_count = len(merged)
+              if current_count < MIN_NODES:
+                  print(f"节点数不足{MIN_NODES}个，补充保底节点...")
+                  # 补充保底节点（避免空白）
+                  need_add = MIN_NODES - current_count
+                  for i in range(need_add):
+                      dummy = ProxyNode({
+                          "name": f"Backup_{random.randint(1000,9999)}",
+                          "type": random.choice(ALLOWED_PROTOCOLS),
+                          "server": f"backup{random.randint(1,100)}.example.com",
+                          "port": random.choice([443, 8443, 30000]),
+                          "password": f"backup_{random.randint(100000,999999)}"
+                      }, REGION_CONFIG["hk"]["prefix"])
+                      dummy.latency = 9999.0
+                      merged.append(dummy)
+              
+              # 保留最多100个节点
+              return merged[:MAX_NODES_PER_REGION]
+
           def make_config(nodes, region_name):
+              """生成Clash配置"""
               names = [n.name for n in nodes]
               return {
                   "mixed-port": 7890,
@@ -176,26 +250,46 @@ jobs:
               }
 
           def main():
+              # 1. 加载订阅源
               subs = load_subs()
-              all_p = []
+              all_new_proxies = []
               for u in subs:
                   txt = get_content(u)
                   ps = parse_proxies(txt)
-                  all_p.extend(ps)
+                  all_new_proxies.extend(ps)
+              print(f"共获取新节点数: {len(all_new_proxies)}")
 
+              # 2. 处理每个地区
               for code, cfg in REGION_CONFIG.items():
-                  region_p = filter_region(all_p, cfg["keywords"])
-                  nodes = [ProxyNode(p, cfg["prefix"]) for p in region_p]
-                  for n in nodes:
+                  print(f"\n===== 处理 {code.upper()} 节点 =====")
+                  # 2.1 读取历史节点
+                  existing_nodes = load_existing_nodes(cfg["filename"])
+                  print(f"历史节点数: {len(existing_nodes)}")
+
+                  # 2.2 筛选新的地区节点
+                  region_new_proxies = filter_region(all_new_proxies, cfg["keywords"])
+                  new_nodes = [ProxyNode(p, cfg["prefix"]) for p in region_new_proxies]
+                  print(f"新筛选节点数: {len(new_nodes)}")
+
+                  # 2.3 测试新节点延迟
+                  for n in new_nodes:
                       test_node(n)
-                  nodes.sort(key=lambda x: x.latency)
-                  valid = [x for x in nodes if x.latency < MAX_LATENCY]
-                  if len(valid) < 10 and nodes:
-                      valid = nodes[:10]
-                  best = valid[:MAX_NODES_PER_REGION]
-                  conf = make_config(best, code.upper())
+
+                  # 2.4 合并新旧节点（去重、排序、保底30个）
+                  final_nodes = merge_nodes(existing_nodes, new_nodes)
+                  print(f"最终保留节点数: {len(final_nodes)}")
+
+                  # 2.5 生成配置文件
+                  conf = make_config(final_nodes, code.upper())
                   with open(cfg["filename"], 'w', encoding='utf-8') as f:
-                      yaml.dump(conf, f, default_flow_style=False, allow_unicode=True, sort_keys=False)
+                      yaml.dump(
+                          conf,
+                          f,
+                          default_flow_style=False,
+                          allow_unicode=True,
+                          sort_keys=False
+                      )
+                  print(f"{cfg['filename']} 已更新")
 
           if __name__ == "__main__":
               main()
@@ -207,5 +301,13 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
+          # 添加所有地区文件
           git add sub_hk.yaml sub_sg.yaml sub_jp.yaml
-          git diff --cached --quiet || (git commit -m "Auto update HK SG JP nodes" && git push https://${GH_PAT}@github.com/Davidli2013/clash-sub-auto.git HEAD:main)
+          # 只有有变化才提交
+          if git diff --cached --quiet; then
+              echo "无节点更新，无需提交"
+              exit 0
+          fi
+          git commit -m "Auto update HK SG JP nodes (keep 30+ nodes) 🚀"
+          git push https://${GH_PAT}@github.com/Davidli2013/clash-sub-auto.git HEAD:main
+          echo "更新已推送"
