@@ -2,7 +2,7 @@ name: Auto Update HK SG JP Nodes
 
 on:
   schedule:
-    - cron: '0 8-23/2 * * *'  # 每2小时自动更新
+    - cron: '0 * * * *'  # 每小时整点运行一次
   workflow_dispatch:
 
 jobs:
@@ -24,47 +24,39 @@ jobs:
           pip install --upgrade pip
           pip install pyyaml requests
 
-      - name: Download and filter nodes (扩大粗筛+严格精筛)
+      - name: Run smart update (fast if enough nodes)
         run: |
           python3 << 'EOF'
           import os
           import yaml
           import random
           import requests
+          import time
           from typing import List, Dict
 
           # ========== 核心配置 ==========
           CONFIG_FILE = "config.yaml"
-          TIMEOUT = 15
-          MIN_NODES = 30  # 所有地区保底30个
-          LATENCY_THRESHOLD = 500  # 优质节点阈值：延迟<500ms
-          # 各地区最大节点数配置
-          MAX_NODES_CONFIG = {
-              "hk": 100,  # 香港保留100个
-              "sg": 30,   # 新加坡保留30个
-              "jp": 30    # 日本保留30个
-          }
-          # 替换为你的Cloudflare Worker地址
+          TIMEOUT = 3  # 旧节点测速超时缩短到3秒，更快判断
+          MIN_NODES = 30
+          LATENCY_THRESHOLD = 800
+          MAX_NODES_CONFIG = {"hk": 100, "sg": 30, "jp": 30}
+
           CF_WORKERS_API = "https://yellow-tree-130b.lijinlonghk666.workers.dev"
 
-          # 地区配置：扩大关键词，拉大撒网范围
           REGION_CONFIG = {
               "hk": {
                   "filename": "sub_hk.yaml",
-                  # 新增更多香港关键词，确保粗筛足够多
                   "keywords": ["hk", "hongkong", "香港", "HK", "HongKong", "HKT", "CN2", "沙田", "荃湾", "中环", "九龙"],
                   "prefix": "HK-"
               },
               "sg": {
                   "filename": "sub_sg.yaml",
-                  # 新增新加坡关键词
-                  "keywords": ["sg", "singapore", "新加坡", "SG", "Singapore", "SGD", "狮城", "新加坡🇸🇬"],
+                  "keywords": ["sg", "singapore", "新加坡", "SG", "Singapore", "SGD", "狮城"],
                   "prefix": "SG-"
               },
               "jp": {
                   "filename": "sub_jp.yaml",
-                  # 新增日本关键词
-                  "keywords": ["jp", "japan", "日本", "JP", "Japan", "东京", "大阪", "JP东", "JP西", "横滨", "名古屋"],
+                  "keywords": ["jp", "japan", "日本", "JP", "Japan", "东京", "大阪", "JP东", "JP西"],
                   "prefix": "JP-"
               }
           }
@@ -86,7 +78,6 @@ jobs:
                   self.cipher = d.get("cipher", "")
                   self.latency = 9999.0
                   self.available = False
-                  self.high_quality = False  # 标记是否为优质节点（延迟<500ms）
 
               def to_dict(self):
                   b = {
@@ -99,12 +90,10 @@ jobs:
                   }
                   if self.type == "trojan":
                       b["password"] = self.password
-                      if self.sni:
-                          b["sni"] = self.sni
+                      if self.sni: b["sni"] = self.sni
                   elif self.type in ["vmess", "vless"]:
                       b["uuid"] = self.uuid
-                      if self.sni:
-                          b["servername"] = self.sni
+                      if self.sni: b["servername"] = self.sni
                   elif self.type in ["shadowsocks", "ssr"]:
                       b["password"] = self.password
                       b["cipher"] = self.cipher
@@ -115,200 +104,126 @@ jobs:
               def get_unique_key(self):
                   return f"{self.type}_{self.server}_{self.port}_{self.password[:8]}"
 
-              def test_latency_cf(self):
-                  """调用Cloudflare Workers测速（内地视角）"""
+              def test(self):
                   try:
-                      resp = requests.post(
-                          CF_WORKERS_API,
-                          json={"server": self.server, "port": self.port},
-                          timeout=TIMEOUT
-                      )
-                      if resp.status_code == 200:
-                          self.latency = resp.json().get("latency", 9999.0)
-                          self.available = self.latency < 9999  # 可用：延迟不是9999
-                          self.high_quality = self.latency < LATENCY_THRESHOLD  # 优质：延迟<500ms
-                  except Exception as e:
-                      print(f"测速失败 {self.name}: {e}")
+                      r = requests.post(CF_WORKERS_API, json={"server":self.server,"port":self.port}, timeout=TIMEOUT)
+                      if r.status_code == 200:
+                          self.latency = r.json().get("latency",9999)
+                          self.available = self.latency < LATENCY_THRESHOLD
+                  except:
+                      self.available = False
 
-          def load_existing_nodes(filename: str) -> List[ProxyNode]:
-              existing_nodes = []
-              if not os.path.exists(filename):
-                  return existing_nodes
+          # 读取旧节点
+          def load_existing_nodes(filename):
+              nodes = []
+              if not os.path.exists(filename): return nodes
               try:
-                  with open(filename, 'r', encoding='utf-8') as f:
-                      config = yaml.safe_load(f)
-                  if not config or "proxies" not in config:
-                      return existing_nodes
-                  for p in config["proxies"]:
+                  with open(filename,'r',encoding='utf-8') as f:
+                      dat = yaml.safe_load(f)
+                  for p in dat.get("proxies",[]):
                       if p.get("type") in ALLOWED_PROTOCOLS:
-                          prefix = ""
-                          for code, cfg in REGION_CONFIG.items():
-                              if p["name"].startswith(cfg["prefix"]):
-                                  prefix = cfg["prefix"]
-                                  break
-                          existing_nodes.append(ProxyNode(p, prefix))
-              except Exception as e:
-                  print(f"读取历史节点失败: {e}")
-              return existing_nodes
+                          pref = next((v["prefix"] for k,v in REGION_CONFIG.items() if p.get("name","").startswith(v["prefix"])), "UNK-")
+                          nodes.append(ProxyNode(p,pref))
+              except:
+                  pass
+              return nodes
 
-          def load_subs():
-              if not os.path.exists(CONFIG_FILE):
-                  print(f"配置文件 {CONFIG_FILE} 不存在！")
-                  return []
-              with open(CONFIG_FILE, 'r', encoding='utf-8') as f:
-                  return yaml.safe_load(f).get("subs", [])
+          # 测速一批节点
+          def test_batch(nodes):
+              start = time.time()
+              for n in nodes: 
+                  n.test()
+                  time.sleep(0.15)  # 缩短间隔，更快测速
+              print(f"测速耗时: {round(time.time()-start, 2)} 秒")
 
-          def get_content(url):
-              try:
-                  r = requests.get(url, timeout=TIMEOUT)
-                  r.raise_for_status()
-                  return r.text
-              except Exception as e:
-                  print(f"下载订阅失败 {url}: {e}")
-                  return ""
+          # 全网大拉取
+          def fetch_all_subs():
+              start = time.time()
+              if not os.path.exists(CONFIG_FILE): return []
+              with open(CONFIG_FILE,'r',encoding='utf-8') as f: subs = yaml.safe_load(f).get("subs",[])
+              allp = []
+              for u in subs:
+                  try:
+                      r = requests.get(u,timeout=7)
+                      dat = yaml.safe_load(r.text)
+                      if isinstance(dat,dict): allp += dat.get("proxies",[])
+                      else: allp += dat
+                  except: continue
+              print(f"全网拉取耗时: {round(time.time()-start, 2)} 秒")
+              return allp
 
-          def parse_proxies(txt):
-              try:
-                  d = yaml.safe_load(txt)
-                  if isinstance(d, dict) and "proxies" in d:
-                      return d["proxies"]
-                  elif isinstance(d, list):
-                      return d
-              except Exception as e:
-                  print(f"解析节点失败: {e}")
-              return []
-
-          def filter_region(proxies, kws):
-              """扩大粗筛范围：不限制数量，只要匹配关键词就保留"""
+          # 粗筛地区
+          def filter_region(proxies,kws):
               res = []
               for p in proxies:
-                  if not isinstance(p, dict):
-                      continue
-                  if p.get("type") not in ALLOWED_PROTOCOLS:
-                      continue
-                  n = str(p.get("name", "")).lower()
-                  s = str(p.get("server", "")).lower()
-                  # 放宽匹配条件：只要关键词出现在名字/服务器里就保留
+                  if not isinstance(p,dict): continue
+                  if p.get("type") not in ALLOWED_PROTOCOLS: continue
+                  n = str(p.get("name","")).lower()
+                  s = str(p.get("server","")).lower()
                   if any(kw.lower() in n or kw.lower() in s for kw in kws):
                       res.append(p)
               print(f"粗筛出 {len(res)} 个候选节点")
               return res
 
-          def merge_nodes(existing: List[ProxyNode], new: List[ProxyNode], max_nodes: int) -> List[ProxyNode]:
-              """合并节点：优先优质节点 + 按延迟排序 + 保底30个"""
-              node_dict = {n.get_unique_key(): n for n in existing}
-              # 添加新节点（不重复）
-              for n in new:
-                  key = n.get_unique_key()
-                  if key not in node_dict:
-                      node_dict[key] = n
-              # 拆分节点：优质节点（<500ms）、可用节点（≥500ms）、不可用节点
-              all_nodes = list(node_dict.values())
-              high_quality_nodes = [n for n in all_nodes if n.high_quality]
-              normal_available_nodes = [n for n in all_nodes if n.available and not n.high_quality]
-              unavailable_nodes = [n for n in all_nodes if not n.available]
-              
-              # 排序：优质节点优先（按延迟升序）→ 普通可用节点（按延迟升序）→ 不可用节点
-              high_quality_nodes.sort(key=lambda x: x.latency)
-              normal_available_nodes.sort(key=lambda x: x.latency)
-              merged = high_quality_nodes + normal_available_nodes + unavailable_nodes
-              
-              # 保底逻辑：至少保留30个
-              current_count = len(merged)
-              if current_count < MIN_NODES:
-                  print(f"可用节点不足{MIN_NODES}个，补充保底节点...")
-                  need_add = MIN_NODES - current_count
-                  for i in range(need_add):
-                      dummy = ProxyNode({
-                          "name": f"Backup_{random.randint(1000,9999)}",
-                          "type": "trojan",
-                          "server": f"backup{i}.example.com",
-                          "port": 443,
-                          "password": "dummy"
-                      }, "HK-")
-                      dummy.latency = 9999.0
-                      merged.append(dummy)
-              
-              # 按地区限制最大节点数，优先保留优质节点
-              final_nodes = merged[:max_nodes]
-              # 统计最终节点质量
-              final_high_quality = len([n for n in final_nodes if n.high_quality])
-              final_available = len([n for n in final_nodes if n.available])
-              print(f"精筛后：优质节点{final_high_quality}个，可用节点{final_available}个，总计{len(final_nodes)}个")
-              
-              return final_nodes
-
-          def make_config(nodes, region_name):
-              # 优先用可用节点，无可用节点才用保底
-              available_nodes = [n for n in nodes if n.available]
-              if not available_nodes:
-                  available_nodes = nodes[:MIN_NODES]
-              
-              names = [n.name for n in available_nodes]
+          def build(nodes,region_name):
+              avails = [n for n in nodes if n.available][:MAX_NODES_CONFIG[region_name]]
+              if len(avails)<MIN_NODES:
+                  avails = nodes[:MIN_NODES]
+                  print(f"可用节点不足，补充保底到 {MIN_NODES} 个")
+              names = [n.name for n in avails]
               return {
-                  "mixed-port": 7890,
-                  "allow-lan": True,
-                  "mode": "Rule",
-                  "log-level": "info",
-                  "external-controller": "127.0.0.1:9090",
-                  "proxies": [n.to_dict() for n in available_nodes],
-                  "proxy-groups": [
-                      {
-                          "name": f"{region_name} Auto",
-                          "type": "url-test",
-                          "proxies": names,
-                          "url": "http://www.google.com/generate_204",
-                          "interval": 300
-                      },
-                      {
-                          "name": f"{region_name} Manual",
-                          "type": "select",
-                          "proxies": names + [f"{region_name} Auto", "DIRECT"]
-                      }
+                  "mixed-port":7890,"allow-lan":True,"mode":"Rule","log-level":"info",
+                  "external-controller":"127.0.0.1:9090",
+                  "proxies":[n.to_dict() for n in avails],
+                  "proxy-groups":[
+                      {"name":f"{region_name} Auto","type":"url-test","proxies":names,"url":"http://www.google.com/generate_204","interval":300},
+                      {"name":f"{region_name} Manual","type":"select","proxies":names+[f"{region_name} Auto","DIRECT"]}
                   ],
-                  "rules": [
-                      "GEOIP,CN,DIRECT",
-                      f"MATCH,{region_name} Auto"
-                  ]
+                  "rules":["GEOIP,CN,DIRECT",f"MATCH,{region_name} Auto"]
               }
 
           def main():
-              subs = load_subs()
-              all_new_proxies = []
-              for u in subs:
-                  txt = get_content(u)
-                  ps = parse_proxies(txt)
-                  all_new_proxies.extend(ps)
-              print(f"共从订阅源获取 {len(all_new_proxies)} 个节点")
-
-              for code, cfg in REGION_CONFIG.items():
-                  print(f"\n===== 处理 {code.upper()} 节点 =====")
-                  existing_nodes = load_existing_nodes(cfg["filename"])
-                  print(f"历史节点数: {len(existing_nodes)}")
-
-                  # 第一步：粗筛（扩大撒网范围）
-                  region_new_proxies = filter_region(all_new_proxies, cfg["keywords"])
-                  new_nodes = [ProxyNode(p, cfg["prefix"]) for p in region_new_proxies]
+              total_start = time.time()
+              for code,cfg in REGION_CONFIG.items():
+                  print(f"\n=== 处理 {code.upper()} 节点 ===")
+                  # 1. 读取旧节点+快速测速
+                  old = load_existing_nodes(cfg["filename"])
+                  print(f"读取旧节点数: {len(old)}")
+                  test_batch(old)
                   
-                  # 第二步：精筛（内地测速）
-                  print("开始内地视角测速（优先保留延迟<500ms的优质节点）...")
-                  for i, n in enumerate(new_nodes):
-                      print(f"测速中 {i+1}/{len(new_nodes)}: {n.name}")
-                      n.test_latency_cf()
-                      import time
-                      time.sleep(0.2)
+                  # 2. 判断是否够用
+                  good = [n for n in old if n.available]
+                  print(f"旧节点可用数: {len(good)} / 需要 {MIN_NODES}")
 
-                  # 第三步：合并+按质量排序+限制数量
-                  max_nodes = MAX_NODES_CONFIG.get(code, 30)
-                  final_nodes = merge_nodes(existing_nodes, new_nodes, max_nodes)
+                  if len(good)>=MIN_NODES:
+                      print("✅ 可用节点足够，直接复用旧节点")
+                      good.sort(key=lambda x:x.latency)
+                      final = good
+                  else:
+                      print("❌ 可用节点不足，启动全网大搜")
+                      # 3. 全网拉取+粗筛+测速
+                      allp = fetch_all_subs()
+                      region_p = filter_region(allp, cfg["keywords"])
+                      new_nodes = [ProxyNode(p,cfg["prefix"]) for p in region_p]
+                      print(f"新节点数: {len(new_nodes)}，开始测速...")
+                      test_batch(new_nodes)
+                      
+                      # 4. 合并去重+排序
+                      pool = {n.get_unique_key():n for n in old+new_nodes}.values()
+                      pool = sorted([n for n in pool if n.available], key=lambda x:x.latency)
+                      final = pool[:MAX_NODES_CONFIG[code]]
 
-                  # 生成配置文件
-                  conf = make_config(final_nodes, code.upper())
-                  with open(cfg["filename"], 'w', encoding='utf-8') as f:
-                      yaml.dump(conf, f, default_flow_style=False, allow_unicode=True, sort_keys=False)
-                  print(f"{cfg['filename']} 已更新")
+                  # 5. 生成配置文件
+                  conf = build(final,code)
+                  with open(cfg["filename"],'w',encoding='utf-8') as f:
+                      yaml.dump(conf,f,default_flow_style=False,allow_unicode=True, sort_keys=False)
+                  print(f"✅ {cfg['filename']} 已更新")
+              
+              # 统计总耗时
+              total_time = round(time.time()-total_start, 2)
+              print(f"\n📊 本次运行总耗时: {total_time} 秒")
 
-          if __name__ == "__main__":
+          if __name__=="__main__":
               main()
           EOF
 
@@ -317,5 +232,5 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add sub_*.yaml
-          git commit -m "Auto update nodes (HK:100, SG/JP:30) with mainland latency (优质节点<500ms) $(date +'%Y-%m-%d %H:%M:%S')" || exit 0
+          git commit -m "Auto smart update (每小时检查) - $(date +'%Y-%m-%d %H:%M:%S')" || exit 0
           git push
