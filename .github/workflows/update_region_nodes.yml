@@ -24,7 +24,7 @@ jobs:
           pip install --upgrade pip
           pip install pyyaml requests
 
-      - name: Download and filter nodes (HK:100个, SG/JP:30个, 保底30个)
+      - name: Download and filter nodes (扩大粗筛+严格精筛)
         run: |
           python3 << 'EOF'
           import os
@@ -37,6 +37,7 @@ jobs:
           CONFIG_FILE = "config.yaml"
           TIMEOUT = 15
           MIN_NODES = 30  # 所有地区保底30个
+          LATENCY_THRESHOLD = 500  # 优质节点阈值：延迟<500ms
           # 各地区最大节点数配置
           MAX_NODES_CONFIG = {
               "hk": 100,  # 香港保留100个
@@ -46,21 +47,24 @@ jobs:
           # 替换为你的Cloudflare Worker地址
           CF_WORKERS_API = "https://yellow-tree-130b.lijinlonghk666.workers.dev"
 
-          # 地区配置
+          # 地区配置：扩大关键词，拉大撒网范围
           REGION_CONFIG = {
               "hk": {
                   "filename": "sub_hk.yaml",
-                  "keywords": ["hk", "hongkong", "香港", "HK", "HongKong"],
+                  # 新增更多香港关键词，确保粗筛足够多
+                  "keywords": ["hk", "hongkong", "香港", "HK", "HongKong", "HKT", "CN2", "沙田", "荃湾", "中环", "九龙"],
                   "prefix": "HK-"
               },
               "sg": {
                   "filename": "sub_sg.yaml",
-                  "keywords": ["sg", "singapore", "新加坡", "SG", "Singapore"],
+                  # 新增新加坡关键词
+                  "keywords": ["sg", "singapore", "新加坡", "SG", "Singapore", "SGD", "狮城", "新加坡🇸🇬"],
                   "prefix": "SG-"
               },
               "jp": {
                   "filename": "sub_jp.yaml",
-                  "keywords": ["jp", "japan", "日本", "JP", "Japan", "东京", "大阪"],
+                  # 新增日本关键词
+                  "keywords": ["jp", "japan", "日本", "JP", "Japan", "东京", "大阪", "JP东", "JP西", "横滨", "名古屋"],
                   "prefix": "JP-"
               }
           }
@@ -82,6 +86,7 @@ jobs:
                   self.cipher = d.get("cipher", "")
                   self.latency = 9999.0
                   self.available = False
+                  self.high_quality = False  # 标记是否为优质节点（延迟<500ms）
 
               def to_dict(self):
                   b = {
@@ -120,7 +125,8 @@ jobs:
                       )
                       if resp.status_code == 200:
                           self.latency = resp.json().get("latency", 9999.0)
-                          self.available = True
+                          self.available = self.latency < 9999  # 可用：延迟不是9999
+                          self.high_quality = self.latency < LATENCY_THRESHOLD  # 优质：延迟<500ms
                   except Exception as e:
                       print(f"测速失败 {self.name}: {e}")
 
@@ -173,6 +179,7 @@ jobs:
               return []
 
           def filter_region(proxies, kws):
+              """扩大粗筛范围：不限制数量，只要匹配关键词就保留"""
               res = []
               for p in proxies:
                   if not isinstance(p, dict):
@@ -181,26 +188,35 @@ jobs:
                       continue
                   n = str(p.get("name", "")).lower()
                   s = str(p.get("server", "")).lower()
+                  # 放宽匹配条件：只要关键词出现在名字/服务器里就保留
                   if any(kw.lower() in n or kw.lower() in s for kw in kws):
                       res.append(p)
+              print(f"粗筛出 {len(res)} 个候选节点")
               return res
 
           def merge_nodes(existing: List[ProxyNode], new: List[ProxyNode], max_nodes: int) -> List[ProxyNode]:
-              """合并节点：去重 + 按延迟排序 + 按地区限制最大数 + 保底30个"""
+              """合并节点：优先优质节点 + 按延迟排序 + 保底30个"""
               node_dict = {n.get_unique_key(): n for n in existing}
               # 添加新节点（不重复）
               for n in new:
                   key = n.get_unique_key()
                   if key not in node_dict:
                       node_dict[key] = n
-              # 按延迟排序
-              merged = list(node_dict.values())
-              merged.sort(key=lambda x: x.latency)
+              # 拆分节点：优质节点（<500ms）、可用节点（≥500ms）、不可用节点
+              all_nodes = list(node_dict.values())
+              high_quality_nodes = [n for n in all_nodes if n.high_quality]
+              normal_available_nodes = [n for n in all_nodes if n.available and not n.high_quality]
+              unavailable_nodes = [n for n in all_nodes if not n.available]
+              
+              # 排序：优质节点优先（按延迟升序）→ 普通可用节点（按延迟升序）→ 不可用节点
+              high_quality_nodes.sort(key=lambda x: x.latency)
+              normal_available_nodes.sort(key=lambda x: x.latency)
+              merged = high_quality_nodes + normal_available_nodes + unavailable_nodes
               
               # 保底逻辑：至少保留30个
               current_count = len(merged)
               if current_count < MIN_NODES:
-                  print(f"节点数不足{MIN_NODES}个，补充保底节点...")
+                  print(f"可用节点不足{MIN_NODES}个，补充保底节点...")
                   need_add = MIN_NODES - current_count
                   for i in range(need_add):
                       dummy = ProxyNode({
@@ -213,10 +229,17 @@ jobs:
                       dummy.latency = 9999.0
                       merged.append(dummy)
               
-              # 按地区限制最大节点数
-              return merged[:max_nodes]
+              # 按地区限制最大节点数，优先保留优质节点
+              final_nodes = merged[:max_nodes]
+              # 统计最终节点质量
+              final_high_quality = len([n for n in final_nodes if n.high_quality])
+              final_available = len([n for n in final_nodes if n.available])
+              print(f"精筛后：优质节点{final_high_quality}个，可用节点{final_available}个，总计{len(final_nodes)}个")
+              
+              return final_nodes
 
           def make_config(nodes, region_name):
+              # 优先用可用节点，无可用节点才用保底
               available_nodes = [n for n in nodes if n.available]
               if not available_nodes:
                   available_nodes = nodes[:MIN_NODES]
@@ -256,29 +279,30 @@ jobs:
                   txt = get_content(u)
                   ps = parse_proxies(txt)
                   all_new_proxies.extend(ps)
-              print(f"共获取新节点数: {len(all_new_proxies)}")
+              print(f"共从订阅源获取 {len(all_new_proxies)} 个节点")
 
               for code, cfg in REGION_CONFIG.items():
                   print(f"\n===== 处理 {code.upper()} 节点 =====")
                   existing_nodes = load_existing_nodes(cfg["filename"])
                   print(f"历史节点数: {len(existing_nodes)}")
 
+                  # 第一步：粗筛（扩大撒网范围）
                   region_new_proxies = filter_region(all_new_proxies, cfg["keywords"])
                   new_nodes = [ProxyNode(p, cfg["prefix"]) for p in region_new_proxies]
-                  print(f"新筛选节点数: {len(new_nodes)}")
-
-                  print("开始内地视角测速...")
+                  
+                  # 第二步：精筛（内地测速）
+                  print("开始内地视角测速（优先保留延迟<500ms的优质节点）...")
                   for i, n in enumerate(new_nodes):
                       print(f"测速中 {i+1}/{len(new_nodes)}: {n.name}")
                       n.test_latency_cf()
                       import time
                       time.sleep(0.2)
 
-                  # 按地区取最大节点数
+                  # 第三步：合并+按质量排序+限制数量
                   max_nodes = MAX_NODES_CONFIG.get(code, 30)
                   final_nodes = merge_nodes(existing_nodes, new_nodes, max_nodes)
-                  print(f"最终保留节点数: {len(final_nodes)} (最大{max_nodes}个，保底{MIN_NODES}个)")
 
+                  # 生成配置文件
                   conf = make_config(final_nodes, code.upper())
                   with open(cfg["filename"], 'w', encoding='utf-8') as f:
                       yaml.dump(conf, f, default_flow_style=False, allow_unicode=True, sort_keys=False)
@@ -293,5 +317,5 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add sub_*.yaml
-          git commit -m "Auto update nodes (HK:100, SG/JP:30) with mainland latency $(date +'%Y-%m-%d %H:%M:%S')" || exit 0
+          git commit -m "Auto update nodes (HK:100, SG/JP:30) with mainland latency (优质节点<500ms) $(date +'%Y-%m-%d %H:%M:%S')" || exit 0
           git push
