@@ -2,7 +2,7 @@ name: Auto Update HK SG JP Nodes
 
 on:
   schedule:
-    - cron: '0 8-23/2 * * *'  # Runs at 0 minutes past the hour, every 2 hours, between 08:00 and 23:00
+    - cron: '0 8-23/2 * * *'  # 每2小时自动更新
   workflow_dispatch:
 
 jobs:
@@ -24,7 +24,7 @@ jobs:
           pip install --upgrade pip
           pip install pyyaml requests
 
-      - name: Download and filter HK/SG/JP nodes (保留30个有效节点)
+      - name: Download and filter nodes (HK:100个, SG/JP:30个, 保底30个)
         run: |
           python3 << 'EOF'
           import os
@@ -35,9 +35,14 @@ jobs:
 
           # ========== 核心配置 ==========
           CONFIG_FILE = "config.yaml"
-          MAX_NODES_PER_REGION = 100
           TIMEOUT = 15
-          MIN_NODES = 30
+          MIN_NODES = 30  # 所有地区保底30个
+          # 各地区最大节点数配置
+          MAX_NODES_CONFIG = {
+              "hk": 100,  # 香港保留100个
+              "sg": 30,   # 新加坡保留30个
+              "jp": 30    # 日本保留30个
+          }
           # 替换为你的Cloudflare Worker地址
           CF_WORKERS_API = "https://yellow-tree-130b.lijinlonghk666.workers.dev"
 
@@ -180,18 +185,23 @@ jobs:
                       res.append(p)
               return res
 
-          def merge_nodes(existing: List[ProxyNode], new: List[ProxyNode]) -> List[ProxyNode]:
+          def merge_nodes(existing: List[ProxyNode], new: List[ProxyNode], max_nodes: int) -> List[ProxyNode]:
+              """合并节点：去重 + 按延迟排序 + 按地区限制最大数 + 保底30个"""
               node_dict = {n.get_unique_key(): n for n in existing}
+              # 添加新节点（不重复）
               for n in new:
                   key = n.get_unique_key()
                   if key not in node_dict:
                       node_dict[key] = n
+              # 按延迟排序
               merged = list(node_dict.values())
               merged.sort(key=lambda x: x.latency)
-
-              if len(merged) < MIN_NODES:
+              
+              # 保底逻辑：至少保留30个
+              current_count = len(merged)
+              if current_count < MIN_NODES:
                   print(f"节点数不足{MIN_NODES}个，补充保底节点...")
-                  need_add = MIN_NODES - len(merged)
+                  need_add = MIN_NODES - current_count
                   for i in range(need_add):
                       dummy = ProxyNode({
                           "name": f"Backup_{random.randint(1000,9999)}",
@@ -202,14 +212,15 @@ jobs:
                       }, "HK-")
                       dummy.latency = 9999.0
                       merged.append(dummy)
-
-              return merged[:MAX_NODES_PER_REGION]
+              
+              # 按地区限制最大节点数
+              return merged[:max_nodes]
 
           def make_config(nodes, region_name):
               available_nodes = [n for n in nodes if n.available]
               if not available_nodes:
                   available_nodes = nodes[:MIN_NODES]
-
+              
               names = [n.name for n in available_nodes]
               return {
                   "mixed-port": 7890,
@@ -263,8 +274,10 @@ jobs:
                       import time
                       time.sleep(0.2)
 
-                  final_nodes = merge_nodes(existing_nodes, new_nodes)
-                  print(f"最终保留节点数: {len(final_nodes)}")
+                  # 按地区取最大节点数
+                  max_nodes = MAX_NODES_CONFIG.get(code, 30)
+                  final_nodes = merge_nodes(existing_nodes, new_nodes, max_nodes)
+                  print(f"最终保留节点数: {len(final_nodes)} (最大{max_nodes}个，保底{MIN_NODES}个)")
 
                   conf = make_config(final_nodes, code.upper())
                   with open(cfg["filename"], 'w', encoding='utf-8') as f:
@@ -280,5 +293,5 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add sub_*.yaml
-          git commit -m "Auto update HK/SG/JP nodes with mainland latency $(date +'%Y-%m-%d %H:%M:%S')" || exit 0
+          git commit -m "Auto update nodes (HK:100, SG/JP:30) with mainland latency $(date +'%Y-%m-%d %H:%M:%S')" || exit 0
           git push
