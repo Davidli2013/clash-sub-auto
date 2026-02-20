@@ -35,7 +35,7 @@ jobs:
           from ping3 import ping
           from typing import List, Dict
 
-          # ========== 核心配置（关键调整：MIN_NODES=30） ==========
+          # ========== 核心配置 ==========
           CONFIG_FILE = "config.yaml"
           MAX_NODES_PER_REGION = 100           # 最多保留100个节点
           TIMEOUT = 15                         # 超时时间(秒)
@@ -295,19 +295,25 @@ jobs:
               main()
           EOF
 
-      - name: Commit and push
+      - name: Commit and push (修复Git冲突)
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
+          
+          # 关键修复：先拉取最新代码，解决推送冲突
+          git pull origin main --rebase
+          
           # 添加所有地区文件
           git add sub_hk.yaml sub_sg.yaml sub_jp.yaml
+          
           # 只有有变化才提交
           if git diff --cached --quiet; then
               echo "无节点更新，无需提交"
               exit 0
           fi
+          
           git commit -m "Auto update HK SG JP nodes (keep 30+ nodes) 🚀"
           git push https://${GH_PAT}@github.com/Davidli2013/clash-sub-auto.git HEAD:main
           echo "更新已推送"
