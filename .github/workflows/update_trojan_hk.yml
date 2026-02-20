@@ -16,12 +16,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. 配置 Python 环境
+      # 2. 配置 Python 环境（禁用缓存，避免requirements.txt缺失报错）
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          cache: 'pip'  # 缓存 pip 依赖，加速运行
+          # 移除 cache: 'pip' 这一行，或者设置为 'none'
+          cache: 'none'
 
       # 3. 安装必要依赖
       - name: Install dependencies
