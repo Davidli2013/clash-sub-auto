@@ -4,7 +4,7 @@ mode: Rule
 log-level: info
 external-controller: 127.0.0.1:9090
 proxies:
-- name: SG-🇸🇬SG
+- name: SG-SG-🇸🇬SG
   type: vless
   server: 8.222.220.81
   port: 25435
@@ -12,15 +12,7 @@ proxies:
   udp: true
   uuid: 6202b230-417c-4d8e-b624-0f71afa9c75d
   network: ws
-- name: SG-🇸🇬SG_2
-  type: vless
-  server: 38.180.249.123
-  port: 443
-  skip-cert-verify: true
-  udp: true
-  uuid: 6202b230-417c-4d8e-b624-0f71afa9c75d
-  network: ws
-- name: SG-🇸🇬 新加坡|@stairnode
+- name: SG-SG-🇸🇬 新加坡|@stairnode
   type: trojan
   server: 160.16.81.84
   port: 3901
@@ -28,15 +20,7 @@ proxies:
   udp: true
   password: 9372cb81c7b0ad903f91f2f8a4d3f02b
   sni: www.nintendogames.net
-- name: SG-🇸🇬 新加坡3|@stairnode
-  type: trojan
-  server: 13.192.163.115
-  port: 381
-  skip-cert-verify: true
-  udp: true
-  password: BxceQaOe
-  sni: t.me%252Fripaojiedian
-- name: SG-🇸🇬SG-159.223.32.230-0097
+- name: SG-SG-🇸🇬SG-159.223.32.230-0097
   type: vmess
   server: 159.223.32.230
   port: 8080
@@ -44,19 +28,13 @@ proxies:
   udp: true
   uuid: 7002330d-fe27-4b56-b22f-d7e3eb825fdb
   network: ws
-- name: SG-🇸🇬SG-217.197.161.166-0133
+- name: SG-SG-🇸🇬SG-217.197.161.166-0133
   type: ss
   server: 217.197.161.166
   port: 810
   skip-cert-verify: true
   udp: true
-- name: SG-🇸🇬SG-217.197.161.136-0137
-  type: ss
-  server: 217.197.161.136
-  port: 812
-  skip-cert-verify: true
-  udp: true
-- name: SG-新加坡 - 新加坡 - Cloudflare, Inc. - 8
+- name: SG-SG-新加坡 - 新加坡 - Cloudflare, Inc. - 8
   type: vless
   server: 198.41.211.211
   port: 443
@@ -64,7 +42,7 @@ proxies:
   udp: true
   uuid: a8ea783c-dc54-4b17-96e4-144d1af2cb75
   network: ws
-- name: SG-新加坡 - 新加坡 - Global Communication Network Limited - 1
+- name: SG-SG-新加坡 - 新加坡 - Global Communication Network Limited - 1
   type: vmess
   server: 82.21.80.224
   port: 17310
@@ -72,7 +50,7 @@ proxies:
   udp: true
   uuid: 656920dc-ed05-4f41-8c49-bdff41e383a9
   network: none
-- name: SG-🇸🇬 新加坡2|@stairnode
+- name: SG-SG-🇸🇬 新加坡2|@stairnode
   type: trojan
   server: 153.121.39.240
   port: 3901
@@ -80,37 +58,25 @@ proxies:
   udp: true
   password: 9372cb81c7b0ad903f91f2f8a4d3f02b
   sni: www.nintendogames.net
-- name: SG-🇸🇬SG-217.197.161.138-0131
+- name: SG-SG-🇸🇬SG-217.197.161.138-0131
   type: ss
   server: 217.197.161.138
   port: 808
   skip-cert-verify: true
   udp: true
-- name: SG-🇸🇬SG-81.90.189.18-0134
-  type: ss
-  server: 81.90.189.18
-  port: 811
-  skip-cert-verify: true
-  udp: true
-- name: SG-🇸🇬SG-217.197.161.166-0135
+- name: SG-SG-🇸🇬SG-217.197.161.166-0135
   type: ss
   server: 217.197.161.166
   port: 808
   skip-cert-verify: true
   udp: true
-- name: SG-🇸🇬SG-217.197.161.166-0132
-  type: ss
-  server: 217.197.161.166
-  port: 809
-  skip-cert-verify: true
-  udp: true
-- name: SG-🇸🇬SG-217.197.161.138-0136
+- name: SG-SG-🇸🇬SG-217.197.161.138-0136
   type: ss
   server: 217.197.161.138
   port: 810
   skip-cert-verify: true
   udp: true
-- name: SG-🇸🇬SG_1
+- name: SG-SG-🇸🇬SG_1
   type: vless
   server: 13.250.31.132
   port: 443
@@ -118,100 +84,134 @@ proxies:
   udp: true
   uuid: 6202b230-417c-4d8e-b624-0f71afa9c75d
   network: ws
-- name: SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node2335
-  type: trojan
-  server: backup-sg-14.example.com
+- name: SG-SG-🇸🇬SG_2
+  type: vless
+  server: 38.180.249.123
   port: 443
   skip-cert-verify: true
   udp: true
-  password: dummy-password
-- name: SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node5492
+  uuid: 6202b230-417c-4d8e-b624-0f71afa9c75d
+  network: ws
+- name: SG-SG-🇸🇬 新加坡3|@stairnode
   type: trojan
-  server: backup-sg-5.example.com
-  port: 443
+  server: 13.192.163.115
+  port: 381
   skip-cert-verify: true
   udp: true
-  password: dummy-password
-- name: SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node6801
-  type: trojan
-  server: backup-sg-20.example.com
-  port: 443
+  password: BxceQaOe
+  sni: t.me%252Fripaojiedian
+- name: SG-SG-🇸🇬SG-217.197.161.136-0137
+  type: ss
+  server: 217.197.161.136
+  port: 812
   skip-cert-verify: true
   udp: true
-  password: dummy-password
-- name: SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node1716
-  type: trojan
-  server: backup-sg-22.example.com
-  port: 443
+- name: SG-SG-🇸🇬SG-81.90.189.18-0134
+  type: ss
+  server: 81.90.189.18
+  port: 811
   skip-cert-verify: true
   udp: true
-  password: dummy-password
-- name: SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node3242
-  type: trojan
-  server: backup-sg-11.example.com
-  port: 443
+- name: SG-SG-🇸🇬SG-217.197.161.166-0132
+  type: ss
+  server: 217.197.161.166
+  port: 809
   skip-cert-verify: true
   udp: true
-  password: dummy-password
-- name: SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node4186
-  type: trojan
-  server: backup-sg-25.example.com
-  port: 443
-  skip-cert-verify: true
-  udp: true
-  password: dummy-password
-- name: SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node6370
-  type: trojan
-  server: backup-sg-7.example.com
-  port: 443
-  skip-cert-verify: true
-  udp: true
-  password: dummy-password
-- name: SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node4133
-  type: trojan
-  server: backup-sg-2.example.com
-  port: 443
-  skip-cert-verify: true
-  udp: true
-  password: dummy-password
-- name: SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node7792
-  type: trojan
-  server: backup-sg-18.example.com
-  port: 443
-  skip-cert-verify: true
-  udp: true
-  password: dummy-password
-- name: SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node1214
-  type: trojan
-  server: backup-sg-21.example.com
-  port: 443
-  skip-cert-verify: true
-  udp: true
-  password: dummy-password
-- name: SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node1146
-  type: trojan
-  server: backup-sg-19.example.com
-  port: 443
-  skip-cert-verify: true
-  udp: true
-  password: dummy-password
-- name: SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node2352
-  type: trojan
-  server: backup-sg-28.example.com
-  port: 443
-  skip-cert-verify: true
-  udp: true
-  password: dummy-password
-- name: SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node7131
+- name: SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node7131
   type: trojan
   server: backup-sg-1.example.com
   port: 443
   skip-cert-verify: true
   udp: true
   password: dummy-password
-- name: SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node5262
+- name: SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node4186
+  type: trojan
+  server: backup-sg-25.example.com
+  port: 443
+  skip-cert-verify: true
+  udp: true
+  password: dummy-password
+- name: SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node1214
+  type: trojan
+  server: backup-sg-21.example.com
+  port: 443
+  skip-cert-verify: true
+  udp: true
+  password: dummy-password
+- name: SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node2352
+  type: trojan
+  server: backup-sg-28.example.com
+  port: 443
+  skip-cert-verify: true
+  udp: true
+  password: dummy-password
+- name: SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node5492
+  type: trojan
+  server: backup-sg-5.example.com
+  port: 443
+  skip-cert-verify: true
+  udp: true
+  password: dummy-password
+- name: SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node4133
+  type: trojan
+  server: backup-sg-2.example.com
+  port: 443
+  skip-cert-verify: true
+  udp: true
+  password: dummy-password
+- name: SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node7792
+  type: trojan
+  server: backup-sg-18.example.com
+  port: 443
+  skip-cert-verify: true
+  udp: true
+  password: dummy-password
+- name: SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node2335
+  type: trojan
+  server: backup-sg-14.example.com
+  port: 443
+  skip-cert-verify: true
+  udp: true
+  password: dummy-password
+- name: SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node1716
+  type: trojan
+  server: backup-sg-22.example.com
+  port: 443
+  skip-cert-verify: true
+  udp: true
+  password: dummy-password
+- name: SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node6801
+  type: trojan
+  server: backup-sg-20.example.com
+  port: 443
+  skip-cert-verify: true
+  udp: true
+  password: dummy-password
+- name: SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node5262
   type: trojan
   server: backup-sg-23.example.com
+  port: 443
+  skip-cert-verify: true
+  udp: true
+  password: dummy-password
+- name: SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node1146
+  type: trojan
+  server: backup-sg-19.example.com
+  port: 443
+  skip-cert-verify: true
+  udp: true
+  password: dummy-password
+- name: SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node6370
+  type: trojan
+  server: backup-sg-7.example.com
+  port: 443
+  skip-cert-verify: true
+  udp: true
+  password: dummy-password
+- name: SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node3242
+  type: trojan
+  server: backup-sg-11.example.com
   port: 443
   skip-cert-verify: true
   udp: true
@@ -220,71 +220,71 @@ proxy-groups:
 - name: SG Auto
   type: url-test
   proxies:
-  - SG-🇸🇬SG
-  - SG-🇸🇬SG_2
-  - SG-🇸🇬 新加坡|@stairnode
-  - SG-🇸🇬 新加坡3|@stairnode
-  - SG-🇸🇬SG-159.223.32.230-0097
-  - SG-🇸🇬SG-217.197.161.166-0133
-  - SG-🇸🇬SG-217.197.161.136-0137
-  - SG-新加坡 - 新加坡 - Cloudflare, Inc. - 8
-  - SG-新加坡 - 新加坡 - Global Communication Network Limited - 1
-  - SG-🇸🇬 新加坡2|@stairnode
-  - SG-🇸🇬SG-217.197.161.138-0131
-  - SG-🇸🇬SG-81.90.189.18-0134
-  - SG-🇸🇬SG-217.197.161.166-0135
-  - SG-🇸🇬SG-217.197.161.166-0132
-  - SG-🇸🇬SG-217.197.161.138-0136
-  - SG-🇸🇬SG_1
-  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node2335
-  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node5492
-  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node6801
-  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node1716
-  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node3242
-  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node4186
-  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node6370
-  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node4133
-  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node7792
-  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node1214
-  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node1146
-  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node2352
-  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node7131
-  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node5262
+  - SG-SG-🇸🇬SG
+  - SG-SG-🇸🇬 新加坡|@stairnode
+  - SG-SG-🇸🇬SG-159.223.32.230-0097
+  - SG-SG-🇸🇬SG-217.197.161.166-0133
+  - SG-SG-新加坡 - 新加坡 - Cloudflare, Inc. - 8
+  - SG-SG-新加坡 - 新加坡 - Global Communication Network Limited - 1
+  - SG-SG-🇸🇬 新加坡2|@stairnode
+  - SG-SG-🇸🇬SG-217.197.161.138-0131
+  - SG-SG-🇸🇬SG-217.197.161.166-0135
+  - SG-SG-🇸🇬SG-217.197.161.138-0136
+  - SG-SG-🇸🇬SG_1
+  - SG-SG-🇸🇬SG_2
+  - SG-SG-🇸🇬 新加坡3|@stairnode
+  - SG-SG-🇸🇬SG-217.197.161.136-0137
+  - SG-SG-🇸🇬SG-81.90.189.18-0134
+  - SG-SG-🇸🇬SG-217.197.161.166-0132
+  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node7131
+  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node4186
+  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node1214
+  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node2352
+  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node5492
+  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node4133
+  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node7792
+  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node2335
+  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node1716
+  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node6801
+  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node5262
+  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node1146
+  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node6370
+  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node3242
   url: http://www.google.com/generate_204
   interval: 300
 - name: SG Manual
   type: select
   proxies:
-  - SG-🇸🇬SG
-  - SG-🇸🇬SG_2
-  - SG-🇸🇬 新加坡|@stairnode
-  - SG-🇸🇬 新加坡3|@stairnode
-  - SG-🇸🇬SG-159.223.32.230-0097
-  - SG-🇸🇬SG-217.197.161.166-0133
-  - SG-🇸🇬SG-217.197.161.136-0137
-  - SG-新加坡 - 新加坡 - Cloudflare, Inc. - 8
-  - SG-新加坡 - 新加坡 - Global Communication Network Limited - 1
-  - SG-🇸🇬 新加坡2|@stairnode
-  - SG-🇸🇬SG-217.197.161.138-0131
-  - SG-🇸🇬SG-81.90.189.18-0134
-  - SG-🇸🇬SG-217.197.161.166-0135
-  - SG-🇸🇬SG-217.197.161.166-0132
-  - SG-🇸🇬SG-217.197.161.138-0136
-  - SG-🇸🇬SG_1
-  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node2335
-  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node5492
-  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node6801
-  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node1716
-  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node3242
-  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node4186
-  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node6370
-  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node4133
-  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node7792
-  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node1214
-  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node1146
-  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node2352
-  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node7131
-  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node5262
+  - SG-SG-🇸🇬SG
+  - SG-SG-🇸🇬 新加坡|@stairnode
+  - SG-SG-🇸🇬SG-159.223.32.230-0097
+  - SG-SG-🇸🇬SG-217.197.161.166-0133
+  - SG-SG-新加坡 - 新加坡 - Cloudflare, Inc. - 8
+  - SG-SG-新加坡 - 新加坡 - Global Communication Network Limited - 1
+  - SG-SG-🇸🇬 新加坡2|@stairnode
+  - SG-SG-🇸🇬SG-217.197.161.138-0131
+  - SG-SG-🇸🇬SG-217.197.161.166-0135
+  - SG-SG-🇸🇬SG-217.197.161.138-0136
+  - SG-SG-🇸🇬SG_1
+  - SG-SG-🇸🇬SG_2
+  - SG-SG-🇸🇬 新加坡3|@stairnode
+  - SG-SG-🇸🇬SG-217.197.161.136-0137
+  - SG-SG-🇸🇬SG-81.90.189.18-0134
+  - SG-SG-🇸🇬SG-217.197.161.166-0132
+  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node7131
+  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node4186
+  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node1214
+  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node2352
+  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node5492
+  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node4133
+  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node7792
+  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node2335
+  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node1716
+  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node6801
+  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node5262
+  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node1146
+  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node6370
+  - SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-SG-Node3242
   - SG Auto
   - DIRECT
 rules:
