@@ -4,35 +4,26 @@ mode: Rule
 log-level: info
 external-controller: 127.0.0.1:9090
 proxies:
-- name: HK-🇭🇰HK-202.64.124.252-1659
-  type: vmess
-  server: 202.64.124.252
-  port: 80
+- name: HK-HK-🇭🇰HK-103.103.245.125-1679
+  type: trojan
+  server: 103.103.245.125
+  port: 50418
   skip-cert-verify: false
   udp: true
-  uuid: 58d4ad2b-82d5-4847-b88c-889de4d38c19
-  network: ws
-- name: HK-🇭🇰HK-8.210.166.114-1575
-  type: vmess
-  server: 8.210.166.114
-  port: 48236
-  skip-cert-verify: false
-  udp: true
-  uuid: 9a3ab916-0662-45ae-8844-8efa29365f84
-  network: http
-- name: HK-HK-HK-HK-HK-HK-HK-🇭🇰HK-103.149.183.113-4816
+  password: a70b39d1-62ea-4d9e-b681-9c5408352234
+- name: HK-HK-HK-HK-HK-HK-HK-HK-🇭🇰HK-103.149.183.113-4816
   type: ss
   server: 103.149.183.113
   port: 8388
   skip-cert-verify: true
   udp: true
-- name: HK-HK-HK-中国 - 香港 - Dalian Yichuan Industrial CO - 2
+- name: HK-HK-HK-HK-中国 - 香港 - Dalian Yichuan Industrial CO - 2
   type: ss
   server: 103.149.182.79
   port: 8388
   skip-cert-verify: true
   udp: true
-- name: HK-🇭🇰HK-8.210.20.159-1882
+- name: HK-HK-🇭🇰HK-8.210.20.159-1882
   type: vmess
   server: 8.210.20.159
   port: 45751
@@ -40,15 +31,7 @@ proxies:
   udp: true
   uuid: 3a0d252e-cddf-4695-ab0f-95a0ce7abcc0
   network: http
-- name: HK-🇭🇰HK-58.152.46.60-1782
-  type: trojan
-  server: 58.152.46.60
-  port: 443
-  skip-cert-verify: false
-  udp: true
-  password: BxceQaOe
-  sni: '%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%2B%5BBy%2BDukeMehdi%5D%2Btrojan-HK%2B'
-- name: HK-🇭🇰HK-20.239.179.251-4207
+- name: HK-HK-🇭🇰HK-20.239.179.251-4207
   type: vmess
   server: 20.239.179.251
   port: 50044
@@ -56,15 +39,7 @@ proxies:
   udp: true
   uuid: a12e496e-f89a-434a-8011-108846f0e412
   network: ws
-- name: HK-🇭🇰HK-20.187.85.198-4246
-  type: trojan
-  server: 20.187.85.198
-  port: 443
-  skip-cert-verify: false
-  udp: true
-  password: b26e31e5-eac1-45b0-9069-83830bd69521
-  sni: hkt.iamnotagoodman.com
-- name: HK-🇭🇰HK-47.242.26.30-1490
+- name: HK-HK-🇭🇰HK-47.242.26.30-1490
   type: vmess
   server: 47.242.26.30
   port: 28045
@@ -72,7 +47,7 @@ proxies:
   udp: true
   uuid: bb73d6fe-9700-4607-8dc1-eb9f15253e9d
   network: http
-- name: HK-🇭🇰HK-47.242.65.80-1537
+- name: HK-HK-🇭🇰HK-47.242.65.80-1537
   type: vmess
   server: 47.242.65.80
   port: 62307
@@ -80,7 +55,7 @@ proxies:
   udp: true
   uuid: 48f3fa93-1722-4f8d-af74-fcc54c2f21d5
   network: http
-- name: HK-🇭🇰HK-47.242.21.177-1631
+- name: HK-HK-🇭🇰HK-47.242.21.177-1631
   type: vmess
   server: 47.242.21.177
   port: 51007
@@ -88,7 +63,7 @@ proxies:
   udp: true
   uuid: 318b3dd1-09cf-4980-81ed-6cf689e5825a
   network: http
-- name: HK-🇭🇰HK-165.154.244.100-0598
+- name: HK-HK-🇭🇰HK-165.154.244.100-0598
   type: vmess
   server: 165.154.244.100
   port: 443
@@ -96,31 +71,7 @@ proxies:
   udp: true
   uuid: 2cc10f9c-fb02-3e45-b619-c3b98cde912a
   network: ws
-- name: HK-🇭🇰HK-58.152.53.45-4879
-  type: trojan
-  server: 58.152.53.45
-  port: 443
-  skip-cert-verify: false
-  udp: true
-  password: BxceQaOe
-  sni: t.me/ripaojiedian
-- name: HK-🇭🇰HK-8.210.206.163-1890
-  type: vmess
-  server: 8.210.206.163
-  port: 45719
-  skip-cert-verify: false
-  udp: true
-  uuid: a220dad2-a34e-4460-b0f7-eaba9c46e639
-  network: http
-- name: HK-🇭🇰HK-47.243.187.171-1379
-  type: vmess
-  server: 47.243.187.171
-  port: 60808
-  skip-cert-verify: false
-  udp: true
-  uuid: 99c3c1c3-c27c-49a0-9c2c-7c77c3d92bf6
-  network: http
-- name: HK-🇭🇰HK-47.243.185.128-1386
+- name: HK-HK-🇭🇰HK-47.243.185.128-1386
   type: vmess
   server: 47.243.185.128
   port: 47365
@@ -128,7 +79,7 @@ proxies:
   udp: true
   uuid: fb695171-6b24-4255-9893-8921f53a0548
   network: http
-- name: HK-🇭🇰HK-47.242.52.13-2071
+- name: HK-HK-🇭🇰HK-47.242.52.13-2071
   type: vmess
   server: 47.242.52.13
   port: 31152
@@ -136,41 +87,8 @@ proxies:
   udp: true
   uuid: 59cf21e6-d029-47d8-9c37-7ef34280b9d1
   network: http
-- name: HK-HK-HK-HK-HK-🇭🇰HK-148.66.56.99-2396
-  type: ss
-  server: 148.66.56.99
-  port: 810
-  skip-cert-verify: true
-  udp: true
-- name: HK-🇭🇰HK-103.135.103.229-1555
-  type: trojan
-  server: 103.135.103.229
-  port: 443
-  skip-cert-verify: false
-  udp: true
-  password: 265f092f-418b-30c9-a479-4800fd44dd19mielink
-- name: HK-🇭🇰HK_1
-  type: vless
-  server: 8.210.29.68
-  port: 443
-  skip-cert-verify: true
-  udp: true
-  uuid: 6202b230-417c-4d8e-b624-0f71afa9c75d
-  network: ws
-- name: HK-HK-HK-中国 - 香港 - MoeChuang Network Limited - 13
-  type: ss
-  server: 183.232.137.2
-  port: 34061
-  skip-cert-verify: true
-  udp: true
-- name: HK-HK-HK-🇭🇰HK-148.66.56.99-2274
-  type: ss
-  server: 148.66.56.99
-  port: 808
-  skip-cert-verify: true
-  udp: true
-- name: HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-中国 - 香港 - Hong Kong Telecommunications
-    (HKT) Limited Mass Internet - 1
+- name: HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-中国 - 香港 - Hong Kong
+    Telecommunications (HKT) Limited Mass Internet - 1
   type: trojan
   server: 95.40.55.141
   port: 2826
@@ -178,45 +96,7 @@ proxies:
   udp: true
   password: BxceQaOe
   sni: t.me%2Fripaojiedian
-- name: HK-HK-HK-HK-HK-🇭🇰HK-148.66.56.99-2232
-  type: ss
-  server: 148.66.56.99
-  port: 802
-  skip-cert-verify: true
-  udp: true
-- name: HK-🇭🇰HK-8.210.131.2-1328
-  type: vmess
-  server: 8.210.131.2
-  port: 31357
-  skip-cert-verify: false
-  udp: true
-  uuid: 618c0914-e31e-4b82-8289-2e7a47e48dfd
-  network: http
-- name: HK-🇭🇰HK-8.210.153.242-1888
-  type: vmess
-  server: 8.210.153.242
-  port: 48577
-  skip-cert-verify: false
-  udp: true
-  uuid: dd3c5ce4-6741-4cdb-a54d-bf43475969e5
-  network: http
-- name: HK-🇭🇰HK-47.243.135.74-4874
-  type: vmess
-  server: 47.243.135.74
-  port: 55185
-  skip-cert-verify: false
-  udp: true
-  uuid: 1375985e-334a-4c25-8f64-52a182bc8037
-  network: ws
-- name: HK-🇭🇰HK-104.208.96.44-0626
-  type: vmess
-  server: 104.208.96.44
-  port: 80
-  skip-cert-verify: false
-  udp: true
-  uuid: 80e94af6-e42a-4dbc-8f4b-c5f99bf97d3d
-  network: ws
-- name: HK-🇭🇰HK-8.210.248.210-1629
+- name: HK-HK-🇭🇰HK-8.210.248.210-1629
   type: vmess
   server: 8.210.248.210
   port: 54570
@@ -224,37 +104,13 @@ proxies:
   udp: true
   uuid: aa1d02a4-60e6-4671-8107-4d5e6bacd265
   network: http
-- name: HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-🇭🇰HK-43.198.82.55-0811
-  type: trojan
-  server: 43.198.82.55
-  port: 3292
-  skip-cert-verify: false
-  udp: true
-  password: BxceQaOe
-  sni: t.me%2Fripaojiedian
-- name: HK-HK-HK-中国 - 香港 - Alibaba.com LLC - 14
-  type: vmess
-  server: 47.242.225.0
-  port: 32975
-  skip-cert-verify: true
-  udp: true
-  uuid: ebaad525-e2cf-4c18-8ae9-41af29ac4b9c
-  network: http
-- name: HK-🇭🇰HK-8.210.70.156-2175
-  type: vmess
-  server: 8.210.70.156
-  port: 54148
-  skip-cert-verify: false
-  udp: true
-  uuid: 1346261e-3201-4932-bfba-df869ab48116
-  network: http
-- name: HK-HK-HK-HK-HK-🇭🇰HK-148.66.56.99-2292
+- name: HK-HK-🇭🇰HK-148.66.56.99-2346
   type: ss
   server: 148.66.56.99
   port: 805
   skip-cert-verify: true
   udp: true
-- name: HK-🇭🇰HK-8.210.15.231-1480
+- name: HK-HK-🇭🇰HK-8.210.15.231-1480
   type: vmess
   server: 8.210.15.231
   port: 41083
@@ -262,41 +118,13 @@ proxies:
   udp: true
   uuid: 1d1ad417-29ed-41e8-aaed-323f797efe6b
   network: http
-- name: HK-HK-HK-🇭🇰HK-103.141.221.124-0305
-  type: ss
-  server: 103.141.221.124
-  port: 8388
-  skip-cert-verify: true
-  udp: true
-- name: HK-HK-HK-🇭🇰HK-112.118.0.202-0077
-  type: vmess
-  server: 112.118.0.202
-  port: 4080
-  skip-cert-verify: false
-  udp: true
-  uuid: 7ff41058-b662-3352-9e7f-643ef2d78344
-  network: ws
-- name: HK-🇭🇰HK-104.208.100.101-4247
-  type: trojan
-  server: 104.208.100.101
-  port: 443
-  skip-cert-verify: false
-  udp: true
-  password: ceaea123-1b4b-469b-8358-bcd5f5529305
-  sni: uk.liangyuandian.top
-- name: HK-HK-HK-🇭🇰HK-148.66.56.99-2706
-  type: ss
-  server: 148.66.56.99
-  port: 809
-  skip-cert-verify: true
-  udp: true
-- name: HK-HK-HK-🇭🇰HK-103.149.182.105-0301
+- name: HK-HK-HK-HK-🇭🇰HK-103.149.182.105-0301
   type: ss
   server: 103.149.182.105
   port: 8388
   skip-cert-verify: true
   udp: true
-- name: HK-🇭🇰 香港4|@stairnode
+- name: HK-HK-🇭🇰 香港4|@stairnode
   type: trojan
   server: 43.199.159.115
   port: 3292
@@ -304,71 +132,31 @@ proxies:
   udp: true
   password: BxceQaOe
   sni: t.me%2Fripaojiedian
-- name: HK-🇭🇰HK-203.23.128.33-0305
+- name: HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-🇭🇰HK-203.23.128.33-0287
   type: ss
   server: 203.23.128.33
   port: 989
   skip-cert-verify: true
   udp: true
-- name: HK-🇭🇰HK-47.243.230.222-1356
-  type: vmess
-  server: 47.243.230.222
-  port: 35668
-  skip-cert-verify: false
-  udp: true
-  uuid: ab4df3ef-e77f-4f2a-bfb8-63604412f73b
-  network: http
-- name: HK-🇭🇰HK-148.66.56.99-2323
+- name: HK-HK-HK-HK-🇭🇰HK-148.66.56.99-2269
   type: ss
   server: 148.66.56.99
   port: 806
   skip-cert-verify: true
   udp: true
-- name: HK-🇭🇰HK-148.66.56.99-2346
-  type: ss
-  server: 148.66.56.99
-  port: 805
-  skip-cert-verify: true
-  udp: true
-- name: HK-🇭🇰HK-148.66.56.99-2450
-  type: ss
-  server: 148.66.56.99
-  port: 810
-  skip-cert-verify: true
-  udp: true
-- name: HK-🇭🇰HK-148.66.56.99-2479
+- name: HK-HK-HK-HK-🇭🇰HK-148.66.56.99-2425
   type: ss
   server: 148.66.56.99
   port: 803
   skip-cert-verify: true
   udp: true
-- name: HK-🇭🇰HK-148.66.56.98-3871
+- name: HK-HK-🇭🇰HK-148.66.56.98-3871
   type: ss
   server: 148.66.56.98
   port: 805
   skip-cert-verify: true
   udp: true
-- name: HK-🇭🇰HK-18.167.121.42-4020
-  type: vmess
-  server: 18.167.121.42
-  port: 35781
-  skip-cert-verify: false
-  udp: true
-  uuid: d3978bd0-dade-4181-81de-bae3091339f1
-  network: ws
-- name: HK-HK-HK-🇭🇰HK-148.66.56.99-2425
-  type: ss
-  server: 148.66.56.99
-  port: 803
-  skip-cert-verify: true
-  udp: true
-- name: HK-HK-HK-HK-HK-HK-HK-🇭🇰HK-148.66.56.99-2526
-  type: ss
-  server: 148.66.56.99
-  port: 812
-  skip-cert-verify: true
-  udp: true
-- name: HK-🇭🇰HK-188.116.22.171-2572
+- name: HK-HK-🇭🇰HK-188.116.22.171-2572
   type: vmess
   server: 188.116.22.171
   port: 443
@@ -376,7 +164,7 @@ proxies:
   udp: true
   uuid: 4b0289b0-a363-4cb5-8ca0-f0e7f92d75f3
   network: ws
-- name: HK-🇭🇰HK-47.242.95.19-2168
+- name: HK-HK-🇭🇰HK-47.242.95.19-2168
   type: vmess
   server: 47.242.95.19
   port: 40988
@@ -384,7 +172,7 @@ proxies:
   udp: true
   uuid: 1e60b35a-db17-4283-8b99-7358ee7d5fd5
   network: http
-- name: HK-🇭🇰HK-8.210.236.45-1544
+- name: HK-HK-🇭🇰HK-8.210.236.45-1544
   type: vmess
   server: 8.210.236.45
   port: 61228
@@ -392,7 +180,7 @@ proxies:
   udp: true
   uuid: 7e0ee5c7-46ff-42f8-ab7c-06d8227da454
   network: http
-- name: HK-🇭🇰HK-58.152.25.86-1783
+- name: HK-HK-🇭🇰HK-58.152.25.86-1783
   type: trojan
   server: 58.152.25.86
   port: 443
@@ -400,7 +188,7 @@ proxies:
   udp: true
   password: BxceQaOe
   sni: '%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%20%5BBy%20DukeMehdi%5D%20trojan-HK%20'
-- name: HK-🇭🇰HK-47.244.120.197-4877
+- name: HK-HK-🇭🇰HK-47.244.120.197-4877
   type: vmess
   server: 47.244.120.197
   port: 36703
@@ -408,14 +196,7 @@ proxies:
   udp: true
   uuid: 45b83519-9c4f-4052-a11b-02e017b636d4
   network: ws
-- name: HK-🇭🇰HK-103.103.245.125-1679
-  type: trojan
-  server: 103.103.245.125
-  port: 50418
-  skip-cert-verify: false
-  udp: true
-  password: a70b39d1-62ea-4d9e-b681-9c5408352234
-- name: HK-🇭🇰HK-20.239.179.251-4447
+- name: HK-HK-🇭🇰HK-20.239.179.251-4447
   type: vmess
   server: 20.239.179.251
   port: 50045
@@ -423,7 +204,7 @@ proxies:
   udp: true
   uuid: 1617e875-e377-4e4f-85ef-dcf9e5e10df7
   network: ws
-- name: HK-🇭🇰HK-20.239.145.115-0566
+- name: HK-HK-🇭🇰HK-20.239.145.115-0566
   type: vmess
   server: 20.239.145.115
   port: 443
@@ -431,13 +212,7 @@ proxies:
   udp: true
   uuid: 4893ed3e-8a5f-48dc-aa1e-bbc2e67a065b
   network: ws
-- name: HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-🇭🇰HK-203.23.128.33-0287
-  type: ss
-  server: 203.23.128.33
-  port: 989
-  skip-cert-verify: true
-  udp: true
-- name: HK-🇭🇰HK_4
+- name: HK-HK-🇭🇰HK_4
   type: vless
   server: 152.32.215.105
   port: 8443
@@ -445,7 +220,7 @@ proxies:
   udp: true
   uuid: 6202b230-417c-4d8e-b624-0f71afa9c75d
   network: ws
-- name: HK-🇭🇰 香港3|@stairnode
+- name: HK-HK-🇭🇰 香港3|@stairnode
   type: trojan
   server: 54.64.61.41
   port: 3373
@@ -453,13 +228,7 @@ proxies:
   udp: true
   password: 9372cb81c7b0ad903f91f2f8a4d3f02b
   sni: www.nintendogames.net
-- name: HK-HK-HK-🇭🇰HK-148.66.56.99-2527
-  type: ss
-  server: 148.66.56.99
-  port: 811
-  skip-cert-verify: true
-  udp: true
-- name: HK-🇭🇰HK-58.152.25.236-1781
+- name: HK-HK-🇭🇰HK-58.152.25.236-1781
   type: trojan
   server: 58.152.25.236
   port: 443
@@ -467,33 +236,19 @@ proxies:
   udp: true
   password: BxceQaOe
   sni: t.me%2Fripaojiedian
-- name: HK-HK-HK-HK-HK-HK-HK-🇭🇰HK-103.149.183.12-4817
+- name: HK-HK-HK-HK-HK-HK-HK-HK-🇭🇰HK-103.149.183.12-4817
   type: ss
   server: 103.149.183.12
   port: 8388
   skip-cert-verify: true
   udp: true
-- name: HK-🇭🇰HK-16.163.143.47-0888
-  type: trojan
-  server: 16.163.143.47
-  port: 9718
-  skip-cert-verify: false
-  udp: true
-  password: BxceQaOe
-  sni: t.me%2Fripaojiedian
-- name: HK-HK-HK-🇭🇰HK-148.66.56.99-2269
-  type: ss
-  server: 148.66.56.99
-  port: 806
-  skip-cert-verify: true
-  udp: true
-- name: HK-HK-HK-HK-HK-HK-HK-🇭🇰HK-148.66.56.99-2261
+- name: HK-HK-🇭🇰HK-148.66.56.99-2315
   type: ss
   server: 148.66.56.99
   port: 807
   skip-cert-verify: true
   udp: true
-- name: HK-🇭🇰HK-58.152.53.227-0272
+- name: HK-HK-🇭🇰HK-58.152.53.227-0272
   type: trojan
   server: 58.152.53.227
   port: 443
@@ -501,23 +256,7 @@ proxies:
   udp: true
   password: 64a59181551b5773e390bd717a7b7c06
   sni: www.nintendogames.net
-- name: HK-🇭🇰HK-16.163.31.145-0879
-  type: trojan
-  server: 16.163.31.145
-  port: 54548
-  skip-cert-verify: false
-  udp: true
-  password: BxceQaOe
-  sni: t.me%2Fripaojiedian
-- name: HK-🇭🇰HK-188.116.22.171-3578
-  type: vmess
-  server: 188.116.22.171
-  port: 80
-  skip-cert-verify: false
-  udp: true
-  uuid: 3c6c608d-68c0-4782-86ac-98ea1ada3a25
-  network: ws
-- name: HK-🇭🇰HK-185.14.47.240-2552
+- name: HK-HK-🇭🇰HK-185.14.47.240-2552
   type: vmess
   server: 185.14.47.240
   port: 2086
@@ -525,29 +264,7 @@ proxies:
   udp: true
   uuid: 7a8a19ec-94f5-4262-edbe-a308e1d0c66d
   network: ws
-- name: HK-🇭🇰HK-47.244.120.197-4876
-  type: vmess
-  server: 47.244.120.197
-  port: 44867
-  skip-cert-verify: false
-  udp: true
-  uuid: 845e6b08-2919-4290-ade0-5dc7dcea59ca
-  network: ws
-- name: HK-🇭🇰HK-210.0.158.220-2644
-  type: trojan
-  server: 210.0.158.220
-  port: 28443
-  skip-cert-verify: false
-  udp: true
-  password: 750a29bf-0a40-437f-b120-38de74ae7eaf
-- name: HK-🇭🇰HK-194.156.99.39-2382
-  type: trojan
-  server: 194.156.99.39
-  port: 443
-  skip-cert-verify: false
-  udp: true
-  password: xxoo
-- name: HK-🇭🇰 香港5|@stairnode
+- name: HK-HK-🇭🇰 香港5|@stairnode
   type: trojan
   server: 43.207.149.184
   port: 26378
@@ -555,7 +272,7 @@ proxies:
   udp: true
   password: BxceQaOe
   sni: t.me%2Fripaojiedian
-- name: HK-🇭🇰HK-47.242.69.124-1336
+- name: HK-HK-🇭🇰HK-47.242.69.124-1336
   type: vmess
   server: 47.242.69.124
   port: 54620
@@ -563,27 +280,8 @@ proxies:
   udp: true
   uuid: 7c3008e5-9665-4319-a2b9-ac7370665f1a
   network: http
-- name: HK-HK-HK-🇭🇰HK_2
-  type: ss
-  server: 120.237.27.72
-  port: 44591
-  skip-cert-verify: true
-  udp: true
-- name: HK-HK-HK-🇭🇰HK-148.66.56.99-2237
-  type: ss
-  server: 148.66.56.99
-  port: 800
-  skip-cert-verify: true
-  udp: true
-- name: HK-HK-HK-HK_677dc_0002
-  type: vless
-  server: 42.2.28.64
-  port: 1314
-  skip-cert-verify: true
-  udp: true
-  uuid: d607a577-978c-487a-a2ad-788e4129162a
-- name: HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-中国 - 香港 - Hong Kong Telecommunications
-    (HKT) Limited Mass Internet - 2
+- name: HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-中国 - 香港 - Hong Kong
+    Telecommunications (HKT) Limited Mass Internet - 2
   type: trojan
   server: 203.198.123.162
   port: 443
@@ -591,15 +289,7 @@ proxies:
   udp: true
   password: BxceQaOe
   sni: 203.198.123.162
-- name: HK-🇭🇰HK-58.152.18.130-4880
-  type: trojan
-  server: 58.152.18.130
-  port: 443
-  skip-cert-verify: false
-  udp: true
-  password: BxceQaOe
-  sni: t.me/ripaojiedian
-- name: HK-🇭🇰HK_3
+- name: HK-HK-🇭🇰HK_3
   type: vless
   server: 43.198.204.35
   port: 443
@@ -607,7 +297,7 @@ proxies:
   udp: true
   uuid: 6202b230-417c-4d8e-b624-0f71afa9c75d
   network: ws
-- name: HK-🇭🇰HK-58.152.25.208-4881
+- name: HK-HK-🇭🇰HK-58.152.25.208-4881
   type: trojan
   server: 58.152.25.208
   port: 443
@@ -615,7 +305,7 @@ proxies:
   udp: true
   password: BxceQaOe
   sni: t.me/ripaojiedian
-- name: HK-中国 - 香港 - Akile LTD - 1
+- name: HK-HK-中国 - 香港 - Akile LTD - 1
   type: vmess
   server: 45.196.235.171
   port: 80
@@ -623,7 +313,7 @@ proxies:
   udp: true
   uuid: 47eefac2-9767-49e1-c8e6-524e39d8765f
   network: http
-- name: HK-🇭🇰HK-43.199.42.6-1779
+- name: HK-HK-🇭🇰HK-43.199.42.6-1779
   type: trojan
   server: 43.199.42.6
   port: 23287
@@ -631,55 +321,13 @@ proxies:
   udp: true
   password: BxceQaOe
   sni: t.me%2Fripaojiedian
-- name: HK-🇭🇰HK-148.66.56.99-2286
-  type: ss
-  server: 148.66.56.99
-  port: 802
-  skip-cert-verify: true
-  udp: true
-- name: HK-🇭🇰HK-148.66.56.99-2301
+- name: HK-HK-🇭🇰HK-148.66.56.99-2301
   type: ss
   server: 148.66.56.99
   port: 804
   skip-cert-verify: true
   udp: true
-- name: HK-🇭🇰HK-148.66.56.99-2315
-  type: ss
-  server: 148.66.56.99
-  port: 807
-  skip-cert-verify: true
-  udp: true
-- name: HK-🇭🇰HK-148.66.56.99-2328
-  type: ss
-  server: 148.66.56.99
-  port: 808
-  skip-cert-verify: true
-  udp: true
-- name: HK-🇭🇰HK-148.66.56.99-2430
-  type: ss
-  server: 148.66.56.99
-  port: 801
-  skip-cert-verify: true
-  udp: true
-- name: HK-🇭🇰HK-148.66.56.99-2580
-  type: ss
-  server: 148.66.56.99
-  port: 812
-  skip-cert-verify: true
-  udp: true
-- name: HK-🇭🇰HK-148.66.56.99-2581
-  type: ss
-  server: 148.66.56.99
-  port: 811
-  skip-cert-verify: true
-  udp: true
-- name: HK-🇭🇰HK-148.66.56.99-2760
-  type: ss
-  server: 148.66.56.99
-  port: 809
-  skip-cert-verify: true
-  udp: true
-- name: HK-🇭🇰HK-8.218.140.111-5684
+- name: HK-HK-🇭🇰HK-8.218.140.111-5684
   type: vmess
   server: 8.218.140.111
   port: 34193
@@ -687,7 +335,7 @@ proxies:
   udp: true
   uuid: 544bf832-7df2-4ce1-aafc-9258a28b7cfb
   network: ws
-- name: HK-🇭🇰HK-43.198.12.229-6968
+- name: HK-HK-🇭🇰HK-43.198.12.229-6968
   type: trojan
   server: 43.198.12.229
   port: 28443
@@ -695,7 +343,7 @@ proxies:
   udp: true
   password: ae7cc604-d970-4200-9a9b-eb45087b4fc1
   sni: mzy.hruqoaw.cn
-- name: HK-🇭🇰HK-119.247.119.212-6974
+- name: HK-HK-🇭🇰HK-119.247.119.212-6974
   type: trojan
   server: 119.247.119.212
   port: 443
@@ -703,21 +351,7 @@ proxies:
   udp: true
   password: bb5b1337-fa9e-4e00-b8c6-1110e626171d
   sni: sg-01.tiktokcdn.top
-- name: HK-🇭🇰HK
-  type: vless
-  server: 8.212.27.131
-  port: 443
-  skip-cert-verify: true
-  udp: true
-  uuid: 6202b230-417c-4d8e-b624-0f71afa9c75d
-  network: ws
-- name: HK-HK-HK-🇭🇰HK-103.149.183.80-4814
-  type: ss
-  server: 103.149.183.80
-  port: 8388
-  skip-cert-verify: true
-  udp: true
-- name: HK-🇭🇰HK-45.11.104.94-2492
+- name: HK-HK-🇭🇰HK-45.11.104.94-2492
   type: trojan
   server: 45.11.104.94
   port: 3389
@@ -725,226 +359,504 @@ proxies:
   udp: true
   password: d4e41ff772c7fd45
   sni: sbank.ir
-- name: HK-🇭🇰HK-43.154.172.79-1619
+- name: HK-HK-🇭🇰HK-202.64.124.252-1659
+  type: vmess
+  server: 202.64.124.252
+  port: 80
+  skip-cert-verify: false
+  udp: true
+  uuid: 58d4ad2b-82d5-4847-b88c-889de4d38c19
+  network: ws
+- name: HK-HK-🇭🇰HK-8.210.166.114-1575
+  type: vmess
+  server: 8.210.166.114
+  port: 48236
+  skip-cert-verify: false
+  udp: true
+  uuid: 9a3ab916-0662-45ae-8844-8efa29365f84
+  network: http
+- name: HK-HK-🇭🇰HK-58.152.46.60-1782
+  type: trojan
+  server: 58.152.46.60
+  port: 443
+  skip-cert-verify: false
+  udp: true
+  password: BxceQaOe
+  sni: '%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%2B%5BBy%2BDukeMehdi%5D%2Btrojan-HK%2B'
+- name: HK-HK-🇭🇰HK-58.152.53.45-4879
+  type: trojan
+  server: 58.152.53.45
+  port: 443
+  skip-cert-verify: false
+  udp: true
+  password: BxceQaOe
+  sni: t.me/ripaojiedian
+- name: HK-HK-🇭🇰HK-8.210.206.163-1890
+  type: vmess
+  server: 8.210.206.163
+  port: 45719
+  skip-cert-verify: false
+  udp: true
+  uuid: a220dad2-a34e-4460-b0f7-eaba9c46e639
+  network: http
+- name: HK-HK-🇭🇰HK_1
+  type: vless
+  server: 8.210.29.68
+  port: 443
+  skip-cert-verify: true
+  udp: true
+  uuid: 6202b230-417c-4d8e-b624-0f71afa9c75d
+  network: ws
+- name: HK-HK-HK-HK-中国 - 香港 - MoeChuang Network Limited - 13
+  type: ss
+  server: 183.232.137.2
+  port: 34061
+  skip-cert-verify: true
+  udp: true
+- name: HK-HK-🇭🇰HK-148.66.56.99-2328
+  type: ss
+  server: 148.66.56.99
+  port: 808
+  skip-cert-verify: true
+  udp: true
+- name: HK-HK-🇭🇰HK-148.66.56.99-2286
+  type: ss
+  server: 148.66.56.99
+  port: 802
+  skip-cert-verify: true
+  udp: true
+- name: HK-HK-🇭🇰HK-8.210.131.2-1328
+  type: vmess
+  server: 8.210.131.2
+  port: 31357
+  skip-cert-verify: false
+  udp: true
+  uuid: 618c0914-e31e-4b82-8289-2e7a47e48dfd
+  network: http
+- name: HK-HK-🇭🇰HK-8.210.153.242-1888
+  type: vmess
+  server: 8.210.153.242
+  port: 48577
+  skip-cert-verify: false
+  udp: true
+  uuid: dd3c5ce4-6741-4cdb-a54d-bf43475969e5
+  network: http
+- name: HK-HK-🇭🇰HK-47.243.135.74-4874
+  type: vmess
+  server: 47.243.135.74
+  port: 55185
+  skip-cert-verify: false
+  udp: true
+  uuid: 1375985e-334a-4c25-8f64-52a182bc8037
+  network: ws
+- name: HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-🇭🇰HK-43.198.82.55-0811
+  type: trojan
+  server: 43.198.82.55
+  port: 3292
+  skip-cert-verify: false
+  udp: true
+  password: BxceQaOe
+  sni: t.me%2Fripaojiedian
+- name: HK-HK-HK-HK-中国 - 香港 - Alibaba.com LLC - 14
+  type: vmess
+  server: 47.242.225.0
+  port: 32975
+  skip-cert-verify: true
+  udp: true
+  uuid: ebaad525-e2cf-4c18-8ae9-41af29ac4b9c
+  network: http
+- name: HK-HK-HK-HK-🇭🇰HK-103.141.221.124-0305
+  type: ss
+  server: 103.141.221.124
+  port: 8388
+  skip-cert-verify: true
+  udp: true
+- name: HK-HK-HK-HK-🇭🇰HK-112.118.0.202-0077
+  type: vmess
+  server: 112.118.0.202
+  port: 4080
+  skip-cert-verify: false
+  udp: true
+  uuid: 7ff41058-b662-3352-9e7f-643ef2d78344
+  network: ws
+- name: HK-HK-🇭🇰HK-104.208.100.101-4247
+  type: trojan
+  server: 104.208.100.101
+  port: 443
+  skip-cert-verify: false
+  udp: true
+  password: ceaea123-1b4b-469b-8358-bcd5f5529305
+  sni: uk.liangyuandian.top
+- name: HK-HK-🇭🇰HK-148.66.56.99-2760
+  type: ss
+  server: 148.66.56.99
+  port: 809
+  skip-cert-verify: true
+  udp: true
+- name: HK-HK-🇭🇰HK-47.243.230.222-1356
+  type: vmess
+  server: 47.243.230.222
+  port: 35668
+  skip-cert-verify: false
+  udp: true
+  uuid: ab4df3ef-e77f-4f2a-bfb8-63604412f73b
+  network: http
+- name: HK-HK-🇭🇰HK-18.167.121.42-4020
+  type: vmess
+  server: 18.167.121.42
+  port: 35781
+  skip-cert-verify: false
+  udp: true
+  uuid: d3978bd0-dade-4181-81de-bae3091339f1
+  network: ws
+- name: HK-HK-🇭🇰HK-148.66.56.99-2580
+  type: ss
+  server: 148.66.56.99
+  port: 812
+  skip-cert-verify: true
+  udp: true
+- name: HK-HK-🇭🇰HK-148.66.56.99-2581
+  type: ss
+  server: 148.66.56.99
+  port: 811
+  skip-cert-verify: true
+  udp: true
+- name: HK-HK-🇭🇰HK-16.163.143.47-0888
+  type: trojan
+  server: 16.163.143.47
+  port: 9718
+  skip-cert-verify: false
+  udp: true
+  password: BxceQaOe
+  sni: t.me%2Fripaojiedian
+- name: HK-HK-🇭🇰HK-188.116.22.171-3578
+  type: vmess
+  server: 188.116.22.171
+  port: 80
+  skip-cert-verify: false
+  udp: true
+  uuid: 3c6c608d-68c0-4782-86ac-98ea1ada3a25
+  network: ws
+- name: HK-HK-🇭🇰HK-210.0.158.220-2644
+  type: trojan
+  server: 210.0.158.220
+  port: 28443
+  skip-cert-verify: false
+  udp: true
+  password: 750a29bf-0a40-437f-b120-38de74ae7eaf
+- name: HK-HK-🇭🇰HK-194.156.99.39-2382
+  type: trojan
+  server: 194.156.99.39
+  port: 443
+  skip-cert-verify: false
+  udp: true
+  password: xxoo
+- name: HK-HK-HK-HK-🇭🇰HK_2
+  type: ss
+  server: 120.237.27.72
+  port: 44591
+  skip-cert-verify: true
+  udp: true
+- name: HK-HK-HK-HK-HK_677dc_0002
+  type: vless
+  server: 42.2.28.64
+  port: 1314
+  skip-cert-verify: true
+  udp: true
+  uuid: d607a577-978c-487a-a2ad-788e4129162a
+- name: HK-HK-🇭🇰HK-58.152.18.130-4880
+  type: trojan
+  server: 58.152.18.130
+  port: 443
+  skip-cert-verify: false
+  udp: true
+  password: BxceQaOe
+  sni: t.me/ripaojiedian
+- name: HK-HK-🇭🇰HK-148.66.56.99-2430
+  type: ss
+  server: 148.66.56.99
+  port: 801
+  skip-cert-verify: true
+  udp: true
+- name: HK-HK-🇭🇰HK
+  type: vless
+  server: 8.212.27.131
+  port: 443
+  skip-cert-verify: true
+  udp: true
+  uuid: 6202b230-417c-4d8e-b624-0f71afa9c75d
+  network: ws
+- name: HK-HK-HK-HK-🇭🇰HK-103.149.183.80-4814
+  type: ss
+  server: 103.149.183.80
+  port: 8388
+  skip-cert-verify: true
+  udp: true
+- name: HK-HK-🇭🇰HK-43.154.172.79-1619
   type: trojan
   server: 43.154.172.79
   port: 10102
   skip-cert-verify: false
   udp: true
   password: 0f098bb2-9fad-3cc3-8acf-2a3268c1eb27
+- name: HK-HK-🇭🇰HK-20.187.85.198-4246
+  type: trojan
+  server: 20.187.85.198
+  port: 443
+  skip-cert-verify: false
+  udp: true
+  password: b26e31e5-eac1-45b0-9069-83830bd69521
+  sni: hkt.iamnotagoodman.com
+- name: HK-HK-🇭🇰HK-148.66.56.99-2450
+  type: ss
+  server: 148.66.56.99
+  port: 810
+  skip-cert-verify: true
+  udp: true
+- name: HK-HK-🇭🇰HK-103.135.103.229-1555
+  type: trojan
+  server: 103.135.103.229
+  port: 443
+  skip-cert-verify: false
+  udp: true
+  password: 265f092f-418b-30c9-a479-4800fd44dd19mielink
+- name: HK-HK-🇭🇰HK-104.208.96.44-0626
+  type: vmess
+  server: 104.208.96.44
+  port: 80
+  skip-cert-verify: false
+  udp: true
+  uuid: 80e94af6-e42a-4dbc-8f4b-c5f99bf97d3d
+  network: ws
+- name: HK-HK-🇭🇰HK-16.163.31.145-0879
+  type: trojan
+  server: 16.163.31.145
+  port: 54548
+  skip-cert-verify: false
+  udp: true
+  password: BxceQaOe
+  sni: t.me%2Fripaojiedian
+- name: HK-HK-HK-HK-🇭🇰HK-148.66.56.99-2237
+  type: ss
+  server: 148.66.56.99
+  port: 800
+  skip-cert-verify: true
+  udp: true
+- name: HK-HK-🇭🇰HK-47.244.120.197-4876
+  type: vmess
+  server: 47.244.120.197
+  port: 44867
+  skip-cert-verify: false
+  udp: true
+  uuid: 845e6b08-2919-4290-ade0-5dc7dcea59ca
+  network: ws
+- name: HK-HK-🇭🇰HK-47.243.187.171-1379
+  type: vmess
+  server: 47.243.187.171
+  port: 60808
+  skip-cert-verify: false
+  udp: true
+  uuid: 99c3c1c3-c27c-49a0-9c2c-7c77c3d92bf6
+  network: http
+- name: HK-HK-🇭🇰HK-8.210.70.156-2175
+  type: vmess
+  server: 8.210.70.156
+  port: 54148
+  skip-cert-verify: false
+  udp: true
+  uuid: 1346261e-3201-4932-bfba-df869ab48116
+  network: http
 proxy-groups:
 - name: HK Auto
   type: url-test
   proxies:
-  - HK-🇭🇰HK-202.64.124.252-1659
-  - HK-🇭🇰HK-8.210.166.114-1575
-  - HK-HK-HK-HK-HK-HK-HK-🇭🇰HK-103.149.183.113-4816
-  - HK-HK-HK-中国 - 香港 - Dalian Yichuan Industrial CO - 2
-  - HK-🇭🇰HK-8.210.20.159-1882
-  - HK-🇭🇰HK-58.152.46.60-1782
-  - HK-🇭🇰HK-20.239.179.251-4207
-  - HK-🇭🇰HK-20.187.85.198-4246
-  - HK-🇭🇰HK-47.242.26.30-1490
-  - HK-🇭🇰HK-47.242.65.80-1537
-  - HK-🇭🇰HK-47.242.21.177-1631
-  - HK-🇭🇰HK-165.154.244.100-0598
-  - HK-🇭🇰HK-58.152.53.45-4879
-  - HK-🇭🇰HK-8.210.206.163-1890
-  - HK-🇭🇰HK-47.243.187.171-1379
-  - HK-🇭🇰HK-47.243.185.128-1386
-  - HK-🇭🇰HK-47.242.52.13-2071
-  - HK-HK-HK-HK-HK-🇭🇰HK-148.66.56.99-2396
-  - HK-🇭🇰HK-103.135.103.229-1555
-  - HK-🇭🇰HK_1
-  - HK-HK-HK-中国 - 香港 - MoeChuang Network Limited - 13
-  - HK-HK-HK-🇭🇰HK-148.66.56.99-2274
-  - HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-中国 - 香港 - Hong Kong Telecommunications
+  - HK-HK-🇭🇰HK-103.103.245.125-1679
+  - HK-HK-HK-HK-HK-HK-HK-HK-🇭🇰HK-103.149.183.113-4816
+  - HK-HK-HK-HK-中国 - 香港 - Dalian Yichuan Industrial CO - 2
+  - HK-HK-🇭🇰HK-8.210.20.159-1882
+  - HK-HK-🇭🇰HK-20.239.179.251-4207
+  - HK-HK-🇭🇰HK-47.242.26.30-1490
+  - HK-HK-🇭🇰HK-47.242.65.80-1537
+  - HK-HK-🇭🇰HK-47.242.21.177-1631
+  - HK-HK-🇭🇰HK-165.154.244.100-0598
+  - HK-HK-🇭🇰HK-47.243.185.128-1386
+  - HK-HK-🇭🇰HK-47.242.52.13-2071
+  - HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-中国 - 香港 - Hong Kong Telecommunications
     (HKT) Limited Mass Internet - 1
-  - HK-HK-HK-HK-HK-🇭🇰HK-148.66.56.99-2232
-  - HK-🇭🇰HK-8.210.131.2-1328
-  - HK-🇭🇰HK-8.210.153.242-1888
-  - HK-🇭🇰HK-47.243.135.74-4874
-  - HK-🇭🇰HK-104.208.96.44-0626
-  - HK-🇭🇰HK-8.210.248.210-1629
-  - HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-🇭🇰HK-43.198.82.55-0811
-  - HK-HK-HK-中国 - 香港 - Alibaba.com LLC - 14
-  - HK-🇭🇰HK-8.210.70.156-2175
-  - HK-HK-HK-HK-HK-🇭🇰HK-148.66.56.99-2292
-  - HK-🇭🇰HK-8.210.15.231-1480
-  - HK-HK-HK-🇭🇰HK-103.141.221.124-0305
-  - HK-HK-HK-🇭🇰HK-112.118.0.202-0077
-  - HK-🇭🇰HK-104.208.100.101-4247
-  - HK-HK-HK-🇭🇰HK-148.66.56.99-2706
-  - HK-HK-HK-🇭🇰HK-103.149.182.105-0301
-  - HK-🇭🇰 香港4|@stairnode
-  - HK-🇭🇰HK-203.23.128.33-0305
-  - HK-🇭🇰HK-47.243.230.222-1356
-  - HK-🇭🇰HK-148.66.56.99-2323
-  - HK-🇭🇰HK-148.66.56.99-2346
-  - HK-🇭🇰HK-148.66.56.99-2450
-  - HK-🇭🇰HK-148.66.56.99-2479
-  - HK-🇭🇰HK-148.66.56.98-3871
-  - HK-🇭🇰HK-18.167.121.42-4020
-  - HK-HK-HK-🇭🇰HK-148.66.56.99-2425
-  - HK-HK-HK-HK-HK-HK-HK-🇭🇰HK-148.66.56.99-2526
-  - HK-🇭🇰HK-188.116.22.171-2572
-  - HK-🇭🇰HK-47.242.95.19-2168
-  - HK-🇭🇰HK-8.210.236.45-1544
-  - HK-🇭🇰HK-58.152.25.86-1783
-  - HK-🇭🇰HK-47.244.120.197-4877
-  - HK-🇭🇰HK-103.103.245.125-1679
-  - HK-🇭🇰HK-20.239.179.251-4447
-  - HK-🇭🇰HK-20.239.145.115-0566
-  - HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-🇭🇰HK-203.23.128.33-0287
-  - HK-🇭🇰HK_4
-  - HK-🇭🇰 香港3|@stairnode
-  - HK-HK-HK-🇭🇰HK-148.66.56.99-2527
-  - HK-🇭🇰HK-58.152.25.236-1781
-  - HK-HK-HK-HK-HK-HK-HK-🇭🇰HK-103.149.183.12-4817
-  - HK-🇭🇰HK-16.163.143.47-0888
-  - HK-HK-HK-🇭🇰HK-148.66.56.99-2269
-  - HK-HK-HK-HK-HK-HK-HK-🇭🇰HK-148.66.56.99-2261
-  - HK-🇭🇰HK-58.152.53.227-0272
-  - HK-🇭🇰HK-16.163.31.145-0879
-  - HK-🇭🇰HK-188.116.22.171-3578
-  - HK-🇭🇰HK-185.14.47.240-2552
-  - HK-🇭🇰HK-47.244.120.197-4876
-  - HK-🇭🇰HK-210.0.158.220-2644
-  - HK-🇭🇰HK-194.156.99.39-2382
-  - HK-🇭🇰 香港5|@stairnode
-  - HK-🇭🇰HK-47.242.69.124-1336
-  - HK-HK-HK-🇭🇰HK_2
-  - HK-HK-HK-🇭🇰HK-148.66.56.99-2237
-  - HK-HK-HK-HK_677dc_0002
-  - HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-中国 - 香港 - Hong Kong Telecommunications
+  - HK-HK-🇭🇰HK-8.210.248.210-1629
+  - HK-HK-🇭🇰HK-148.66.56.99-2346
+  - HK-HK-🇭🇰HK-8.210.15.231-1480
+  - HK-HK-HK-HK-🇭🇰HK-103.149.182.105-0301
+  - HK-HK-🇭🇰 香港4|@stairnode
+  - HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-🇭🇰HK-203.23.128.33-0287
+  - HK-HK-HK-HK-🇭🇰HK-148.66.56.99-2269
+  - HK-HK-HK-HK-🇭🇰HK-148.66.56.99-2425
+  - HK-HK-🇭🇰HK-148.66.56.98-3871
+  - HK-HK-🇭🇰HK-188.116.22.171-2572
+  - HK-HK-🇭🇰HK-47.242.95.19-2168
+  - HK-HK-🇭🇰HK-8.210.236.45-1544
+  - HK-HK-🇭🇰HK-58.152.25.86-1783
+  - HK-HK-🇭🇰HK-47.244.120.197-4877
+  - HK-HK-🇭🇰HK-20.239.179.251-4447
+  - HK-HK-🇭🇰HK-20.239.145.115-0566
+  - HK-HK-🇭🇰HK_4
+  - HK-HK-🇭🇰 香港3|@stairnode
+  - HK-HK-🇭🇰HK-58.152.25.236-1781
+  - HK-HK-HK-HK-HK-HK-HK-HK-🇭🇰HK-103.149.183.12-4817
+  - HK-HK-🇭🇰HK-148.66.56.99-2315
+  - HK-HK-🇭🇰HK-58.152.53.227-0272
+  - HK-HK-🇭🇰HK-185.14.47.240-2552
+  - HK-HK-🇭🇰 香港5|@stairnode
+  - HK-HK-🇭🇰HK-47.242.69.124-1336
+  - HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-中国 - 香港 - Hong Kong Telecommunications
     (HKT) Limited Mass Internet - 2
-  - HK-🇭🇰HK-58.152.18.130-4880
-  - HK-🇭🇰HK_3
-  - HK-🇭🇰HK-58.152.25.208-4881
-  - HK-中国 - 香港 - Akile LTD - 1
-  - HK-🇭🇰HK-43.199.42.6-1779
-  - HK-🇭🇰HK-148.66.56.99-2286
-  - HK-🇭🇰HK-148.66.56.99-2301
-  - HK-🇭🇰HK-148.66.56.99-2315
-  - HK-🇭🇰HK-148.66.56.99-2328
-  - HK-🇭🇰HK-148.66.56.99-2430
-  - HK-🇭🇰HK-148.66.56.99-2580
-  - HK-🇭🇰HK-148.66.56.99-2581
-  - HK-🇭🇰HK-148.66.56.99-2760
-  - HK-🇭🇰HK-8.218.140.111-5684
-  - HK-🇭🇰HK-43.198.12.229-6968
-  - HK-🇭🇰HK-119.247.119.212-6974
-  - HK-🇭🇰HK
-  - HK-HK-HK-🇭🇰HK-103.149.183.80-4814
-  - HK-🇭🇰HK-45.11.104.94-2492
-  - HK-🇭🇰HK-43.154.172.79-1619
+  - HK-HK-🇭🇰HK_3
+  - HK-HK-🇭🇰HK-58.152.25.208-4881
+  - HK-HK-中国 - 香港 - Akile LTD - 1
+  - HK-HK-🇭🇰HK-43.199.42.6-1779
+  - HK-HK-🇭🇰HK-148.66.56.99-2301
+  - HK-HK-🇭🇰HK-8.218.140.111-5684
+  - HK-HK-🇭🇰HK-43.198.12.229-6968
+  - HK-HK-🇭🇰HK-119.247.119.212-6974
+  - HK-HK-🇭🇰HK-45.11.104.94-2492
+  - HK-HK-🇭🇰HK-202.64.124.252-1659
+  - HK-HK-🇭🇰HK-8.210.166.114-1575
+  - HK-HK-🇭🇰HK-58.152.46.60-1782
+  - HK-HK-🇭🇰HK-58.152.53.45-4879
+  - HK-HK-🇭🇰HK-8.210.206.163-1890
+  - HK-HK-🇭🇰HK_1
+  - HK-HK-HK-HK-中国 - 香港 - MoeChuang Network Limited - 13
+  - HK-HK-🇭🇰HK-148.66.56.99-2328
+  - HK-HK-🇭🇰HK-148.66.56.99-2286
+  - HK-HK-🇭🇰HK-8.210.131.2-1328
+  - HK-HK-🇭🇰HK-8.210.153.242-1888
+  - HK-HK-🇭🇰HK-47.243.135.74-4874
+  - HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-🇭🇰HK-43.198.82.55-0811
+  - HK-HK-HK-HK-中国 - 香港 - Alibaba.com LLC - 14
+  - HK-HK-HK-HK-🇭🇰HK-103.141.221.124-0305
+  - HK-HK-HK-HK-🇭🇰HK-112.118.0.202-0077
+  - HK-HK-🇭🇰HK-104.208.100.101-4247
+  - HK-HK-🇭🇰HK-148.66.56.99-2760
+  - HK-HK-🇭🇰HK-47.243.230.222-1356
+  - HK-HK-🇭🇰HK-18.167.121.42-4020
+  - HK-HK-🇭🇰HK-148.66.56.99-2580
+  - HK-HK-🇭🇰HK-148.66.56.99-2581
+  - HK-HK-🇭🇰HK-16.163.143.47-0888
+  - HK-HK-🇭🇰HK-188.116.22.171-3578
+  - HK-HK-🇭🇰HK-210.0.158.220-2644
+  - HK-HK-🇭🇰HK-194.156.99.39-2382
+  - HK-HK-HK-HK-🇭🇰HK_2
+  - HK-HK-HK-HK-HK_677dc_0002
+  - HK-HK-🇭🇰HK-58.152.18.130-4880
+  - HK-HK-🇭🇰HK-148.66.56.99-2430
+  - HK-HK-🇭🇰HK
+  - HK-HK-HK-HK-🇭🇰HK-103.149.183.80-4814
+  - HK-HK-🇭🇰HK-43.154.172.79-1619
+  - HK-HK-🇭🇰HK-20.187.85.198-4246
+  - HK-HK-🇭🇰HK-148.66.56.99-2450
+  - HK-HK-🇭🇰HK-103.135.103.229-1555
+  - HK-HK-🇭🇰HK-104.208.96.44-0626
+  - HK-HK-🇭🇰HK-16.163.31.145-0879
+  - HK-HK-HK-HK-🇭🇰HK-148.66.56.99-2237
+  - HK-HK-🇭🇰HK-47.244.120.197-4876
+  - HK-HK-🇭🇰HK-47.243.187.171-1379
+  - HK-HK-🇭🇰HK-8.210.70.156-2175
   url: http://www.google.com/generate_204
   interval: 300
 - name: HK Manual
   type: select
   proxies:
-  - HK-🇭🇰HK-202.64.124.252-1659
-  - HK-🇭🇰HK-8.210.166.114-1575
-  - HK-HK-HK-HK-HK-HK-HK-🇭🇰HK-103.149.183.113-4816
-  - HK-HK-HK-中国 - 香港 - Dalian Yichuan Industrial CO - 2
-  - HK-🇭🇰HK-8.210.20.159-1882
-  - HK-🇭🇰HK-58.152.46.60-1782
-  - HK-🇭🇰HK-20.239.179.251-4207
-  - HK-🇭🇰HK-20.187.85.198-4246
-  - HK-🇭🇰HK-47.242.26.30-1490
-  - HK-🇭🇰HK-47.242.65.80-1537
-  - HK-🇭🇰HK-47.242.21.177-1631
-  - HK-🇭🇰HK-165.154.244.100-0598
-  - HK-🇭🇰HK-58.152.53.45-4879
-  - HK-🇭🇰HK-8.210.206.163-1890
-  - HK-🇭🇰HK-47.243.187.171-1379
-  - HK-🇭🇰HK-47.243.185.128-1386
-  - HK-🇭🇰HK-47.242.52.13-2071
-  - HK-HK-HK-HK-HK-🇭🇰HK-148.66.56.99-2396
-  - HK-🇭🇰HK-103.135.103.229-1555
-  - HK-🇭🇰HK_1
-  - HK-HK-HK-中国 - 香港 - MoeChuang Network Limited - 13
-  - HK-HK-HK-🇭🇰HK-148.66.56.99-2274
-  - HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-中国 - 香港 - Hong Kong Telecommunications
+  - HK-HK-🇭🇰HK-103.103.245.125-1679
+  - HK-HK-HK-HK-HK-HK-HK-HK-🇭🇰HK-103.149.183.113-4816
+  - HK-HK-HK-HK-中国 - 香港 - Dalian Yichuan Industrial CO - 2
+  - HK-HK-🇭🇰HK-8.210.20.159-1882
+  - HK-HK-🇭🇰HK-20.239.179.251-4207
+  - HK-HK-🇭🇰HK-47.242.26.30-1490
+  - HK-HK-🇭🇰HK-47.242.65.80-1537
+  - HK-HK-🇭🇰HK-47.242.21.177-1631
+  - HK-HK-🇭🇰HK-165.154.244.100-0598
+  - HK-HK-🇭🇰HK-47.243.185.128-1386
+  - HK-HK-🇭🇰HK-47.242.52.13-2071
+  - HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-中国 - 香港 - Hong Kong Telecommunications
     (HKT) Limited Mass Internet - 1
-  - HK-HK-HK-HK-HK-🇭🇰HK-148.66.56.99-2232
-  - HK-🇭🇰HK-8.210.131.2-1328
-  - HK-🇭🇰HK-8.210.153.242-1888
-  - HK-🇭🇰HK-47.243.135.74-4874
-  - HK-🇭🇰HK-104.208.96.44-0626
-  - HK-🇭🇰HK-8.210.248.210-1629
-  - HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-🇭🇰HK-43.198.82.55-0811
-  - HK-HK-HK-中国 - 香港 - Alibaba.com LLC - 14
-  - HK-🇭🇰HK-8.210.70.156-2175
-  - HK-HK-HK-HK-HK-🇭🇰HK-148.66.56.99-2292
-  - HK-🇭🇰HK-8.210.15.231-1480
-  - HK-HK-HK-🇭🇰HK-103.141.221.124-0305
-  - HK-HK-HK-🇭🇰HK-112.118.0.202-0077
-  - HK-🇭🇰HK-104.208.100.101-4247
-  - HK-HK-HK-🇭🇰HK-148.66.56.99-2706
-  - HK-HK-HK-🇭🇰HK-103.149.182.105-0301
-  - HK-🇭🇰 香港4|@stairnode
-  - HK-🇭🇰HK-203.23.128.33-0305
-  - HK-🇭🇰HK-47.243.230.222-1356
-  - HK-🇭🇰HK-148.66.56.99-2323
-  - HK-🇭🇰HK-148.66.56.99-2346
-  - HK-🇭🇰HK-148.66.56.99-2450
-  - HK-🇭🇰HK-148.66.56.99-2479
-  - HK-🇭🇰HK-148.66.56.98-3871
-  - HK-🇭🇰HK-18.167.121.42-4020
-  - HK-HK-HK-🇭🇰HK-148.66.56.99-2425
-  - HK-HK-HK-HK-HK-HK-HK-🇭🇰HK-148.66.56.99-2526
-  - HK-🇭🇰HK-188.116.22.171-2572
-  - HK-🇭🇰HK-47.242.95.19-2168
-  - HK-🇭🇰HK-8.210.236.45-1544
-  - HK-🇭🇰HK-58.152.25.86-1783
-  - HK-🇭🇰HK-47.244.120.197-4877
-  - HK-🇭🇰HK-103.103.245.125-1679
-  - HK-🇭🇰HK-20.239.179.251-4447
-  - HK-🇭🇰HK-20.239.145.115-0566
-  - HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-🇭🇰HK-203.23.128.33-0287
-  - HK-🇭🇰HK_4
-  - HK-🇭🇰 香港3|@stairnode
-  - HK-HK-HK-🇭🇰HK-148.66.56.99-2527
-  - HK-🇭🇰HK-58.152.25.236-1781
-  - HK-HK-HK-HK-HK-HK-HK-🇭🇰HK-103.149.183.12-4817
-  - HK-🇭🇰HK-16.163.143.47-0888
-  - HK-HK-HK-🇭🇰HK-148.66.56.99-2269
-  - HK-HK-HK-HK-HK-HK-HK-🇭🇰HK-148.66.56.99-2261
-  - HK-🇭🇰HK-58.152.53.227-0272
-  - HK-🇭🇰HK-16.163.31.145-0879
-  - HK-🇭🇰HK-188.116.22.171-3578
-  - HK-🇭🇰HK-185.14.47.240-2552
-  - HK-🇭🇰HK-47.244.120.197-4876
-  - HK-🇭🇰HK-210.0.158.220-2644
-  - HK-🇭🇰HK-194.156.99.39-2382
-  - HK-🇭🇰 香港5|@stairnode
-  - HK-🇭🇰HK-47.242.69.124-1336
-  - HK-HK-HK-🇭🇰HK_2
-  - HK-HK-HK-🇭🇰HK-148.66.56.99-2237
-  - HK-HK-HK-HK_677dc_0002
-  - HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-中国 - 香港 - Hong Kong Telecommunications
+  - HK-HK-🇭🇰HK-8.210.248.210-1629
+  - HK-HK-🇭🇰HK-148.66.56.99-2346
+  - HK-HK-🇭🇰HK-8.210.15.231-1480
+  - HK-HK-HK-HK-🇭🇰HK-103.149.182.105-0301
+  - HK-HK-🇭🇰 香港4|@stairnode
+  - HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-🇭🇰HK-203.23.128.33-0287
+  - HK-HK-HK-HK-🇭🇰HK-148.66.56.99-2269
+  - HK-HK-HK-HK-🇭🇰HK-148.66.56.99-2425
+  - HK-HK-🇭🇰HK-148.66.56.98-3871
+  - HK-HK-🇭🇰HK-188.116.22.171-2572
+  - HK-HK-🇭🇰HK-47.242.95.19-2168
+  - HK-HK-🇭🇰HK-8.210.236.45-1544
+  - HK-HK-🇭🇰HK-58.152.25.86-1783
+  - HK-HK-🇭🇰HK-47.244.120.197-4877
+  - HK-HK-🇭🇰HK-20.239.179.251-4447
+  - HK-HK-🇭🇰HK-20.239.145.115-0566
+  - HK-HK-🇭🇰HK_4
+  - HK-HK-🇭🇰 香港3|@stairnode
+  - HK-HK-🇭🇰HK-58.152.25.236-1781
+  - HK-HK-HK-HK-HK-HK-HK-HK-🇭🇰HK-103.149.183.12-4817
+  - HK-HK-🇭🇰HK-148.66.56.99-2315
+  - HK-HK-🇭🇰HK-58.152.53.227-0272
+  - HK-HK-🇭🇰HK-185.14.47.240-2552
+  - HK-HK-🇭🇰 香港5|@stairnode
+  - HK-HK-🇭🇰HK-47.242.69.124-1336
+  - HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-中国 - 香港 - Hong Kong Telecommunications
     (HKT) Limited Mass Internet - 2
-  - HK-🇭🇰HK-58.152.18.130-4880
-  - HK-🇭🇰HK_3
-  - HK-🇭🇰HK-58.152.25.208-4881
-  - HK-中国 - 香港 - Akile LTD - 1
-  - HK-🇭🇰HK-43.199.42.6-1779
-  - HK-🇭🇰HK-148.66.56.99-2286
-  - HK-🇭🇰HK-148.66.56.99-2301
-  - HK-🇭🇰HK-148.66.56.99-2315
-  - HK-🇭🇰HK-148.66.56.99-2328
-  - HK-🇭🇰HK-148.66.56.99-2430
-  - HK-🇭🇰HK-148.66.56.99-2580
-  - HK-🇭🇰HK-148.66.56.99-2581
-  - HK-🇭🇰HK-148.66.56.99-2760
-  - HK-🇭🇰HK-8.218.140.111-5684
-  - HK-🇭🇰HK-43.198.12.229-6968
-  - HK-🇭🇰HK-119.247.119.212-6974
-  - HK-🇭🇰HK
-  - HK-HK-HK-🇭🇰HK-103.149.183.80-4814
-  - HK-🇭🇰HK-45.11.104.94-2492
-  - HK-🇭🇰HK-43.154.172.79-1619
+  - HK-HK-🇭🇰HK_3
+  - HK-HK-🇭🇰HK-58.152.25.208-4881
+  - HK-HK-中国 - 香港 - Akile LTD - 1
+  - HK-HK-🇭🇰HK-43.199.42.6-1779
+  - HK-HK-🇭🇰HK-148.66.56.99-2301
+  - HK-HK-🇭🇰HK-8.218.140.111-5684
+  - HK-HK-🇭🇰HK-43.198.12.229-6968
+  - HK-HK-🇭🇰HK-119.247.119.212-6974
+  - HK-HK-🇭🇰HK-45.11.104.94-2492
+  - HK-HK-🇭🇰HK-202.64.124.252-1659
+  - HK-HK-🇭🇰HK-8.210.166.114-1575
+  - HK-HK-🇭🇰HK-58.152.46.60-1782
+  - HK-HK-🇭🇰HK-58.152.53.45-4879
+  - HK-HK-🇭🇰HK-8.210.206.163-1890
+  - HK-HK-🇭🇰HK_1
+  - HK-HK-HK-HK-中国 - 香港 - MoeChuang Network Limited - 13
+  - HK-HK-🇭🇰HK-148.66.56.99-2328
+  - HK-HK-🇭🇰HK-148.66.56.99-2286
+  - HK-HK-🇭🇰HK-8.210.131.2-1328
+  - HK-HK-🇭🇰HK-8.210.153.242-1888
+  - HK-HK-🇭🇰HK-47.243.135.74-4874
+  - HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-HK-🇭🇰HK-43.198.82.55-0811
+  - HK-HK-HK-HK-中国 - 香港 - Alibaba.com LLC - 14
+  - HK-HK-HK-HK-🇭🇰HK-103.141.221.124-0305
+  - HK-HK-HK-HK-🇭🇰HK-112.118.0.202-0077
+  - HK-HK-🇭🇰HK-104.208.100.101-4247
+  - HK-HK-🇭🇰HK-148.66.56.99-2760
+  - HK-HK-🇭🇰HK-47.243.230.222-1356
+  - HK-HK-🇭🇰HK-18.167.121.42-4020
+  - HK-HK-🇭🇰HK-148.66.56.99-2580
+  - HK-HK-🇭🇰HK-148.66.56.99-2581
+  - HK-HK-🇭🇰HK-16.163.143.47-0888
+  - HK-HK-🇭🇰HK-188.116.22.171-3578
+  - HK-HK-🇭🇰HK-210.0.158.220-2644
+  - HK-HK-🇭🇰HK-194.156.99.39-2382
+  - HK-HK-HK-HK-🇭🇰HK_2
+  - HK-HK-HK-HK-HK_677dc_0002
+  - HK-HK-🇭🇰HK-58.152.18.130-4880
+  - HK-HK-🇭🇰HK-148.66.56.99-2430
+  - HK-HK-🇭🇰HK
+  - HK-HK-HK-HK-🇭🇰HK-103.149.183.80-4814
+  - HK-HK-🇭🇰HK-43.154.172.79-1619
+  - HK-HK-🇭🇰HK-20.187.85.198-4246
+  - HK-HK-🇭🇰HK-148.66.56.99-2450
+  - HK-HK-🇭🇰HK-103.135.103.229-1555
+  - HK-HK-🇭🇰HK-104.208.96.44-0626
+  - HK-HK-🇭🇰HK-16.163.31.145-0879
+  - HK-HK-HK-HK-🇭🇰HK-148.66.56.99-2237
+  - HK-HK-🇭🇰HK-47.244.120.197-4876
+  - HK-HK-🇭🇰HK-47.243.187.171-1379
+  - HK-HK-🇭🇰HK-8.210.70.156-2175
   - HK Auto
   - DIRECT
 rules:
